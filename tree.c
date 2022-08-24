@@ -27,8 +27,9 @@ tree* insert_child(tree* t, tree* child)
     }
     else if(child != NULL && child != t)
     {
+        child->child = NULL;
         t->child_number++;
-        t->child = (tree**)realloc(t->child, t->child_number * sizeof(tree**));
+        t->child = (tree**)realloc(t->child, t->child_number * sizeof(tree));
         t->child[t->child_number - 1] = child;
     }
 
