@@ -1,0 +1,13 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/kovaleski100/Área de Trabalho/Trabalho facul/Compiladores'
+rm -f etapa2
+rm -f lex.yy.c
+rm -f parser.tab.h
+rm -f parser.tab.c
+rm -f parser.output
+rm -f test.c
+flex scanner.l
+bison -d parser.y
+gcc -Wall -Wextra -o etapa3 symbol.c tree.c parser.tab.c lex.yy.c main.c -I.
+make: Leaving directory '/home/kovaleski100/Área de Trabalho/Trabalho facul/Compiladores'
+ 

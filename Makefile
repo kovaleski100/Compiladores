@@ -9,7 +9,7 @@
 build: clean scanner.l main.c parser.y
 	flex scanner.l
 	bison -d parser.y
-	gcc -o etapa3 symbol.c tree.c parser.tab.c lex.yy.c main.c -I.
+	gcc -Wall -Wextra -o etapa3 symbol.c tree.c parser.tab.c lex.yy.c main.c -I.
 
 clean:
 	rm -f etapa2

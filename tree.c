@@ -14,7 +14,7 @@ tree* insert_leaf(symbol* data)
     tree* t = (tree *) malloc(sizeof(tree)); //allocate space for the tree
     t->data = data;
     t->child_number = 0;
-    t->child = (tree **) malloc(sizeof(tree*));
+    t->child = NULL;
     return t;
 }
 
@@ -27,9 +27,8 @@ tree* insert_child(tree* t, tree* child)
     }
     else if(child != NULL && child != t)
     {
-        child->child = NULL;
         t->child_number++;
-        t->child = (tree**)realloc(t->child, t->child_number * sizeof(tree));
+        t->child = (tree**)realloc(t->child, t->child_number * sizeof(tree*));
         t->child[t->child_number - 1] = child;
     }
 
@@ -97,11 +96,6 @@ void exporta(tree* arvore)
     {
         printf("%p, %p\n", arvore, arvore->child[i]);
     }
-
-    for(int i = 0; i < arvore->child_number; i ++)
-    {
-        exporta(arvore->child[i]);
-    }
     switch(arvore->data->token_t)
     {
         case SPECIAL_CHAR:
@@ -133,6 +127,10 @@ void exporta(tree* arvore)
                     break;
             }
             break;
+    }
+    for(int i = 0; i < arvore->child_number; i ++)
+    {
+        exporta(arvore->child[i]);
     }
 }
 

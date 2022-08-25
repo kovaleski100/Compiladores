@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "symbol.h"
-#include <stdlib.h>
 
 typedef struct tree
 {

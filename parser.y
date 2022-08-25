@@ -89,6 +89,7 @@ void yyerror (char const *s);
 %token<valor_lexico> TK_IDENTIFICADOR
 %token<valor_lexico> TOKEN_ERRO
 
+%token<valor_lexico> ')' '(' ']' '[' '}' '{' '-' '+' '?' '*' '/' '|' '>' '<' '!' '=' '&' '%' '#' '^' '$' ',' ';' ':' '.'
 
 %%
 start: programa_ou_vazio {arvore = $1;}
@@ -96,7 +97,7 @@ start: programa_ou_vazio {arvore = $1;}
 /* Seção 3: A Linguagem */
 programa_ou_vazio
     : %empty {$$ = NULL;}
-    | programa {$$ = NULL;}
+    | programa {$$ = $1;}
     ;
 
 programa
@@ -115,7 +116,7 @@ variavel_global
     ;
 
 tipo_global_ou_retorno
-    : TK_PR_STATIC tipos_primitivos {$$ = NULL;}
+    : TK_PR_STATIC tipos_primitivos {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
     | tipos_primitivos {$$ = NULL;}
     ;
 
@@ -125,16 +126,16 @@ lista_nao_vazia_identificadores
     ;
 
 variavel_ou_vetor
-    : TK_IDENTIFICADOR {$$ = NULL;}
-    | TK_IDENTIFICADOR '[' TK_LIT_INT ']' {$$ = NULL;} /* Deixaremos para a etapa semântica a validação do tamanho do array (maior que zero) */
+    : TK_IDENTIFICADOR {$$ = insert_leaf($1);}
+    | TK_IDENTIFICADOR '[' TK_LIT_INT ']' {$$ = insert_leaf($1); $$ = insert_leaf($3);} /* Deixaremos para a etapa semântica a validação do tamanho do array (maior que zero) */
     ;
 
 tipos_primitivos
-    : TK_PR_INT {$$ = NULL;}
-    | TK_PR_FLOAT {$$ = NULL;}
-    | TK_PR_CHAR {$$ = NULL;}
-    | TK_PR_BOOL {$$ = NULL;}
-    | TK_PR_STRING {$$ = NULL;}
+    : TK_PR_INT {$$ = insert_leaf($1);}
+    | TK_PR_FLOAT {$$ = insert_leaf($1);}
+    | TK_PR_CHAR {$$ = insert_leaf($1);}
+    | TK_PR_BOOL {$$ = insert_leaf($1);}
+    | TK_PR_STRING {$$ = insert_leaf($1);}
     ;
 
 /* Seção 3.2: Definição de Funções */
@@ -156,7 +157,7 @@ parametros_da_funcao
     ;
 
 parametro_funcao
-    : TK_PR_CONST tipos_primitivos TK_IDENTIFICADOR {$$ = NULL; libera($2);}
+    : TK_PR_CONST tipos_primitivos TK_IDENTIFICADOR {$$ = insert_leaf($1); libera($2);}
     | tipos_primitivos TK_IDENTIFICADOR {$$ = NULL; libera($1);}
     ;
 
@@ -251,30 +252,30 @@ comando_de_retorno_break_continue
 expressao
     : argumento {$$ = $1;}
     | '(' expressao ')' {$$ = $2;}
-    | '+' expressao {$$ = insert_child($$, $2);}
-    | '-' expressao {$$ = insert_child($$, $2);}
-    | '!' expressao {$$ = insert_child($$, $2);}
-    | '&' expressao {$$ = insert_child($$, $2);}
-    | '*' expressao {$$ = insert_child($$, $2);}
-    | '?' expressao {$$ = insert_child($$, $2);}
-    | '#' expressao {$$ = insert_child($$, $2);}
-    | expressao '+' expressao {$$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '-' expressao {$$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '*' expressao {$$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '/' expressao {$$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '%' expressao {$$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '|' expressao {$$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '&' expressao {$$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '^' expressao {$$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '>' expressao {$$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '<' expressao {$$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao TK_OC_LE expressao {$$ = insert_child($$, $1); $$ = insert_leaf($2);$$ = insert_child($$, $3);}
-    | expressao TK_OC_GE expressao {$$ = insert_child($$, $1); $$ = insert_leaf($2);$$ = insert_child($$, $3);}
-    | expressao TK_OC_EQ expressao {$$ = insert_child($$, $1); $$ = insert_leaf($2);$$ = insert_child($$, $3);}
-    | expressao TK_OC_NE expressao {$$ = insert_child($$, $1); $$ = insert_leaf($2);$$ = insert_child($$, $3);}
-    | expressao TK_OC_AND expressao {$$ = insert_child($$, $1); $$ = insert_leaf($2);$$ = insert_child($$, $3);}
-    | expressao TK_OC_OR expressao {$$ = insert_child($$, $1); $$ = insert_leaf($2);$$ = insert_child($$, $3);}
-    | expressao '?' expressao ':' expressao {$$ = insert_child($$, $1); $$ = insert_child($$,$3);$$ = insert_child($$, $5);}
+    | '+' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
+    | '-' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
+    | '!' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
+    | '&' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
+    | '*' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
+    | '?' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
+    | '#' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
+    | expressao '+' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao '-' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao '*' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao '/' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao '%' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao '|' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao '&' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao '^' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao '>' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao '<' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao TK_OC_LE expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | expressao TK_OC_GE expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | expressao TK_OC_EQ expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | expressao TK_OC_NE expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | expressao TK_OC_AND expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
+    | expressao TK_OC_OR expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | expressao '?' expressao ':' expressao {$$ = insert_leaf($2); $$->data->lv.v.s = "?:"; $$->data->token_t = COMPOSE_OP; $$ = insert_child($$, $1); $$ = insert_child($$,$3);$$ = insert_child($$, $5);}
     ;
 
 comandos_de_controle_de_fluxo
