@@ -16,3 +16,11 @@
 #define ERR_WRONG_PAR_OUTPUT 51
 #define ERR_WRONG_PAR_RETURN 52
 #define ERR_WRONG_PAR_SHIFT  53
+
+#include <stdio.h>
+#include "hash.h"
+#include "stack.h"
+
+int check_atribuicao();
+int check_declaration();
+int error_exit();

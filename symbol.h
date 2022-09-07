@@ -11,6 +11,8 @@
 
 typedef enum literal_type
 {
+    TYPE_UNKNOWN,
+    TYPE_UINT,
     TYPE_INT,
     TYPE_FLOAT,
     TYPE_BOOL,
@@ -41,12 +43,14 @@ typedef struct literal_value
     value v;
 }literal_value;
 
-typedef struct symbol
+typedef struct token_value
 {
     int line;
     token_type token_t;
+    literal_type type;
+    char* lexema;
     literal_value lv;
-} symbol;
+} token_value;
 
 symbol* create_symbol(int line, token_type t, literal_type literal);
 symbol* create_symbol_value_int_bool(int line, token_type t, literal_type literal, bool n);
