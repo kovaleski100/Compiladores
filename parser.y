@@ -23,13 +23,12 @@ void yyerror (char const *s);
     struct symbol* valor_lexico;
 }
 
-%type<ast> start programa_ou_vazio funcao_ou_variavel_global variavel_global tipo_global_ou_retorno
-%type<ast> lista_nao_vazia_identificadores variavel_ou_vetor tipos_primitivos funcao cabecalho_funcao
-%type<ast> nome_da_funcao parametros_da_funcao parametro_funcao lista_nao_vazia_parametros_funcao
-%type<ast> corpo_funcao bloco_de_comandos lista_comandos_simples comando_simples chamada_de_funcao
-%type<ast> argumento lista_de_argumentos variavel literal lista_variaveis comandos_de_entrada_e_saida
-%type<ast> programa declaracao_de_variavel comando_de_retorno_break_continue
-%type<ast> expressao comando_de_atribuicao comandos_de_controle_de_fluxo comandos_de_shift
+%type<ast> start program declaration global_variable global_fotter vector_declaration
+%type<ast> static id function func_header list parameters const command_block command
+%type<ast> simple_command local_variable id_list literal attribution
+%type<ast> operand_arit expr ternary unary_minus or and or_log and_log equal rel soma_sub mult_div
+%type<ast> exponential unary parenthesis flux_control conditional iterative vector_attribution
+%type<ast> input output return break continue shift func_call args type assignment
 
 %right '='
 %right '?' ':'
@@ -45,6 +44,7 @@ void yyerror (char const *s);
 %left '^'
 %right '#' '!'
 
+//Literals
 %token<valor_lexico> TK_PR_INT
 %token<valor_lexico> TK_PR_FLOAT
 %token<valor_lexico> TK_PR_BOOL
@@ -90,215 +90,289 @@ void yyerror (char const *s);
 %token<valor_lexico> TOKEN_ERRO
 
 %token<valor_lexico> ')' '(' ']' '[' '}' '{' '-' '+' '?' '*' '/' '|' '>' '<' '!' '=' '&' '%' '#' '^' '$' ',' ';' ':' '.'
-
 %%
-start: programa_ou_vazio {arvore = $1;}
+start:
+     program {arvore = $1;}
 
-/* Seção 3: A Linguagem */
-programa_ou_vazio
-    : %empty {$$ = NULL;}
-    | programa {$$ = $1;}
+program
+    : declaration program {$$ = $1; $$ = insert_child($$, $2);}
+    |                     {$$ = NULL;}
     ;
 
-programa
-    : funcao_ou_variavel_global {$$ = NULL;}
-    | programa funcao_ou_variavel_global {$$ = $1; $$ = insert_child($$, $2);}
+declaration
+    : function             {$$ = $1;}
+    | global_variable {$$ = NULL;}
     ;
 
-funcao_ou_variavel_global
-    : funcao {$$ = $1;}
-    | variavel_global {$$ = NULL;}
+global_variable
+    : static type id vector_declaration global_fotter ';' {$$ = NULL; libera($3);}
     ;
 
-/* Seção 3.1: Declarações de Variáveis Globais */
-variavel_global
-    : tipo_global_ou_retorno lista_nao_vazia_identificadores ';' {$$ = NULL;}
+global_fotter
+    : ',' id vector_declaration global_fotter {$$ = NULL; libera($2);}
+    |       {$$ = NULL;}
     ;
 
-tipo_global_ou_retorno
-    : TK_PR_STATIC tipos_primitivos {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    | tipos_primitivos {$$ = NULL;}
+vector_declaration
+    : '[' TK_LIT_INT ']'  {$$ = NULL;}
+    |                     {$$ = NULL;}
     ;
 
-lista_nao_vazia_identificadores
-    : variavel_ou_vetor {$$ = NULL;}
-    | lista_nao_vazia_identificadores ',' variavel_ou_vetor {$$ = NULL;}
+static
+    : TK_PR_STATIC        {$$ = NULL;}
+    |                     {$$ = NULL;}
     ;
 
-variavel_ou_vetor
-    : TK_IDENTIFICADOR {$$ = insert_leaf($1);}
-    | TK_IDENTIFICADOR '[' TK_LIT_INT ']' {$$ = insert_leaf($1); $$ = insert_leaf($3);} /* Deixaremos para a etapa semântica a validação do tamanho do array (maior que zero) */
+id
+    : TK_IDENTIFICADOR    {$$ = insert_leaf($1);}
     ;
 
-tipos_primitivos
-    : TK_PR_INT {$$ = insert_leaf($1);}
-    | TK_PR_FLOAT {$$ = insert_leaf($1);}
-    | TK_PR_CHAR {$$ = insert_leaf($1);}
-    | TK_PR_BOOL {$$ = insert_leaf($1);}
-    | TK_PR_STRING {$$ = insert_leaf($1);}
+function
+    : func_header command_block {$$ = $1; $$ = insert_child($$, $2);}
     ;
 
-/* Seção 3.2: Definição de Funções */
-funcao
-    : cabecalho_funcao corpo_funcao {$$ = $1; $$ = insert_child($$, $2);}
+func_header
+    : static type id list       {$$ = $3;}
     ;
 
-cabecalho_funcao
-    : tipo_global_ou_retorno nome_da_funcao parametros_da_funcao {$$ = insert_child($$, $1); $$ = insert_child($$, $2); $$ = insert_child($$, $3);}
+list
+    : '(' parameters ')'        {$$ = NULL;}
+    | '(' ')'                   {$$ = NULL;}
     ;
 
-nome_da_funcao
-    : TK_IDENTIFICADOR {$$ = insert_leaf($1);}
+parameters
+    : parameters ',' const type id  {$$ = NULL; libera($5);}
+    | const type id                 {$$ = NULL; libera($3);}
     ;
 
-parametros_da_funcao
-    : '(' ')' {$$ = NULL;}
-    | '(' lista_nao_vazia_parametros_funcao ')' {$$ = NULL;}
+const
+    : TK_PR_CONST                 {$$ = NULL;}
+    |                             {$$ = NULL;}
     ;
 
-parametro_funcao
-    : TK_PR_CONST tipos_primitivos TK_IDENTIFICADOR {$$ = insert_leaf($1); libera($2);}
-    | tipos_primitivos TK_IDENTIFICADOR {$$ = NULL; libera($1);}
+command_block
+    : '{' command '}'     {$$ = $2;}
     ;
 
-lista_nao_vazia_parametros_funcao
-    : parametro_funcao {$$ = $1;}
-    | lista_nao_vazia_parametros_funcao ',' parametro_funcao {$$ = $1; $$ = insert_child($$, $3);}
+command
+    : simple_command ';' command  {$$ = $1; $$ = insert_child($$, $3);}
+
+    | flux_control ';' command    {$$ = $1; $$ = insert_child($$, $3);}
+    |                             {$$ = NULL;}
     ;
 
-corpo_funcao
-    : bloco_de_comandos {$$ = $1;}
+simple_command
+    : local_variable  {$$ = $1;}
+    | attribution     {$$ = $1;}
+    | input           {$$ = $1;}
+    | output          {$$ = $1;}
+    | return          {$$ = $1;}
+    | command_block   {$$ = $1;}
+    | shift           {$$ = $1;}
+    | break           {$$ = $1;}
+    | continue        {$$ = $1;}
+    | func_call       {$$ = $1;}
     ;
 
-/* Seção 3.3: Bloco de Comandos */ 
-
-bloco_de_comandos
-    : '{' lista_comandos_simples '}' {$$ = $2;}
+local_variable
+    : static const type id_list {$$ = $4;}
     ;
 
-lista_comandos_simples
-    : comando_simples ';' lista_comandos_simples {$$ = $1; $$ = insert_child($$, $3);}
-    |%empty {$$ = NULL;}
+id_list
+    : assignment              {$$ = $1;}
+    | id_list ',' assignment  {$$ = $1;  $$ = insert_child($$, $3);}
+    | id_list ',' id          {$$ = $1; libera($3);}
+    | id                      {$$ = NULL; libera($1);}
     ;
 
-/* Seção 3.4: Comandos Simples */
-comando_simples
-    : bloco_de_comandos /* De acordo com 3.3, um bloco de comandos é um comando simples. */
-    | declaracao_de_variavel {$$ = $1;}
-    | comando_de_atribuicao {$$ = $1;}
-    | comandos_de_entrada_e_saida {$$ = $1;}
-    | chamada_de_funcao {$$ = $1;}
-    | comando_de_retorno_break_continue {$$ = $1;}
-    | comandos_de_controle_de_fluxo {$$ = $1;}
-    | comandos_de_shift {$$ = $1;}
+assignment
+    : id TK_OC_LE id         {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | id TK_OC_LE literal    {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
     ;
 
-chamada_de_funcao
-    : nome_da_funcao '(' ')' {$$ = $1;}
-    | nome_da_funcao '(' argumento ')' {$$ = $1; $$ = $3;}
-    | nome_da_funcao '(' lista_de_argumentos argumento ')' {$$ = $1; $$ = $3 ; $$ = $4;}
-    ;
-
-argumento
-    : TK_IDENTIFICADOR {$$ = insert_leaf($1);}
-    | literal {$$ = insert_child($$, $1);}
-    ;
-
-lista_de_argumentos
-    : argumento {$$ = $1;}
-    | lista_de_argumentos argumento ',' {$$ = $1; $$ = $2;}
-
-/* 3.4 - A: Declaração de Variável */
-    /* Abaixo, todas as permutações possíveis do uso de CONST e STATIC. */
-declaracao_de_variavel
-    : TK_PR_STATIC TK_PR_CONST tipos_primitivos lista_variaveis {$$ = insert_leaf($1);$$ = insert_leaf($2); $$ = insert_child($$, $3); $$ = insert_child($$, $4);}
-    | TK_PR_STATIC tipos_primitivos lista_variaveis {$$ = insert_leaf($1);$$ = insert_child($$, $2); $$ = insert_child($$, $3);}
-    | TK_PR_CONST tipos_primitivos lista_variaveis {$$ = insert_leaf($1);$$ = insert_child($$, $2); $$ = insert_child($$, $3);}
-    | tipos_primitivos lista_variaveis {$$ = $1; $$ = $2;}
-    ;
-
-    /* Todos os tipos possíveis de variáveis. Só o identificador, ou o identificador já recebendo uma inicialização. */
-variavel
-    : TK_IDENTIFICADOR {$$ = insert_leaf($1);}
-    | TK_IDENTIFICADOR TK_OC_LE TK_IDENTIFICADOR {$$ = insert_leaf($2); $$ = insert_leaf($1); $$ = insert_leaf($3);}
-    | TK_IDENTIFICADOR TK_OC_LE literal {$$ = insert_leaf($2); $$ = insert_leaf($1); $$ = insert_child($$, $3);}
-    ;
 
 literal
-    : TK_LIT_INT {$$ = insert_leaf($1);}
-    | TK_LIT_CHAR {$$ = insert_leaf($1);}
-    | TK_LIT_TRUE {$$ = insert_leaf($1);}
-    | TK_LIT_FALSE {$$ = insert_leaf($1);}
-    | TK_LIT_FLOAT {$$ = insert_leaf($1);}
-    | TK_LIT_STRING {$$ = insert_leaf($1);}
+    : TK_LIT_INT    {$$ = insert_leaf($1); }
+    | TK_LIT_FLOAT  {$$ = insert_leaf($1); }
+    | TK_LIT_FALSE  {$$ = insert_leaf($1); }
+    | TK_LIT_TRUE   {$$ = insert_leaf($1); }
+    | TK_LIT_CHAR   {$$ = insert_leaf($1); }
+    | TK_LIT_STRING {$$ = insert_leaf($1); }
     ;
 
-lista_variaveis
-    : variavel {$$ = $1;}
-    | lista_variaveis ',' variavel {$$ = NULL; $$ = $1;}
+attribution
+    : id '=' expr   {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | vector_attribution '=' expr  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
     ;
 
-/* 3.4 - C: Comandos de Entrada e Saída */
-comandos_de_entrada_e_saida
-    : TK_PR_INPUT TK_IDENTIFICADOR {$$ = insert_leaf($1); $$ = insert_leaf($2);}
-    | TK_PR_OUTPUT TK_IDENTIFICADOR {$$ = insert_leaf($1); $$ = insert_leaf($2);}
-    | TK_PR_OUTPUT literal {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-
-comando_de_retorno_break_continue
-    : TK_PR_BREAK {$$ = insert_leaf($1);}
-    | TK_PR_CONTINUE {$$ = insert_leaf($1);}
-    | TK_PR_RETURN expressao {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    ;
-expressao
-    : argumento {$$ = $1;}
-    | '(' expressao ')' {$$ = $2;}
-    | '+' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
-    | '-' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
-    | '!' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
-    | '&' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
-    | '*' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
-    | '?' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
-    | '#' expressao {$$ = insert_leaf($1);$$ = insert_child($$, $2);}
-    | expressao '+' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '-' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '*' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '/' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '%' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '|' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '&' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '^' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '>' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao '<' expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao TK_OC_LE expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | expressao TK_OC_GE expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | expressao TK_OC_EQ expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | expressao TK_OC_NE expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | expressao TK_OC_AND expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1);$$ = insert_child($$, $3);}
-    | expressao TK_OC_OR expressao {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | expressao '?' expressao ':' expressao {$$ = insert_leaf($2); $$->data->lv.v.s = "?:"; $$->data->token_t = COMPOSE_OP; $$ = insert_child($$, $1); $$ = insert_child($$,$3);$$ = insert_child($$, $5);}
+vector_attribution
+    : id '[' expr ']' {$$ = insert_leaf($2); $$->data->lv.v.s = "[]"; $$->data->token_t = COMPOSE_OP; $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
     ;
 
-comandos_de_controle_de_fluxo
-    : TK_PR_IF '(' expressao ')' bloco_de_comandos {$$ = insert_leaf($1); $$ = insert_child($$, $3); $$ = insert_child($$, $5);}
-    | TK_PR_IF '(' expressao ')' bloco_de_comandos TK_PR_ELSE bloco_de_comandos {$$ = insert_leaf($1); $$ = insert_child($$, $3); $$ = insert_child($$, $5); $$ = insert_leaf($6); $$ = insert_child($$,$7);}
-    | TK_PR_FOR '(' comando_de_atribuicao ':' expressao ':' comando_de_atribuicao ')' bloco_de_comandos {$$ = insert_leaf($1); $$ = insert_child($$, $3); $$ = insert_child($$, $5); $$ = insert_child($$,$7);}
-    | TK_PR_WHILE '(' expressao ')' TK_PR_DO bloco_de_comandos {$$ = insert_leaf($1); $$ = insert_child($$, $3); $$ = insert_leaf($5); $$ = insert_child($$, $6);}
+
+expr
+    : ternary       {$$ = $1;}
     ;
 
-comando_de_atribuicao
-    : TK_IDENTIFICADOR '=' expressao {$$ = insert_leaf($1); $$ = insert_child($$, $3);}
-    | TK_IDENTIFICADOR '[' expressao ']' '=' expressao {$$ = insert_leaf($1); $$ = insert_child($$, $3); $$ = insert_child($$, $6);}
-    ;
-    
-comandos_de_shift
-    : TK_IDENTIFICADOR TK_OC_SL TK_LIT_INT {$$ = insert_leaf($1); $$ = insert_leaf($2); $$ = insert_leaf($3);}
-    | TK_IDENTIFICADOR TK_OC_SR TK_LIT_INT {$$ = insert_leaf($1); $$ = insert_leaf($2); $$ = insert_leaf($3);}
-    | TK_IDENTIFICADOR '[' expressao ']' TK_OC_SL TK_LIT_INT {$$ = insert_leaf($1); $$ = insert_child($$,$3); $$ = insert_leaf($5); $$ = insert_leaf($6);}
-    | TK_IDENTIFICADOR '[' expressao ']' TK_OC_SR TK_LIT_INT {$$ = insert_leaf($1); $$ = insert_child($$,$3); $$ = insert_leaf($5); $$ = insert_leaf($6);}
+ternary
+        : unary_minus '?' unary_minus':' ternary {$$ = insert_leaf($2); $$->data->lv.v.s = "?:";
+                                       $$->data->token_t = COMPOSE_OP;
+                                       $$ = insert_child($$, $1); $$ = insert_child($$, $3);
+                                       $$ = insert_child($$, $5);}
+    | unary_minus                {$$ = $1;}
     ;
 
+unary_minus
+    : '+' unary_minus            {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
+    | '-' unary_minus            {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
+    | or                         {$$ = $1;}
+    ;
+
+or
+    : or TK_OC_OR and            {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | and                        {$$ = $1;}
+    ;
+
+and
+    : and TK_OC_AND or_log {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | or_log               {$$ = $1;}
+    ;
+
+or_log
+    : or_log '|' and_log   {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | and_log              {$$ =  $1;}
+    ;
+
+and_log
+    : and_log '&' equal    {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | equal                {$$ = $1;}
+    ;
+
+equal
+    : equal TK_OC_EQ rel   {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | equal TK_OC_NE rel   {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | rel                  {$$ = $1;}
+    ;
+
+rel
+    : rel TK_OC_LE soma_sub {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | rel TK_OC_GE soma_sub {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | rel '>' soma_sub      {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | rel '<' soma_sub      {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | soma_sub              {$$ = $1;}
+    ;
+
+soma_sub
+    : soma_sub '+' mult_div {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | soma_sub '-' mult_div {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | mult_div              {$$ = $1;}
+    ;
+
+mult_div
+    : mult_div '*' unary    {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | mult_div '/' unary    {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | mult_div '%' unary    {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | exponential           {$$ = $1;}
+    ;
+
+exponential
+    : exponential '^' unary {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    | unary                 {$$ = $1;}
+    ;
+
+unary
+    : '*' unary   {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
+    | '&' unary   {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
+    | '#' unary   {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
+    | '?' unary   {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
+    | '!' unary   {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
+    | parenthesis {$$ = $1;}
+    ;
+
+parenthesis
+    : '(' expr ')' {$$ = $2;}
+    | operand_arit {$$ = $1;}
+    ;
+
+flux_control
+    : conditional  {$$ = $1;}
+    | iterative    {$$ = $1;}
+    ;
+
+conditional
+    : TK_PR_IF '(' expr ')' command_block {$$ = insert_leaf($1); $$ = insert_child($$, $3); $$ = insert_child($$, $5);}
+
+    | TK_PR_IF '(' expr ')' command_block TK_PR_ELSE command_block {
+        $$ = insert_leaf($1);
+        $$ = insert_child($$, $3); $$ = insert_child($$, $5); $$ = insert_child($$, $7);}
+    ;
+
+iterative
+    : TK_PR_FOR '(' attribution ':' expr ':' attribution ')' command_block {
+        $$ = insert_leaf($1);
+        $$ = insert_child($$, $3); $$ = insert_child($$, $5); $$ = insert_child($$, $7);
+        $$ = insert_child($$, $9);}
+    | TK_PR_WHILE '(' expr ')' TK_PR_DO command_block {
+        $$ = insert_leaf($1);
+        $$ = insert_child($$, $3);
+        $$ = insert_child($$, $6);}
+    ;
+
+input
+    : TK_PR_INPUT id       {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
+    ;
+
+output
+    : TK_PR_OUTPUT id      {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
+    | TK_PR_OUTPUT literal {$$ = insert_leaf($1); $$ = insert_child ($$, $2);}
+    ;
+
+return
+    : TK_PR_RETURN expr    {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
+    ;
+
+break
+    : TK_PR_BREAK          {$$ = insert_leaf($1);}
+    ;
+
+continue
+    : TK_PR_CONTINUE       {$$ = insert_leaf($1);}
+    ;
+
+shift
+    : id TK_OC_SL TK_LIT_INT  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, insert_leaf($3));}
+    | id TK_OC_SR TK_LIT_INT  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, insert_leaf($3));}
+    | vector_attribution TK_OC_SL TK_LIT_INT  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, insert_leaf($3));}
+    | vector_attribution TK_OC_SR TK_LIT_INT  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, insert_leaf($3));}
+    ;
+
+func_call
+    : id '(' args ')' {$$ = $1; $$->data->lv.v.s = prepend($$->data->lv.v.s, "call "); $$ = insert_child($$, $3);}
+    ;
+
+args
+    : expr ',' args  {$$ = $1; $$ = insert_child($$, $3);}
+    | expr           {$$ = $1;}
+    |                {$$ = NULL;}
+    ;
+
+operand_arit
+    : vector_attribution { $$ = $1;}
+    | id                 { $$ = $1;}
+    | TK_LIT_INT         { $$ = insert_leaf($1);}
+    | TK_LIT_FLOAT       { $$ = insert_leaf($1);}
+    | func_call          { $$ = $1;}
+    ;
+
+type
+    : TK_PR_INT     {$$ = NULL;}
+    | TK_PR_FLOAT   {$$ = NULL;}
+    | TK_PR_BOOL    {$$ = NULL;}
+    | TK_PR_CHAR    {$$ = NULL;}
+    | TK_PR_STRING  {$$ = NULL;}
+    ;
 %%
 
-void yyerror (char const *s) {
+    void yyerror (char const *s) {
     fprintf (stderr, "%s on line %d\n", s, current_line_number);
 }
