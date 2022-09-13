@@ -8,7 +8,7 @@
 
 #include "symbol.h"
 
-symbol* create_symbol(int line, token_type t, literal_type literal)
+symbol* create_symbol_value(int line, token_type t, literal_type literal)
 {
     symbol *s = (symbol *) malloc(sizeof(symbol));
     s->line = line;
@@ -18,7 +18,17 @@ symbol* create_symbol(int line, token_type t, literal_type literal)
     return s;
 }
 
-symbol* create_symbol_value_int_bool(int line, token_type t, literal_type literal, bool n)
+symbol* create_symbol_value_int(int line, token_type t, literal_type literal, int n)
+{ 
+    symbol *s = (symbol *) malloc(sizeof(symbol));
+    s->token_t = t;
+    s->lv.lt = literal;
+    s->lv.v.d = n;
+
+    return s;
+}
+
+symbol* create_symbol_value_bool(int line, token_type t, literal_type literal, bool n)
 { 
     symbol *s = (symbol *) malloc(sizeof(symbol));
     s->token_t = t;

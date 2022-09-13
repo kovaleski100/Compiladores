@@ -6,242 +6,196 @@
 #include "hash.h"
 #include "parser.tab.h"
 
-StackNode *create_stack(HashTable **new_data)
+
+HashTable* create_table()
 {
-    StackNode *stackNode = (StackNode *)malloc(sizeof(StackNode));
-    stackNode->symbol_table = *new_data;
-    stackNode->next = NULL;
-    return stackNode;
-}
+    HashTable* table = malloc(sizeof(HashTable));
+    table->count = 0;
+    table->limit = 1024;
+    table->table =  calloc(table->limit, sizeof(Table));
 
-int isEmpty(StackNode *root)
-{
-    return !root;
-}
-
-void push(StackNode **root, HashTable *data)
-{
-    StackNode *topNode = create_stack(&data);
-    // Empurra a raiz pra baixo do novo elemento da pilha
-    topNode->next = *root;
-    *root = topNode;
-}
-
-HashTable *pop(StackNode **root)
-{
-    if (isEmpty(*root))
-        return NULL;
-    StackNode *temp = *root;
-    *root = (*root)->next;
-    HashTable *popped = temp->symbol_table;
-    free(temp);
-    return popped;
-}
-
-HashTable *top(StackNode *root)
-{
-    return root->symbol_table;
-}
-
-HashTable *bottom(StackNode *root)
-{
-    StackNode *last_stack = NULL;
-    HashTable *last_table = NULL;
-    // desempilahndo até o ultimo elemento
-    int i = 0;
-    while (!isEmpty(root))
-    {
-        push(&last_stack, pop(&root));
-    }
-    last_table = top(last_stack);
-    // empilhando
-    while (!isEmpty(last_stack))
-    {
-        push(&root, pop(&last_stack));
-    }
-    return last_table;
-}
-
-//--------------------------------------------------------
-
-int stored_nature = 0;
-
-HashTable *hash_create()
-{
-    HashTable *table = (HashTable *)calloc(HASH_SIZE, sizeof(HashTable));
-    if (!table)
-    {
-        puts("Unable to allocate memory");
-        exit(1);
-    }
-    // Initialize INDEXES
-    for (int i = 0; i < HASH_SIZE; i++)
-    {
-        table[i].key = -1;
-    }
-    table[0].occuped = 0;
     return table;
 }
 
-void hash_insert(HashTable **root, hash_element *newElement, int type)
+Table* findSymbolTable(Table* tables, int limit, Key* key)
 {
-    HashTable *table = *root;
-    // Check if table is full
-    if (table->occuped < HASH_SIZE)
+    unsigned int index = key->number % limit;
+    while(1){
+        Table* table = &tables[index];
+        if(table->key == NULL || strcmp(table->key->key_name, key->key_name) == 0)
+        {
+            return table;
+        }
+
+        index = (index + 1) % limit;
+    }
+}
+
+bool insert_symbol(HashTable* table, symbol s)
+{
+    if(table->count + 1 > table->limit/2) {
+        //If the table is half full we double it's size for trying to avoid collitions
+        int newLimit = GROW_CAPACITY(table->limit);
+        allocate_capacity(table, newLimit);
+    }
+
+    Key key;
+    key.key_name = s.lexema;
+    key.size = strlen(s.lexema);
+    key.number = hash_string(s.lexema, strlen(s.lexema), table->limit);
+
+    Table* actualTable = findSymbolTable(table->table, table->limit, &key);
+    bool is_new_key = !actualTable->key;
+
+    if (is_new_key)
     {
+        table->count ++;
+    }
 
-        int index = 1;
-        // identificadores
+    actualTable->key = malloc(sizeof(key));
+    actualTable->data = malloc(sizeof(symbol));
 
-        char *varname = newElement->name;
+    //Copy key and symbol value
+    *actualTable->key = key;
+    *actualTable->data = s;
 
-        index = calc_index(varname);
-        switch (newElement->nature)
+    return is_new_key;
+}
+
+static void allocate_capacity(HashTable* table, uint newLimit)
+{
+    Table* tables = ALLOCATE(table, newLimit);
+    for (int i = 0; i < newLimit; i ++) {
+        tables[i].key = NULL;
+        tables[i].data = NULL;
+    }
+
+    table->count = 0;
+
+    for(int i = 0; i < table->limit; i++)
+    {
+        Table* currentTable = &table->table[i];
+        if(currentTable->key == NULL)
         {
-        case 0:
-        case 1:
-        case 2:
-            table->occuped++;
-            while (table[index].value != NULL)
-            {
-                index++;
-            }
+            continue;
+        }
+        Table* dst = findSymbolTable(tables, newLimit, currentTable->key);
+        // We need to recalculate the hash keys to resize the table
+        dst->key = currentTable->key;
+        dst->data = currentTable->data;
+
+        table->count ++;
+    }
+
+    FREE_ARRAY(table, table->table, table->count);
+
+    table->table = tables;
+    table->limit = newLimit;
+}
+
+
+
+
+HashTable create_symbol(int size_mult, literal_value t, hash_symbol n, int line, value v, char * lexeme)
+{ //For the hash table we calculate it's hash here, only once
+    symbol s;
+    s.location = line;
+    s.nat = n;
+    s.t_type = t;
+    set_symbol_size(&s, size_mult);
+    s.literal_value = v;
+    s.lexeme = strdup(lexeme);
+    return s;
+}
+
+void set_symbol_type(symbol *s, type t)
+{
+    s->t_type = t;
+}
+
+void set_symbol_size(symbol *s, int size_mult)
+{
+    switch(s->t_type)
+    {
+        case TYPE_UNKNOWN:
             break;
-        default:
-            while (table[index].value != NULL)
-            {
-                if (strcmp(table[index].value->name, varname) == 0)
-                {
-                    break;
-                }
-                index++;
-            }
+        case TYPE_UINT:
+            s->size = 32 * size_mult;
             break;
-        }
+        case TYPE_INT:
+            s->size = 32 * size_mult;
+            break;
+        case TYPE_BOOL:
+            s->size = 8 * size_mult;
+            break;
+        case TYPE_FLOAT:
+            s->size = 64 * size_mult;
+            break;
+        case TYPE_CHAR:
+            s->size = 8 * size_mult;
+            break;
+        case TYPE_STRING:
+            s->size = 1 * size_mult;
+            break;
+    }
+}
 
-        table[index].key = index;
-        table[index].value = newElement;
-        table[index].value->type = type;
+void destroy_table(symbol_table* table)
+{
+}
 
-        if (newElement->nature == NAT_VET)
+unsigned int hash_string(char *str, int size, int capacity)
+{
+    //FNV-1 Hash function
+    //http://www.isthe.com/chongo/tech/comp/fnv/
+    unsigned int hash = 2166136261u;
+
+    for(int i = 0; i < size; i ++)
+    {
+        hash ^= (int8_t)str[i];
+        hash *= 16777619;
+    }
+
+    return hash % capacity;
+}
+
+
+
+
+
+void transferTable(symbol_table* from, symbol_table* to)
+{
+    for (int i = 0; i < from->capacity; i++) {
+        bucket* bucket = &from->buckets[i];
+        if(bucket->key != NULL)
         {
-            table[index].value->type_size = newElement->vet_size * calc_type_size(type);
+            insert_symbol(to,(*bucket->data));
         }
-        else
-        {
-            if (newElement->nature == NAT_STR){
-            table[index].value->type_size = strlen(varname)*calc_type_size(type);
-            }
-            else
-            {
-            
-            table[index].value->type_size = calc_type_size(type);
-            }
-            
-        }
+    }
+}
+
+
+
+
+bucket* search_symbol_in_table(symbol_table* table, symbol s)
+{
+    bool exists;
+
+    key_object key;
+    key.key_string = s.lexeme;
+    key.size = strlen(s.lexeme);
+    key.hash_value = hash_string(s.lexeme, strlen(s.lexeme), table->capacity);
+
+    bucket* actual_bucket = find_symbol_in_table(table->buckets, table->capacity, &key);
+
+    exists = actual_bucket->key;
+
+    if(exists)
+    {
+        return actual_bucket;
     }
     else
     {
-        fprintf(stderr, "Insufficient memory to allocate '%s'\n", newElement->name);
-    }
-    *root = table;
-}
-
-hash_element* hash_search(StackNode *stack, char *name)
-{
-    // primeiro procurano escopo global
-    HashTable *table = bottom(stack);
-    int index = calc_index(name);
-    int elements_searched = 0;
-    while (table[index].value != NULL && elements_searched < HASH_SIZE)
-    {
-        if (strcmp(name, table[index].value->name) == 0)
-            return table[index].value;
-        if (index < HASH_SIZE)
-        {
-            index++;
-        }
-        else
-        {
-            index = 0;
-        }
-        elements_searched++;
-    }
-    // depois procura no escopo local
-    table = top(stack);
-    elements_searched = 0;
-    while (table[index].value != NULL && elements_searched < HASH_SIZE)
-    {
-        if (strcmp(name, table[index].value->name) == 0)
-            return table[index].value;
-        if (index < HASH_SIZE)
-        {
-            index++;
-        }
-        else
-        {
-            index = 0;
-        }
-        elements_searched++;
-    }
-    return NULL;
-}
-
-void hash_print(HashTable *table)
-{
-    int i;
-    fprintf(stderr, "\n=========================================================================================\n");
-    for (i = 0; i < HASH_SIZE; i++)
-    {
-        if (table[i].key >= 0)
-        {
-            fprintf(stderr, "[%d]\t| NAME %s \t", table[i].key, table[i].value->name);
-            fprintf(stderr, "| LOCATION %d \t| NATURE %d\t", table[i].value->line, table[i].value->nature);
-            fprintf(stderr, "| TYPE %d \t | TYPE SIZE %d \t\n", table[i].value->type, table[i].value->type_size);
-        }
-        else
-        {
-            fprintf(stderr, "[%d]\t| EMPTY \n", i);
-        }
-    }
-    fprintf(stderr, "=========================================================================================\n");
-}
-
-int calc_index(char str[])
-{
-    /* Calculation method of:
-     * https://cp-algorithms.com/string/string-hashing.html */
-    int hash_index = 1;
-    int p_pow = 1;
-    int count;
-    for (count = 0; count < strlen(str); count++)
-    {
-        hash_index = (hash_index + (str[count] - 'a' + 1) * p_pow) % HASH_SIZE;
-        p_pow = (p_pow * 31) % HASH_SIZE;
-    }
-    return (hash_index - 1 < 0) ? 0 : hash_index - 1;
-}
-
-int calc_type_size(int type)
-{
-    int size = 0;
-    switch (type)
-    {
-    case 258:
-        size = 4;
-        break;
-    case 259:
-        size = 8;
-        break;
-    case 260:
-        size = 1;
-        break;
-    case 261:
-        size = 1;
-        break;
-    case 262:
-        size = 1;
-        break;
-    }
-    return size;
+        return NULL;
+    }	
 }
