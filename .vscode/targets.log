@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Sep  9 17:42:34 2022
+# Make data base, printed on Sat Sep 17 19:46:59 2022
 
 # Variables
 
@@ -81,7 +81,7 @@ PATH = /home/kovaleski100/.local/bin:/home/kovaleski100/.local/bin:/usr/local/sb
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/kovaleski100-300E5K-300E5Q:@/tmp/.ICE-unix/1058,unix/kovaleski100-300E5K-300E5Q:/tmp/.ICE-unix/1058
+SESSION_MANAGER = local/kovaleski100-300E5K-300E5Q:@/tmp/.ICE-unix/1025,unix/kovaleski100-300E5K-300E5Q:/tmp/.ICE-unix/1025
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -99,7 +99,7 @@ XDG_SESSION_DESKTOP = cinnamon
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2058
+GIO_LAUNCHED_DESKTOP_FILE_PID = 1926
 # automatic
 %F = $(notdir $%)
 # environment
@@ -115,7 +115,7 @@ QT_QPA_PLATFORMTHEME = qt5ct
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1200
+SSH_AGENT_PID = 1121
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = X-Cinnamon
 # environment
@@ -149,7 +149,7 @@ MAKECMDGOALS := all
 # environment
 SHLVL = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-5bc1526b-206c-4bb2-a6eb-b8d54ed9784e.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-11602056-b6df-4020-b25a-b496745089f6.sock
 # environment
 XDG_SESSION_ID = c1
 # environment
@@ -213,7 +213,7 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2058
+VSCODE_PID = 1926
 # variable set hash-table stats:
 # Load=101/1024=10%, Rehash=0, Collisions=7/126=6%
 
@@ -223,9 +223,9 @@ VSCODE_PID = 2058
 
 # Directories
 
-# . (device 2052, inode 91053): 23 files, no impossibilities.
+# . (device 2052, inode 91053): 20 files, no impossibilities.
 
-# 23 files, no impossibilities in 1 directories.
+# 20 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -308,12 +308,12 @@ clean:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 30 / storage = 254 B / avg = 8 B
-# current buf: size = 8162 B / used = 254 B / count = 30 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 27 / storage = 219 B / avg = 8 B
+# current buf: size = 8162 B / used = 219 B / count = 27 / avg = 8 B
 
-# strcache performance: lookups = 40 / hit rate = 25%
+# strcache performance: lookups = 37 / hit rate = 27%
 # hash-table stats:
-# Load=30/8192=0%, Rehash=0, Collisions=1/40=2%
-# Finished Make data base on Fri Sep  9 17:42:34 2022
+# Load=27/8192=0%, Rehash=0, Collisions=1/37=3%
+# Finished Make data base on Sat Sep 17 19:46:59 2022
 
  

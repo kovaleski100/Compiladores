@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #include "hash.h"
-#include "parser.tab.h"
+//#include "parser.tab.h"
 
 
 HashTable* create_table()
@@ -96,106 +96,105 @@ static void allocate_capacity(HashTable* table, uint newLimit)
 
 
 
-HashTable create_symbol(int size_mult, literal_value t, hash_symbol n, int line, value v, char * lexeme)
+symbol create_symbol(int size_mult, literal_type type, nature n, int line, value v, char* lexema)
 { //For the hash table we calculate it's hash here, only once
     symbol s;
-    s.location = line;
+    s.line = line;
     s.nat = n;
-    s.t_type = t;
+    s.type = type;
     set_symbol_size(&s, size_mult);
-    s.literal_value = v;
-    s.lexeme = strdup(lexeme);
+    s.lv = v;
+    s.lexema = strdup(lexema);
     return s;
 }
 
-void set_symbol_type(symbol *s, type t)
-{
-    s->t_type = t;
-}
 
-void set_symbol_size(symbol *s, int size_mult)
-{
-    switch(s->t_type)
-    {
-        case TYPE_UNKNOWN:
-            break;
-        case TYPE_UINT:
-            s->size = 32 * size_mult;
-            break;
-        case TYPE_INT:
-            s->size = 32 * size_mult;
-            break;
-        case TYPE_BOOL:
-            s->size = 8 * size_mult;
-            break;
-        case TYPE_FLOAT:
-            s->size = 64 * size_mult;
-            break;
-        case TYPE_CHAR:
-            s->size = 8 * size_mult;
-            break;
-        case TYPE_STRING:
-            s->size = 1 * size_mult;
-            break;
-    }
-}
-
-void destroy_table(symbol_table* table)
-{
-}
-
-unsigned int hash_string(char *str, int size, int capacity)
+unsigned int hash_string(char *str, int size, int limit)
 {
     //FNV-1 Hash function
     //http://www.isthe.com/chongo/tech/comp/fnv/
-    unsigned int hash = 2166136261u;
+    unsigned int mod = 2166136261u;
 
     for(int i = 0; i < size; i ++)
     {
-        hash ^= (int8_t)str[i];
-        hash *= 16777619;
+        mod ^= (int8_t)str[i];
+        mod *= 16777619;
     }
 
-    return hash % capacity;
+    return mod % limit;
 }
 
-
-
-
-
-void transferTable(symbol_table* from, symbol_table* to)
+HashTable* search_symbol_in_table(HashTable* table, symbol s)
 {
-    for (int i = 0; i < from->capacity; i++) {
-        bucket* bucket = &from->buckets[i];
-        if(bucket->key != NULL)
-        {
-            insert_symbol(to,(*bucket->data));
-        }
-    }
-}
+    
+    Key key;
+    key.key_name = s.lexema;
+    key.size = strlen(s.lexema);
+    key.number = hash_string(s.lexema, strlen(s.lexema), table->limit);
 
+    Table* currBucket = find_symbol_in_table(table->table, table->limit, &key);
 
-
-
-bucket* search_symbol_in_table(symbol_table* table, symbol s)
-{
-    bool exists;
-
-    key_object key;
-    key.key_string = s.lexeme;
-    key.size = strlen(s.lexeme);
-    key.hash_value = hash_string(s.lexeme, strlen(s.lexeme), table->capacity);
-
-    bucket* actual_bucket = find_symbol_in_table(table->buckets, table->capacity, &key);
-
-    exists = actual_bucket->key;
-
-    if(exists)
+    if(currBucket->key)
     {
-        return actual_bucket;
+        return currBucket;
     }
     else
     {
         return NULL;
-    }	
+    }
 }
+
+
+
+// void set_symbol_type(symbol *s, type t)
+// {
+//     s->t_type = t;
+// }
+
+// void set_symbol_size(symbol *s, int size_mult)
+// {
+//     switch(s->t_type)
+//     {
+//         case TYPE_UNKNOWN:
+//             break;
+//         case TYPE_UINT:
+//             s->size = 32 * size_mult;
+//             break;
+//         case TYPE_INT:
+//             s->size = 32 * size_mult;
+//             break;
+//         case TYPE_BOOL:
+//             s->size = 8 * size_mult;
+//             break;
+//         case TYPE_FLOAT:
+//             s->size = 64 * size_mult;
+//             break;
+//         case TYPE_CHAR:
+//             s->size = 8 * size_mult;
+//             break;
+//         case TYPE_STRING:
+//             s->size = 1 * size_mult;
+//             break;
+//     }
+// }
+
+// void destroy_table(symbol_table* table)
+// {
+// }
+
+
+
+
+
+
+
+// void transferTable(symbol_table* from, symbol_table* to)
+// {
+//     for (int i = 0; i < from->capacity; i++) {
+//         bucket* bucket = &from->buckets[i];
+//         if(bucket->key != NULL)
+//         {
+//             insert_symbol(to,(*bucket->data));
+//         }
+//     }
+// }
