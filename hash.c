@@ -42,7 +42,7 @@ bool insert_symbol(HashTable* table, symbol s)
     Key key;
     key.key_name = s.lexema;
     key.size = strlen(s.lexema);
-    key.number = hash_string(s.lexema, strlen(s.lexema), table->limit);
+    key.number = hashString(s.lexema, strlen(s.lexema), table->limit);
 
     Table* actualTable = findSymbolTable(table->table, table->limit, &key);
     bool is_new_key = !actualTable->key;
@@ -103,13 +103,13 @@ symbol create_symbol(int size_mult, literal_type type, nature n, int line, value
     s.nat = n;
     s.type = type;
     set_symbol_size(&s, size_mult);
-    s.lv = v;
+    s.lv.v = v;
     s.lexema = strdup(lexema);
     return s;
 }
 
 
-unsigned int hash_string(char *str, int size, int limit)
+unsigned int hashString(char *str, int size, int limit)
 {
     //FNV-1 Hash function
     //http://www.isthe.com/chongo/tech/comp/fnv/
@@ -124,59 +124,25 @@ unsigned int hash_string(char *str, int size, int limit)
     return mod % limit;
 }
 
-HashTable* search_symbol_in_table(HashTable* table, symbol s)
+Table* searchSymbolTable(HashTable* table, symbol s)
 {
     
     Key key;
     key.key_name = s.lexema;
     key.size = strlen(s.lexema);
-    key.number = hash_string(s.lexema, strlen(s.lexema), table->limit);
+    key.number = hashString(s.lexema, strlen(s.lexema), table->limit);
 
-    Table* currBucket = find_symbol_in_table(table->table, table->limit, &key);
+    Table* currTable = findSymbolTable(table->table, table->limit, &key);
 
-    if(currBucket->key)
+    if(currTable->key)
     {
-        return currBucket;
+        return currTable;
     }
     else
     {
         return NULL;
     }
 }
-
-
-
-// void set_symbol_type(symbol *s, type t)
-// {
-//     s->t_type = t;
-// }
-
-// void set_symbol_size(symbol *s, int size_mult)
-// {
-//     switch(s->t_type)
-//     {
-//         case TYPE_UNKNOWN:
-//             break;
-//         case TYPE_UINT:
-//             s->size = 32 * size_mult;
-//             break;
-//         case TYPE_INT:
-//             s->size = 32 * size_mult;
-//             break;
-//         case TYPE_BOOL:
-//             s->size = 8 * size_mult;
-//             break;
-//         case TYPE_FLOAT:
-//             s->size = 64 * size_mult;
-//             break;
-//         case TYPE_CHAR:
-//             s->size = 8 * size_mult;
-//             break;
-//         case TYPE_STRING:
-//             s->size = 1 * size_mult;
-//             break;
-//     }
-// }
 
 // void destroy_table(symbol_table* table)
 // {

@@ -7,7 +7,8 @@ typedef struct stack
     HashTable *hash;
     struct stack *next;
     
-}stack
+}stack;
+
 
 
 #endif

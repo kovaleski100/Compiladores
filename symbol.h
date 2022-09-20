@@ -61,7 +61,7 @@ typedef struct symbol
     int size;
     
     char* lexema;
-    value lv;
+    literal_value lv;
 } symbol;
 
 symbol* create_symbol_value(int line, token_type t, literal_type literal);
@@ -70,3 +70,5 @@ symbol* create_symbol_value_bool(int line, token_type t, literal_type literal, b
 symbol* create_symbol_value_char(int line, token_type t, literal_type literal, char n);
 symbol* create_symbol_value_string(int line, token_type t, literal_type literal, char* n);
 symbol* create_symbol_value_float(int line, token_type t, literal_type literal, float n);
+void set_symbol_type(symbol *s, literal_type t);
+void set_symbol_size(symbol *s, int size_mult);

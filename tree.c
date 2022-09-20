@@ -52,7 +52,7 @@ void print_tree(tree * t)
 
 void print_data(symbol *data)
 {
-    switch(data->token_t)
+    switch(data->type)
     {
         case SPECIAL_CHAR:
             printf("[label=\"%s\"];\n", data->lv.v.s);
@@ -96,7 +96,7 @@ void exporta(tree* arvore)
     {
         printf("%p, %p\n", arvore, arvore->child[i]);
     }
-    switch(arvore->data->token_t)
+    switch(arvore->data->type)
     {
         case SPECIAL_CHAR:
             printf("%p [label=\"%s\"];\n", arvore, arvore->data->lv.v.s);
@@ -160,7 +160,7 @@ void libera(tree * t)
         libera(t->child[i]);
     }
 
-    if(t->data->lv.lt == TYPE_STRING || t->data->token_t == ID)
+    if(t->data->lv.lt == TYPE_STRING || t->data->type == ID)
     {
         //printf("Freeing %s\n", t->data.lv.v.vs);
         free(t->data->lv.v.s);
