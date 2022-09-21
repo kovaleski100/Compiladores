@@ -64,7 +64,7 @@ bool insert_symbol(HashTable* table, symbol s)
 
 static void allocate_capacity(HashTable* table, uint newLimit)
 {
-    Table* tables = ALLOCATE(table, newLimit);
+    Table* tables = (Table*) reallocate(NULL, 0, sizeof(table) * (newLimit));
     for (int i = 0; i < newLimit; i ++) {
         tables[i].key = NULL;
         tables[i].data = NULL;

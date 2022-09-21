@@ -7,20 +7,6 @@
 // Hash table size 
 #define HASH_SIZE 1000
 
-// Store the values of the hash table elements
-// typedef struct hash_symbol{
-//     // Non-function
-//     int location;
-//     token_type nature;
-//     literal_type type;
-//     uint vet_size;
-//     int type_size;
-//     hash_symbol* function_param;
-//     symbol val;
-//     // For functions    
-
-// } hash_element;
-
 typedef struct Key
 {
     unsigned int number;
@@ -51,4 +37,4 @@ symbol create_symbol(int size_mult, literal_type type, nature n, int line, value
 uint hashString(char * str, int size, int limit);
 Table* searchSymbolTable(HashTable* hash, symbol s);
 //int set_type();
-#endif // HASH_H_
+#endif

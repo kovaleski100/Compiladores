@@ -1,4 +1,4 @@
-make --dry-run --keep-going --print-directory
+make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/kovaleski100/Área de Trabalho/Trabalho facul/Compiladores'
 rm -f etapa1
 rm -f etapa2

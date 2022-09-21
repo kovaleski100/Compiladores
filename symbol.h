@@ -25,6 +25,7 @@ typedef enum token_type
 {
     SPECIAL_CHAR,
     COMPOSE_OP,
+    KEYWORD,
     ID,
     LITERAL,
 }token_type;
@@ -56,11 +57,11 @@ typedef enum nature
 typedef struct symbol
 {
     int line;
+    token_type token_type;
     nature nat;
     literal_type type;
     uint vec_size;
     int size;
-    
     char* lexema;
     literal_value lv;
 } symbol;

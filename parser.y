@@ -8,9 +8,12 @@
 
 %{
 #include "tree.h"
+#include "hash.h"
+#include "stack.h"
 
 extern int current_line_number;
 extern tree *arvore;
+extern stack *pilha;
 
 int yylex(void);
 void yyerror (char const *s);
@@ -23,7 +26,7 @@ void yyerror (char const *s);
     struct symbol* valor_lexico;
 }
 
-%type<ast> start program declaration global_variable global_fotter vector_declaration
+%type<ast> start program declaration global_variable global_fotter
 %type<ast> static id function func_header list parameters const command_block command
 %type<ast> simple_command local_variable id_list literal attribution
 %type<ast> operand_arit expr ternary unary_minus or and or_log and_log equal rel soma_sub mult_div
@@ -105,17 +108,14 @@ declaration
     ;
 
 global_variable
-    : static type id vector_declaration global_fotter ';' {$$ = NULL; libera($3);}
+    : static type id '[' TK_LIT_INT[intVector] ']' global_fotter ';' {declareVar(pilha, $intVector->lv.v.ui, $2->data->type, VEC, $3->data->line, $3->data->lv.v, $3->data->lexema);}
+    | static type id global_fotter ';'                               {declareVar(pilha, 1, $2->data->type, VAR, $3->data->line, $3->data->lv.v, $3->data->lexema);}
     ;
 
 global_fotter
-    : ',' id vector_declaration global_fotter {$$ = NULL; libera($2);}
+    : ',' id '[' TK_LIT_INT[intVector] ']' global_fotter {declareVar(pilha, $intVector->lv.v.ui, TYPE_UNKNOWN, VEC, $3->line, $3->lv.v, $3->lexema);}
+    | ',' id global_fotter                               {declareVar(pilha, 1, TYPE_UNKNOWN, VAR, $3->data->line, $3->data->lv.v, $3->data->lexema);}
     |       {$$ = NULL;}
-    ;
-
-vector_declaration
-    : '[' TK_LIT_INT ']'  {$$ = NULL;}
-    |                     {$$ = NULL;}
     ;
 
 static
@@ -132,7 +132,7 @@ function
     ;
 
 func_header
-    : static type id list       {$$ = $3;}
+    : static type id list       {$$ = $3; declareFunc(pilha,1, $2->data->type, FUN, $3->data->line, $3->data->lv.v, $3->data->lexema);}
     ;
 
 list
@@ -151,12 +151,19 @@ const
     ;
 
 command_block
-    : '{' command '}'     {$$ = $2;}
+    : openComand command closeComand     {$$ = $2;}
+    ;
+
+openComand
+    : '{' {pushTable(&pilha);}
+    ;
+
+closeComand
+    : '}' {pop(&pilha);}
     ;
 
 command
     : simple_command ';' command  {$$ = $1; $$ = insert_child($$, $3);}
-
     | flux_control ';' command    {$$ = $1; $$ = insert_child($$, $3);}
     |                             {$$ = NULL;}
     ;
@@ -181,8 +188,8 @@ local_variable
 id_list
     : assignment              {$$ = $1;}
     | id_list ',' assignment  {$$ = $1;  $$ = insert_child($$, $3);}
-    | id_list ',' id          {$$ = $1; libera($3);}
-    | id                      {$$ = NULL; libera($1);}
+    | id_list ',' id          {$$ = $1; declareVar(top, 1, TYPE_UNKNOWN, VAR, $3->line, $3->lv.v, $3->lexema);libera($3);}
+    | id                      {declareVar(top, 1, TYPE_UNKNOWN, VAR, $3->line, $3->lv.v, $3->lexema);libera($3);
     ;
 
 assignment
@@ -206,7 +213,7 @@ attribution
     ;
 
 vector_attribution
-    : id '[' expr ']' {$$ = insert_leaf($2); $$->data->lv.v.s = "[]"; $$->data->token_t = COMPOSE_OP; $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    : id '[' expr ']' {$$ = insert_leaf($2); $$->data->lv.v.s = "[]"; $$->data->token_type = COMPOSE_OP; $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
     ;
 
 
@@ -216,7 +223,7 @@ expr
 
 ternary
         : unary_minus '?' unary_minus':' ternary {$$ = insert_leaf($2); $$->data->lv.v.s = "?:";
-                                       $$->data->token_t = COMPOSE_OP;
+                                       $$->data->token_type = COMPOSE_OP;
                                        $$ = insert_child($$, $1); $$ = insert_child($$, $3);
                                        $$ = insert_child($$, $5);}
     | unary_minus                {$$ = $1;}

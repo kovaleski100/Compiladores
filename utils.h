@@ -7,9 +7,6 @@
 /* Macros strongly inspired on the book Crafting interpreters
  * link: https://craftinginterpreters.com/ */
 
-// Allocate memory of type * count
-#define ALLOCATE(type, count) \
-    (type*)reallocate(NULL, 0, sizeof(type) * (count))
 
 // Free contigous memory by oldCount
 #define FREE_ARRAY(type, pointer, oldCount) reallocate(pointer, sizeof(type) * (oldCount), 0)

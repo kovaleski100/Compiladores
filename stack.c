@@ -106,7 +106,7 @@ void declareVar(stack* stack, int size, literal_type type, nature n, int line, v
 void declareFunc(stack* stack, int size, literal_type type, nature n, int line, value v, char* lexema)
 {
     symbol s = create_symbol(size, type, n, line, v, lexema);
-    if(insert_symbol(stack->hash, s))
+    if(insertSymbol(stack->hash, s))
     {
         return;
     }

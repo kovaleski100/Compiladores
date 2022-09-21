@@ -15,6 +15,7 @@ extern int yylex_destroy(void);
 extern int yyerror(char const *s);
 
 void *arvore = NULL;
+void *pilha = NULL;
 
 int main (int argc, char **argv)
 {
