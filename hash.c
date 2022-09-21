@@ -35,7 +35,7 @@ bool insert_symbol(HashTable* table, symbol s)
 {
     if(table->count + 1 > table->limit/2) {
         //If the table is half full we double it's size for trying to avoid collitions
-        int newLimit = GROW_CAPACITY(table->limit);
+        int newLimit = GROW_LIMIT(table->limit);
         allocate_capacity(table, newLimit);
     }
 

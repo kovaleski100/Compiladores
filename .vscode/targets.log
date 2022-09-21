@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Sep 19 15:39:59 2022
+# Make data base, printed on Tue Sep 20 21:15:48 2022
 
 # Variables
 
@@ -81,7 +81,7 @@ PATH = /home/kovaleski100/.local/bin:/home/kovaleski100/.local/bin:/usr/local/sb
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/kovaleski100-300E5K-300E5Q:@/tmp/.ICE-unix/1110,unix/kovaleski100-300E5K-300E5Q:/tmp/.ICE-unix/1110
+SESSION_MANAGER = local/kovaleski100-300E5K-300E5Q:@/tmp/.ICE-unix/1014,unix/kovaleski100-300E5K-300E5Q:/tmp/.ICE-unix/1014
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -99,7 +99,7 @@ XDG_SESSION_DESKTOP = cinnamon
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 1994
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2002
 # automatic
 %F = $(notdir $%)
 # environment
@@ -115,7 +115,7 @@ QT_QPA_PLATFORMTHEME = qt5ct
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1184
+SSH_AGENT_PID = 1125
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = X-Cinnamon
 # environment
@@ -149,7 +149,7 @@ MAKECMDGOALS := all
 # environment
 SHLVL = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-cdd1e567-47ab-4359-8ea4-0e3112007b6b.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-1a156694-8b71-451e-8097-8b11a163fa3a.sock
 # environment
 XDG_SESSION_ID = c1
 # environment
@@ -213,7 +213,7 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 1994
+VSCODE_PID = 2002
 # variable set hash-table stats:
 # Load=101/1024=10%, Rehash=0, Collisions=7/126=6%
 
@@ -223,9 +223,9 @@ VSCODE_PID = 1994
 
 # Directories
 
-# . (device 2052, inode 91053): 21 files, no impossibilities.
+# . (device 2052, inode 91053): 27 files, no impossibilities.
 
-# 21 files, no impossibilities in 1 directories.
+# 27 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -255,7 +255,7 @@ main.c:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-07 17:24:26.47225705
+#  Last modified 2022-09-20 21:15:13.479082124
 #  File has been updated.
 #  Successfully updated.
 
@@ -266,7 +266,7 @@ build: clean scanner.l main.c parser.y
 #  recipe to execute (from 'Makefile', line 10):
 	flex scanner.l
 	bison -d parser.y
-	gcc -g symbol.c tree.c hash.c parser.tab.c lex.yy.c main.c -I.
+	gcc -g utils.c symbol.c tree.c hash.c stack.c parser.tab.c lex.yy.c main.c -I.
 
 # Not a target:
 .DEFAULT:
@@ -281,6 +281,7 @@ parser.y:
 #  File has not been updated.
 
 clean:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -296,7 +297,6 @@ clean:
 	rm -f parser.tab.h
 	rm -f parser.tab.c
 	rm -f parser.output
- 
 	rm -f test.c
 	rm -f a.out
 
@@ -308,12 +308,12 @@ clean:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 28 / storage = 227 B / avg = 8 B
-# current buf: size = 8162 B / used = 227 B / count = 28 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 34 / storage = 286 B / avg = 8 B
+# current buf: size = 8162 B / used = 286 B / count = 34 / avg = 8 B
 
-# strcache performance: lookups = 38 / hit rate = 26%
+# strcache performance: lookups = 44 / hit rate = 22%
 # hash-table stats:
-# Load=28/8192=0%, Rehash=0, Collisions=1/38=3%
-# Finished Make data base on Mon Sep 19 15:39:59 2022
+# Load=34/8192=0%, Rehash=0, Collisions=1/44=2%
+# Finished Make data base on Tue Sep 20 21:15:48 2022
 
  

@@ -8,6 +8,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include "utils.h"
 
 typedef enum literal_type
 {

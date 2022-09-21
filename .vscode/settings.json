@@ -1,6 +1,8 @@
 {
     "makefile.extensionOutputFolder": "./.vscode",
     "files.associations": {
-        "symbol.h": "c"
-    }
+        "symbol.h": "c",
+        "type_traits": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
 }
