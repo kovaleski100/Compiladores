@@ -188,8 +188,8 @@ local_variable
 id_list
     : assignment              {$$ = $1;}
     | id_list ',' assignment  {$$ = $1;  $$ = insert_child($$, $3);}
-    | id_list ',' id          {$$ = $1; declareVar(top, 1, TYPE_UNKNOWN, VAR, $3->line, $3->lv.v, $3->lexema);libera($3);}
-    | id                      {declareVar(top, 1, TYPE_UNKNOWN, VAR, $3->line, $3->lv.v, $3->lexema);libera($3);
+    | id_list ',' id          {$$ = $1; declareVar(pilha, 1, TYPE_UNKNOWN, VAR, $3->data->line, $3->data->lv.v, $3->data->lexema);libera($3);}
+    | id                      {declareVar(pilha, 1, TYPE_UNKNOWN, VAR, $1->data->line, $1->data->lv.v, $1->data->lexema);libera($1);}
     ;
 
 assignment
@@ -208,8 +208,8 @@ literal
     ;
 
 attribution
-    : id '=' expr   {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | vector_attribution '=' expr  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
+    : id[left] '=' expr[right]   {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3); symbol varLeft = create_symbol(1, TYPE_UNKNOWN, VAR, $left->data->line, $left->data->lv.v, $left->data->lexema); symbol varRight = create_symbol(1, TYPE_UNKNOWN, VAR, $right->data->line, $right->data->lv.v, $right->data->lexema); assignVar(pilha, &varLeft, &varRight);}
+    | vector_attribution[left] '=' expr[right]  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3); symbol varLeft = create_symbol(1, TYPE_UNKNOWN, VAR, $left->data->line, $left->child[0]->data->lv.v, $left->child[0]->data->lexema); symbol varRight = create_symbol(1, TYPE_UNKNOWN, VAR, $right->data->line, $right->data->lv.v, $right->data->lexema); assignVar(pilha, &varLeft, &varRight);}
     ;
 
 vector_attribution
@@ -354,7 +354,7 @@ shift
     ;
 
 func_call
-    : id '(' args ')' {$$ = $1; $$->data->lv.v.s = prepend($$->data->lv.v.s, "call "); $$ = insert_child($$, $3);}
+    : id '(' args ')' {$$ = $1; $$->data->lv.v.s = prepend($$->data->lv.v.s, "call "); $$ = insert_child($$, $3); symbol funcName = create_symbol(1,TYPE_UNKNOWN, VAR, $1->data->line, $1->data->lv.v, $1->data->lexema); callFunction(pilha, &funcName);}
     ;
 
 args
