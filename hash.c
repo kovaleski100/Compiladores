@@ -31,7 +31,7 @@ Table* findSymbolTable(Table* tables, int limit, Key* key)
     }
 }
 
-bool insert_symbol(HashTable* table, symbol s)
+bool insertSymbol(HashTable* table, symbol s)
 {
     if(table->count + 1 > table->limit/2) {
         //If the table is half full we double it's size for trying to avoid collitions

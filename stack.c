@@ -165,7 +165,7 @@ void assignVector(stack* stack, symbol* var, symbol* value)
     }
 }
 
-void call_function(stack* stack, symbol* funName)
+void callFunction(stack* stack, symbol* funName)
 {
 	Table* currTable = search(stack, *funName);
 	if(currTable)

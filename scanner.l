@@ -8,6 +8,7 @@
 
 %top{
 #include "tree.h"
+#include "hash.h"
 #include "parser.tab.h"
 
 void process_multiline_comments();
@@ -85,8 +86,8 @@ ESPECIAL [,;:()\[\]\{\}+-|*/<>=!&%#ˆ.$]
   **     Tive que colocar essas declarações aqui em cima pois se ficasse na categoria 5
   **     acabava sendo entendido como um identificador em vez de um literal. */
 
-"true"			{yylval.valor_lexico = create_symbol_value_int_bool(get_line_number(), LITERAL, TYPE_BOOL, strdup(yytext)); return TK_LIT_TRUE;}
-"false"			{yylval.valor_lexico = create_symbol_value_int_bool(get_line_number(), LITERAL, TYPE_BOOL, strdup(yytext)); return TK_LIT_FALSE;}
+"true"			{yylval.valor_lexico = create_symbol_value_bool(get_line_number(), LITERAL, TYPE_BOOL, strdup(yytext)); return TK_LIT_TRUE;}
+"false"			{yylval.valor_lexico = create_symbol_value_bool(get_line_number(), LITERAL, TYPE_BOOL, strdup(yytext)); return TK_LIT_FALSE;}
 
   /* (4) -> Identificadores */
 
@@ -105,8 +106,8 @@ ESPECIAL [,;:()\[\]\{\}+-|*/<>=!&%#ˆ.$]
 
   /* (5) -> Literais */
 
-[-+]?[0-9]+ 				                    {yylval.valor_lexico = create_symbol_value_int_bool(get_line_number(), LITERAL, TYPE_INT, atoi(yytext)); return TK_LIT_INT;}
-[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)? 	{yylval.valor_lexico = create_symbol_value_int_bool(get_line_number(), LITERAL, TYPE_FLOAT, atof(yytext)); return TK_LIT_FLOAT;}
+[-+]?[0-9]+ 				                    {yylval.valor_lexico = create_symbol_value_int(get_line_number(), LITERAL, TYPE_INT, atoi(yytext)); return TK_LIT_INT;}
+[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)? 	{yylval.valor_lexico = create_symbol_value_int(get_line_number(), LITERAL, TYPE_FLOAT, atof(yytext)); return TK_LIT_FLOAT;}
 \'.\'					                          {yylval.valor_lexico = create_symbol_value_char(get_line_number(), LITERAL, TYPE_CHAR, yytext[1]); return TK_LIT_CHAR;}
 \"[^"]*\"				                        {yylval.valor_lexico = create_symbol_value_string(get_line_number(), LITERAL, TYPE_STRING, strdup(yytext)); return TK_LIT_STRING;}
 
