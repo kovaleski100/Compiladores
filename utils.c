@@ -1,3 +1,10 @@
+/********************************************************************** 
+# * INF01147 - Compiladores - Turma B (2022/1)                         *
+# *                                                                    *
+# *                                                                    *
+# * André Carini                                                       *
+# * Matheus Kovaleski                                                  *
+# **********************************************************************/
 #include "utils.h"
 
 void* reallocate(void* pointer, size_t oldSize, size_t newSize)

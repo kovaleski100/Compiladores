@@ -1,10 +1,16 @@
+/********************************************************************** 
+# * INF01147 - Compiladores - Turma B (2022/1)                         *
+# *                                                                    *
+# *                                                                    *
+# * André Carini                                                       *
+# * Matheus Kovaleski                                                  *
+# **********************************************************************/
 #ifndef HASH_H_
 #define HASH_H_
 
 #include "tree.h"
 #include "utils.h"
 
-// Hash table size 
 #define HASH_SIZE 1000
 
 typedef struct Key
@@ -22,7 +28,6 @@ typedef struct Table
 }Table ;
 
 
-// A table that contains: a key and an element
 typedef struct HashTable{
     unsigned int count;
     unsigned int limit;
@@ -36,5 +41,4 @@ static void allocate_capacity(HashTable* table, uint newLimit);
 symbol create_symbol(int size_mult, literal_type type, nature n, int line, value v, char* lexema);
 uint hashString(char * str, int size, int limit);
 Table* searchSymbolTable(HashTable* hash, symbol s);
-//int set_type();
 #endif

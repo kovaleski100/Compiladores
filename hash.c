@@ -1,10 +1,16 @@
+/********************************************************************** 
+# * INF01147 - Compiladores - Turma B (2022/1)                         *
+# *                                                                    *
+# *                                                                    *
+# * André Carini                                                       *
+# * Matheus Kovaleski                                                  *
+# **********************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 
 #include "hash.h"
-//#include "parser.tab.h"
 
 
 HashTable* create_table()

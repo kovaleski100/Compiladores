@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Sep 21 20:20:48 2022
+# Make data base, printed on Wed Sep 21 21:49:12 2022
 
 # Variables
 
@@ -223,9 +223,9 @@ VSCODE_PID = 9528
 
 # Directories
 
-# . (device 2052, inode 91053): 50 files, no impossibilities.
+# . (device 2052, inode 91053): 25 files, no impossibilities.
 
-# 50 files, no impossibilities in 1 directories.
+# 25 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -255,7 +255,7 @@ main.c:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-09-21 07:10:11.454652374
+#  Last modified 2022-09-21 21:47:23.906777157
 #  File has been updated.
 #  Successfully updated.
 
@@ -266,7 +266,7 @@ build: clean scanner.l main.c parser.y
 #  recipe to execute (from 'Makefile', line 10):
 	flex scanner.l
 	bison -d parser.y
-	gcc -g utils.c symbol.c tree.c hash.c stack.c parser.tab.c lex.yy.c main.c -I.
+	gcc -o etapa5 utils.c symbol.c tree.c hash.c stack.c parser.tab.c lex.yy.c main.c -I.
 
 # Not a target:
 .DEFAULT:
@@ -281,7 +281,6 @@ parser.y:
 #  File has not been updated.
 
 clean:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -296,6 +295,7 @@ clean:
 	rm -f lex.yy.c
 	rm -f parser.tab.h
 	rm -f parser.tab.c
+ 
 	rm -f parser.output
 	rm -f test.c
 	rm -f a.out
@@ -308,12 +308,12 @@ clean:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 57 / storage = 477 B / avg = 8 B
-# current buf: size = 8162 B / used = 477 B / count = 57 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 32 / storage = 268 B / avg = 8 B
+# current buf: size = 8162 B / used = 268 B / count = 32 / avg = 8 B
 
-# strcache performance: lookups = 67 / hit rate = 14%
+# strcache performance: lookups = 42 / hit rate = 23%
 # hash-table stats:
-# Load=57/8192=1%, Rehash=0, Collisions=1/67=1%
-# Finished Make data base on Wed Sep 21 20:20:48 2022
+# Load=32/8192=0%, Rehash=0, Collisions=1/42=2%
+# Finished Make data base on Wed Sep 21 21:49:12 2022
 
  

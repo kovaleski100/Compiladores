@@ -1,3 +1,10 @@
+/********************************************************************** 
+# * INF01147 - Compiladores - Turma B (2022/1)                         *
+# *                                                                    *
+# *                                                                    *
+# * André Carini                                                       *
+# * Matheus Kovaleski                                                  *
+# **********************************************************************/
 #include "errors.h"
 
 int check_atribuicao(stack *s, hash_element variable, symbol literal)

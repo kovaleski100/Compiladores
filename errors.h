@@ -1,3 +1,11 @@
+/********************************************************************** 
+# * INF01147 - Compiladores - Turma B (2022/1)                         *
+# *                                                                    *
+# *                                                                    *
+# * André Carini                                                       *
+# * Matheus Kovaleski                                                  *
+# **********************************************************************/
+
 #define ERR_UNDECLARED       10
 #define ERR_DECLARED         11
 #define ERR_VARIABLE         20
