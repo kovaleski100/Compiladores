@@ -6,28 +6,56 @@
 # * Matheus Kovaleski                                                  *
 # **********************************************************************/
 
-#ifndef TREE_H
-#define TREE_H
+/* Foi usada a seguinte representação de árvore n-ária: https://blog.mozilla.org/nnethercote/2012/03/07/n-ary-trees-in-c/ */
 
+#ifndef AST_H
+#define AST_H
+#include "backpatch.h"
 #include <stdio.h>
-#include <string.h>
-#include "symbol.h"
+#include <stdlib.h>
+#include <stdarg.h>
+#include "code.h"
 
-typedef struct tree
-{
-    symbol *data;
-    int child_number;
-    struct tree** child; //copy of pointer to create an n-ary tree
+typedef struct CODE CODE;
+
+typedef enum TOKEN_TYPE {
+  NIL,
+  INT,
+  FLOAT,
+  BOOL,
+  CHAR,
+  STRING
+} TOKEN_TYPE;
+
+typedef union TOKEN_VALUE {
+  int intval;
+  float floatval;
+  char charval;
+  char* strval;
+} TOKEN_VALUE;
+
+typedef struct TOKEN {
+    int line;
+    TOKEN_TYPE type;
+    TOKEN_VALUE value;
+} TOKEN;
+
+typedef struct tree {
+    int type;
+    char* temp;
+    PATCH* false;
+    PATCH* true;
+    CODE* code;
+    TOKEN* value;
+    struct AST* child;
+    struct AST* sibling;
 } tree;
 
-tree* empty_tree();
-tree* insert_leaf(symbol *data);
-tree* insert_child(tree* t, tree* tc);
-tree* create_insert_child(token_type type, tree * t, tree * child);
-void print_data(symbol *data);
-void print_tree(tree * t);
-void libera(tree * t);
-void exporta(tree * t);
-char * prepend(char* string_var, const char* prepend_string);
+void libera (void *arvore);
+void exporta (void *arvore);
+
+tree* new_ast(int child_count, ...);
+tree* new_valued_ast(int type, TOKEN* value);
+tree* chain_ast(tree* a, tree* b);
 
 #endif

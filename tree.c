@@ -8,163 +8,121 @@
 
 #include "tree.h"
 
-tree* insert_leaf(symbol* data)
-{
-    //Create an empty node/tree O
-    tree* t = (tree *) malloc(sizeof(tree)); //allocate space for the tree
-    t->data = data;
-    t->child_number = 0;
-    t->child = NULL;
-    return t;
+void libera(void* arvore) {
+  AST *ast = (AST*) arvore;
+
+  if (ast == NULL)
+    return;
+
+  libera(ast->child);
+  libera(ast->sibling);
+
+  if (ast->type == STRING && ast->value != NULL)
+    free(ast->value->value.strval);
+
+  free(ast->value);
+  free(ast);
 }
 
-tree* insert_child(tree* t, tree* child)
-{
-    //Insert a child given a node/tree
-    if(t == NULL)
-    {
-        return child;
-    }
-    else if(child != NULL && child != t)
-    {
-        t->child_number++;
-        t->child = (tree**)realloc(t->child, t->child_number * sizeof(tree*));
-        t->child[t->child_number - 1] = child;
-    }
+void exporta_rec(FILE* csv, AST* ast) {
+  if (ast == NULL)
+    return;
 
-    return t;
+  AST* current_child = ast->child;
+
+  while (current_child != NULL) {
+    fprintf(csv, "%p, %p\n", ast, current_child);
+    current_child = current_child->sibling;
+  }
+
+  exporta_rec(csv, ast->child);
+  exporta_rec(csv, ast->sibling);
 }
 
-void print_tree(tree * t)
-{
-    if(t == NULL)
-        return;
-    for(int i = 0; i < t->child_number; i ++)
-    {
-        print_data(t->child[i]->data);
-    }
+void exporta (void* arvore) {
+  FILE* csv = fopen("./e3.csv", "w");
+  AST* ast = (AST*) arvore;
 
-    for(int i = 0; i < t->child_number; i ++)
-    {
-        print_tree(t->child[i]);
-    }
+  if (ast != NULL && ast->sibling == NULL && ast->child == NULL)
+    fprintf(csv, "%p,\n", ast);
+  else
+    exporta_rec(csv, arvore);
+
+  fclose(csv);
 }
 
-void print_data(symbol *data)
-{
-    switch(data->type)
-    {
-        case SPECIAL_CHAR:
-            printf("[label=\"%s\"];\n", data->lv.v.s);
-            break;
-        case COMPOSE_OP:
-            printf("[label=\"%s\"];\n", data->lv.v.s);
-            break;
-        case ID:
-            printf("[label=\"%s\"];\n", data->lv.v.s);
-            break;
-        case LITERAL:
-            switch(data->lv.lt)
-            {
-                case TYPE_INT:
-                    printf("[label=\"%d\"];\n",data->lv.v.b);
-                    break;
-                case TYPE_FLOAT:
-                    printf("[label=\"%f\"];\n",data->lv.v.f);
-                    break;
-                case TYPE_BOOL:
-                    printf("[label=\"%s\"];\n",data->lv.v.b ? "true" : "false");
-                    break;
-                case TYPE_STRING:
-                    printf("[label=\"%s\"];\n",data->lv.v.s);
-                    break;
-                case TYPE_CHAR:
-                    printf("[label=\"%s\"];\n",data->lv.v.s);
-                    break;
-            }
-            break;
+AST* new_ast(int child_count, ...) {
+  AST* new = (AST*) malloc(sizeof(AST));
+  AST* current_child = NULL;
+  AST* current_arg = NULL;
+  va_list child_list;
+
+  new->type = NIL;
+  new->value = NULL;
+  new->child = NULL;
+  new->sibling = NULL;
+  new->temp = NULL;
+  new->false = NULL;
+  new->true = NULL;
+  new->code = NULL;
+
+  va_start(child_list, child_count);
+
+  for(int child = 0; child < child_count; child++) {
+    current_arg = va_arg(child_list, AST*);
+
+    if (current_arg != NULL) {
+      if (new->child == NULL) {
+        new->child = current_arg;
+        current_child = new->child;
+      }
+      else {
+        current_child->sibling = current_arg;
+        current_child = current_child->sibling;
+      }
     }
+  }
+
+  va_end(child_list);
+
+  return new;
 }
 
-void exporta(tree* arvore)
-{
-    if(arvore == NULL)
-        return;
+AST* new_valued_ast(int type, TOKEN* value) {
+  AST* new = (AST*) malloc(sizeof(AST));
 
-    printf("%p\n", arvore);
-    for(int i = 0; i < arvore->child_number; i ++)
-    {
-        printf("%p, %p\n", arvore, arvore->child[i]);
-    }
-    switch(arvore->data->type)
-    {
-        case SPECIAL_CHAR:
-            printf("%p [label=\"%s\"];\n", arvore, arvore->data->lv.v.s);
-            break;
-        case COMPOSE_OP:
-            printf("%p [label=\"%s\"];\n", arvore, arvore->data->lv.v.s);
-            break;
-        case ID:
-            printf("%p [label=\"%s\"];\n", arvore, arvore->data->lv.v.s);
-            break;
-        case LITERAL:
-            switch(arvore->data->lv.lt)
-            {
-                case TYPE_INT:
-                    printf("%p [label=\"%d\"];\n", arvore, arvore->data->lv.v.d);
-                    break;
-                case TYPE_FLOAT:
-                    printf("%p [label=\"%f\"];\n", arvore, arvore->data->lv.v.f);
-                    break;
-                case TYPE_BOOL:
-                    printf("%p [label=\"%s\"];\n", arvore, arvore->data->lv.v.b ? "true" : "false");
-                    break;
-                case TYPE_STRING:
-                    printf("%p [label=%s];\n", arvore, arvore->data->lv.v.s);
-                    break;
-                case TYPE_CHAR:
-                    printf("%p [label=\"%s\"];\n", arvore, arvore->data->lv.v.s);
-                    break;
-            }
-            break;
-    }
-    for(int i = 0; i < arvore->child_number; i ++)
-    {
-        exporta(arvore->child[i]);
-    }
+  new->type = type;
+  new->value = value;
+  new->child = NULL;
+  new->sibling = NULL;
+  new->temp = NULL;
+  new->false = NULL;
+  new->true = NULL;
+  new->code = NULL;
+
+  return new;
 }
 
-char * prepend(char* string_var, const char* prepend_string)
-{
-    int first_string_size = strlen(string_var);
-    int second_string_size = strlen(prepend_string);
-    char * result = malloc(sizeof(char) * first_string_size + sizeof(char) * second_string_size + 2 * sizeof('\0'));
-    if(result)
-    {
-        strcpy(result, prepend_string);
-        strcat(result, string_var);
-        free(string_var);
-    }
+AST* chain_ast(AST* a, AST* b) {
+  AST* current = a;
 
-    return result;
-}
+  if (a == NULL)
+    return b;
+  else if (b == NULL)
+    return a;
+  else if (current->child == NULL) {
+    current->child = b;
+    a->code = chain_code(a->code, b->code);
+    return a;
+  }
+  else {
+    current = current->child;
 
-void libera(tree * t)
-{
-    if(t == NULL)
-    {
-        return;
-    }
-    for(int i = 0; i < t->child_number; i ++)
-    {
-        libera(t->child[i]);
-    }
+    while(current->sibling != NULL)
+      current = current->sibling;
 
-    if(t->data->lv.lt == TYPE_STRING || t->data->type == ID)
-    {
-        //printf("Freeing %s\n", t->data.lv.v.vs);
-        free(t->data->lv.v.s);
-    }
-    free(t->child);
-    free(t);
+    current->sibling = b;
+    a->code = chain_code(a->code, b->code);
+    return a;
+  }
 }

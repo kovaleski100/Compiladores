@@ -106,10 +106,10 @@ ESPECIAL [,;:()\[\]\{\}+-|*/<>=!&%#ˆ.$]
 
   /* (5) -> Literais */
 
-[-+]?[0-9]+ 				                    {yylval.valor_lexico = create_symbol_value_int(get_line_number(), LITERAL, TYPE_INT, atoi(yytext)); return TK_LIT_INT;}
-[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)? 	{yylval.valor_lexico = create_symbol_value_int(get_line_number(), LITERAL, TYPE_FLOAT, atof(yytext)); return TK_LIT_FLOAT;}
-\'.\'					                          {yylval.valor_lexico = create_symbol_value_char(get_line_number(), LITERAL, TYPE_CHAR, yytext[1]); return TK_LIT_CHAR;}
-\"[^"]*\"				                        {yylval.valor_lexico = create_symbol_value_string(get_line_number(), LITERAL, TYPE_STRING, strdup(yytext)); return TK_LIT_STRING;}
+[-+]?[0-9]+ 				                    {yylval.valor_lexico = create_symbol_value_int(get_line_number(), LITERAL, INT, atoi(yytext)); return TK_LIT_INT;}
+[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)? 	{yylval.valor_lexico = create_symbol_value_int(get_line_number(), LITERAL, FLOAT, atof(yytext)); return TK_LIT_FLOAT;}
+\'.\'					                          {yylval.valor_lexico = create_symbol_value_char(get_line_number(), LITERAL, CHAR, yytext[1]); return TK_LIT_CHAR;}
+\"[^"]*\"				                        {yylval.valor_lexico = create_symbol_value_string(get_line_number(), LITERAL, STRING, strdup(yytext)); return TK_LIT_STRING;}
 
   /* (2) -> Caracteres especiais */
 
