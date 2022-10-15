@@ -1,0 +1,2 @@
+//ERROR: ponto-e-vírgula ao final da declaração
+int minha_funcao(){};

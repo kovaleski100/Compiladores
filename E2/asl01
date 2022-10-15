@@ -1,0 +1,3 @@
+//As variáveis são declaradas pelo seu nome, seguido do seu tipo
+//variáveis globais
+int v1;
