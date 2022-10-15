@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Sep 26 17:16:34 2022
+# Make data base, printed on Fri Oct 14 22:19:18 2022
 
 # Variables
 
@@ -81,7 +81,7 @@ PATH = /home/kovaleski100/.local/bin:/home/kovaleski100/.local/bin:/usr/local/sb
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/kovaleski100-300E5K-300E5Q:@/tmp/.ICE-unix/1030,unix/kovaleski100-300E5K-300E5Q:/tmp/.ICE-unix/1030
+SESSION_MANAGER = local/kovaleski100-300E5K-300E5Q:@/tmp/.ICE-unix/1035,unix/kovaleski100-300E5K-300E5Q:/tmp/.ICE-unix/1035
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -99,7 +99,7 @@ XDG_SESSION_DESKTOP = cinnamon
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2012
+GIO_LAUNCHED_DESKTOP_FILE_PID = 3406
 # automatic
 %F = $(notdir $%)
 # environment
@@ -115,7 +115,7 @@ QT_QPA_PLATFORMTHEME = qt5ct
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1116
+SSH_AGENT_PID = 1119
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = X-Cinnamon
 # environment
@@ -149,7 +149,7 @@ MAKECMDGOALS := all
 # environment
 SHLVL = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-5dbaf023-15bc-4563-ba6b-f1beee26e56a.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-5468daba-ce00-4ea9-9cec-7d8029423061.sock
 # environment
 XDG_SESSION_ID = c1
 # environment
@@ -213,7 +213,7 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2012
+VSCODE_PID = 3406
 # variable set hash-table stats:
 # Load=101/1024=10%, Rehash=0, Collisions=7/126=6%
 
@@ -223,9 +223,9 @@ VSCODE_PID = 2012
 
 # Directories
 
-# . (device 2052, inode 91053): 36 files, no impossibilities.
+# . (device 2052, inode 91053): 17 files, no impossibilities.
 
-# 36 files, no impossibilities in 1 directories.
+# 17 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -255,28 +255,20 @@ main.c:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
- 
-#  Last modified 2022-09-26 17:13:17.761955532
+#  Last modified 2022-10-14 22:18:15.227821954
 #  File has been updated.
 #  Successfully updated.
 
-build: clean scanner.l main.c parser.y
+build: clean scanner.l main.c
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 10):
 	flex scanner.l
-	bison -d parser.y
-	gcc -o etapa6 iloc.c utils.c symbol.c code.c backpatch.c tree.c hash.c stack.c parser.tab.c lex.yy.c main.c -I.
+	gcc -o etapa1 main.c -I.
 
 # Not a target:
 .DEFAULT:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-parser.y:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -285,11 +277,13 @@ clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 15):
+#  recipe to execute (from 'Makefile', line 14):
 	rm -f etapa1
 	rm -f etapa2
 	rm -f etapa3
+ 
 	rm -f etapa4
+ 
 	rm -f etapa5
 	rm -f etapa6
 	rm -f etapa7
@@ -301,19 +295,19 @@ clean:
 	rm -f a.out
 
 # files hash-table stats:
-# Load=9/1024=1%, Rehash=0, Collisions=0/24=0%
+# Load=8/1024=1%, Rehash=0, Collisions=0/22=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 43 / storage = 383 B / avg = 8 B
-# current buf: size = 8162 B / used = 383 B / count = 43 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 24 / storage = 172 B / avg = 7 B
+# current buf: size = 8162 B / used = 172 B / count = 24 / avg = 7 B
 
-# strcache performance: lookups = 53 / hit rate = 18%
+# strcache performance: lookups = 33 / hit rate = 27%
 # hash-table stats:
-# Load=43/8192=1%, Rehash=0, Collisions=1/53=2%
-# Finished Make data base on Mon Sep 26 17:16:34 2022
+# Load=24/8192=0%, Rehash=0, Collisions=1/33=3%
+# Finished Make data base on Fri Oct 14 22:19:18 2022
 
  

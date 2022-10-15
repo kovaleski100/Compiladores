@@ -6,10 +6,9 @@
 # * Matheus Kovaleski                                                  *
 # **********************************************************************/
 
-build: clean scanner.l main.c parser.y
+build: clean scanner.l main.c
 	flex scanner.l
-	bison -d parser.y
-	gcc -o etapa6 iloc.c utils.c symbol.c code.c backpatch.c tree.c hash.c stack.c parser.tab.c lex.yy.c main.c -I.
+	gcc -o etapa1 lex.yy.c main.c -I.
 
 clean:
 	rm -f etapa1
