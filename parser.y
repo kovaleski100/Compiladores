@@ -8,27 +8,62 @@
 
 %{
 #include "tree.h"
+#include "hash.h"
+#include "stack.h"
+#include "semantic_check.h"
+#include "iloc.h"
+#include "code.h"
 
 extern int current_line_number;
 extern tree *arvore;
+extern stack *pilha;
+stack* scope = NULL;
 
 int yylex(void);
 void yyerror (char const *s);
 %}
 
-%start start
-
 %union {
     struct tree* ast;
-    struct symbol* valor_lexico;
+    struct symbol* lexical_value;
 }
+%type <type> type
 
-%type<ast> start program declaration global_variable global_fotter vector_declaration
-%type<ast> static id function func_header list parameters const command_block command
-%type<ast> simple_command local_variable id_list literal attribution
-%type<ast> operand_arit expr ternary unary_minus or and or_log and_log equal rel soma_sub mult_div
-%type<ast> exponential unary parenthesis flux_control conditional iterative vector_attribution
-%type<ast> input output return break continue shift func_call args type assignment
+%type <arg> typed_argument
+%type <arg> typed_argument_list
+
+%type <ast> program
+%type <ast> declaration
+%type <ast> global_var
+%type <ast> global_var_decl
+%type <ast> function_decl
+%type <ast> block
+%type <ast> inside_block
+%type <ast> command
+%type <ast> command_without_comma
+%type <ast> command_list
+%type <ast> argument_list
+%type <ast> expression_list
+%type <ast> input
+%type <ast> output
+%type <ast> function_call
+%type <ast> local_var
+%type <ast> local_var_decl
+%type <ast> id
+%type <ast> array
+%type <ast> literal
+%type <ast> value
+%type <ast> assignment
+%type <ast> shift
+%type <ast> return_stmt
+%type <ast> break_stmt
+%type <ast> continue_stmt
+%type <ast> expression
+%type <ast> if_stmt
+%type <ast> while_loop
+%type <ast> for_loop
+%type <ast> indexer
+%type <ast> int_indexer
 
 %right '='
 %right '?' ':'
@@ -91,286 +126,257 @@ void yyerror (char const *s);
 
 %token<valor_lexico> ')' '(' ']' '[' '}' '{' '-' '+' '?' '*' '/' '|' '>' '<' '!' '=' '&' '%' '#' '^' '$' ',' ';' ':' '.'
 %%
-start:
-     program {arvore = $1;}
 
+// Program Structure
 program
-    : declaration program {$$ = $1; $$ = insert_child($$, $2);}
-    |                     {$$ = NULL;}
-    ;
+  : %empty {$$ = NULL;}
+  | init_scope declaration {arvore = $2; destroyStack(scope); print_code(arvore);}
+  ;
 
 declaration
-    : function             {$$ = $1;}
-    | global_variable {$$ = NULL;}
-    ;
+  : global_var_decl {$$ = NULL;}
+  | function_decl {$$ = $1;}
+  | declaration global_var_decl {$$ = $1;}
+  | declaration function_decl {$$ = chain_ast($1, $2);}
+  ;
 
-global_variable
-    : static type id vector_declaration global_fotter ';' {$$ = NULL; libera($3);}
-    ;
+// Block and Command
+init_scope
+  : %empty {if (scope == NULL) {push(&scope, create_table(GLOBAL_SCOPE));}}
+  ;
 
-global_fotter
-    : ',' id vector_declaration global_fotter {$$ = NULL; libera($2);}
-    |       {$$ = NULL;}
-    ;
+enter_scope
+  : %empty {push(&scope, create_table(LOCAL_SCOPE));}
+  ;
 
-vector_declaration
-    : '[' TK_LIT_INT ']'  {$$ = NULL;}
-    |                     {$$ = NULL;}
-    ;
+leave_scope
+  : %empty {pop(&scope);}
+  ;
 
-static
-    : TK_PR_STATIC        {$$ = NULL;}
-    |                     {$$ = NULL;}
-    ;
+block
+  : '{' '}' {$$ = new_ast(0);}
+  | '{' inside_block ';' '}' {$$ = new_ast(1, $2); $$->code = $2->code;}
+  ;
 
-id
-    : TK_IDENTIFICADOR    {$$ = insert_leaf($1);}
-    ;
-
-function
-    : func_header command_block {$$ = $1; $$ = insert_child($$, $2);}
-    ;
-
-func_header
-    : static type id list       {$$ = $3;}
-    ;
-
-list
-    : '(' parameters ')'        {$$ = NULL;}
-    | '(' ')'                   {$$ = NULL;}
-    ;
-
-parameters
-    : parameters ',' const type id  {$$ = NULL; libera($5);}
-    | const type id                 {$$ = NULL; libera($3);}
-    ;
-
-const
-    : TK_PR_CONST                 {$$ = NULL;}
-    |                             {$$ = NULL;}
-    ;
-
-command_block
-    : '{' command '}'     {$$ = $2;}
-    ;
+inside_block
+  : command {$$ = $1;}
+  | inside_block ';' command {$$ = chain_ast($1, $3);}
+  ;
 
 command
-    : simple_command ';' command  {$$ = $1; $$ = insert_child($$, $3);}
+  : local_var_decl {$$ = $1;}
+  | assignment {$$ = $1;}
+  | shift {$$ = $1;}
+  | input {$$ = $1;}
+  | output {$$ = $1;}
+  | function_call {$$ = $1;}
+  | if_stmt {$$ = $1;}
+  | for_loop {$$ = $1;}
+  | while_loop {$$ = $1;}
+  | return_stmt {$$ = $1;}
+  | break_stmt {$$ = $1;}
+  | continue_stmt {$$ = $1;}
+  | block {$$ = $1;}
+  ;
 
-    | flux_control ';' command    {$$ = $1; $$ = insert_child($$, $3);}
-    |                             {$$ = NULL;}
-    ;
+command_without_comma
+  : local_var_decl {$$ = $1;}
+  | assignment {$$ = $1;}
+  | shift {$$ = $1;}
+  | input {$$ = $1;}
+  | if_stmt {$$ = $1;}
+  | for_loop {$$ = $1;}
+  | while_loop {$$ = $1;}
+  | return_stmt {$$ = $1;}
+  | break_stmt {$$ = $1;}
+  | continue_stmt {$$ = $1;}
+  | block {$$ = $1;}
+  ;
 
-simple_command
-    : local_variable  {$$ = $1;}
-    | attribution     {$$ = $1;}
-    | input           {$$ = $1;}
-    | output          {$$ = $1;}
-    | return          {$$ = $1;}
-    | command_block   {$$ = $1;}
-    | shift           {$$ = $1;}
-    | break           {$$ = $1;}
-    | continue        {$$ = $1;}
-    | func_call       {$$ = $1;}
-    ;
+command_list
+  : command_without_comma {$$ = $1;}
+  | command_list ',' command_without_comma {$$ = chain_ast($1, $3);}
+  ;
 
-local_variable
-    : static const type id_list {$$ = $4;}
-    ;
-
-id_list
-    : assignment              {$$ = $1;}
-    | id_list ',' assignment  {$$ = $1;  $$ = insert_child($$, $3);}
-    | id_list ',' id          {$$ = $1; libera($3);}
-    | id                      {$$ = NULL; libera($1);}
-    ;
-
-assignment
-    : id TK_OC_LE id         {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | id TK_OC_LE literal    {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    ;
-
-
-literal
-    : TK_LIT_INT    {$$ = insert_leaf($1); }
-    | TK_LIT_FLOAT  {$$ = insert_leaf($1); }
-    | TK_LIT_FALSE  {$$ = insert_leaf($1); }
-    | TK_LIT_TRUE   {$$ = insert_leaf($1); }
-    | TK_LIT_CHAR   {$$ = insert_leaf($1); }
-    | TK_LIT_STRING {$$ = insert_leaf($1); }
-    ;
-
-attribution
-    : id '=' expr   {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | vector_attribution '=' expr  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    ;
-
-vector_attribution
-    : id '[' expr ']' {$$ = insert_leaf($2); $$->data->lv.v.s = "[]"; $$->data->token_t = COMPOSE_OP; $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    ;
-
-
-expr
-    : ternary       {$$ = $1;}
-    ;
-
-ternary
-        : unary_minus '?' unary_minus':' ternary {$$ = insert_leaf($2); $$->data->lv.v.s = "?:";
-                                       $$->data->token_t = COMPOSE_OP;
-                                       $$ = insert_child($$, $1); $$ = insert_child($$, $3);
-                                       $$ = insert_child($$, $5);}
-    | unary_minus                {$$ = $1;}
-    ;
-
-unary_minus
-    : '+' unary_minus            {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    | '-' unary_minus            {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    | or                         {$$ = $1;}
-    ;
-
-or
-    : or TK_OC_OR and            {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | and                        {$$ = $1;}
-    ;
-
-and
-    : and TK_OC_AND or_log {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | or_log               {$$ = $1;}
-    ;
-
-or_log
-    : or_log '|' and_log   {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | and_log              {$$ =  $1;}
-    ;
-
-and_log
-    : and_log '&' equal    {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | equal                {$$ = $1;}
-    ;
-
-equal
-    : equal TK_OC_EQ rel   {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | equal TK_OC_NE rel   {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | rel                  {$$ = $1;}
-    ;
-
-rel
-    : rel TK_OC_LE soma_sub {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | rel TK_OC_GE soma_sub {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | rel '>' soma_sub      {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | rel '<' soma_sub      {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | soma_sub              {$$ = $1;}
-    ;
-
-soma_sub
-    : soma_sub '+' mult_div {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | soma_sub '-' mult_div {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | mult_div              {$$ = $1;}
-    ;
-
-mult_div
-    : mult_div '*' unary    {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | mult_div '/' unary    {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | mult_div '%' unary    {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | exponential           {$$ = $1;}
-    ;
-
-exponential
-    : exponential '^' unary {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, $3);}
-    | unary                 {$$ = $1;}
-    ;
-
-unary
-    : '*' unary   {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    | '&' unary   {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    | '#' unary   {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    | '?' unary   {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    | '!' unary   {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    | parenthesis {$$ = $1;}
-    ;
-
-parenthesis
-    : '(' expr ')' {$$ = $2;}
-    | operand_arit {$$ = $1;}
-    ;
-
-flux_control
-    : conditional  {$$ = $1;}
-    | iterative    {$$ = $1;}
-    ;
-
-conditional
-    : TK_PR_IF '(' expr ')' command_block {$$ = insert_leaf($1); $$ = insert_child($$, $3); $$ = insert_child($$, $5);}
-
-    | TK_PR_IF '(' expr ')' command_block TK_PR_ELSE command_block {
-        $$ = insert_leaf($1);
-        $$ = insert_child($$, $3); $$ = insert_child($$, $5); $$ = insert_child($$, $7);}
-    ;
-
-iterative
-    : TK_PR_FOR '(' attribution ':' expr ':' attribution ')' command_block {
-        $$ = insert_leaf($1);
-        $$ = insert_child($$, $3); $$ = insert_child($$, $5); $$ = insert_child($$, $7);
-        $$ = insert_child($$, $9);}
-    | TK_PR_WHILE '(' expr ')' TK_PR_DO command_block {
-        $$ = insert_leaf($1);
-        $$ = insert_child($$, $3);
-        $$ = insert_child($$, $6);}
-    ;
-
+// I/O
 input
-    : TK_PR_INPUT id       {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    ;
+  : TK_PR_INPUT expression {input_type_check(scope, $2); libera($2); $$ = NULL;}
+  ;
 
 output
-    : TK_PR_OUTPUT id      {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    | TK_PR_OUTPUT literal {$$ = insert_leaf($1); $$ = insert_child ($$, $2);}
-    ;
+  : TK_PR_OUTPUT expression_list {output_type_check($2); libera($2); $$ = NULL;}
+  ;
 
-return
-    : TK_PR_RETURN expr    {$$ = insert_leaf($1); $$ = insert_child($$, $2);}
-    ;
-
-break
-    : TK_PR_BREAK          {$$ = insert_leaf($1);}
-    ;
-
-continue
-    : TK_PR_CONTINUE       {$$ = insert_leaf($1);}
-    ;
+// Assignment and Shift
+assignment
+  : id '=' expression {$$ = new_ast(2, $1, $3); type_infer(scope, $1, $3); declaration_check(scope, $1); usage_check(scope, $1, NATUREZA_IDENTIFICADOR); $$->code = assignment(scope, $1, $3);}
+  | array '=' expression {$$ = new_ast(2, $1, $3); type_infer(scope, $1, $3); declaration_check(scope, $1); usage_check(scope, $1, NATUREZA_VETOR);}
+  ;
 
 shift
-    : id TK_OC_SL TK_LIT_INT  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, insert_leaf($3));}
-    | id TK_OC_SR TK_LIT_INT  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, insert_leaf($3));}
-    | vector_attribution TK_OC_SL TK_LIT_INT  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, insert_leaf($3));}
-    | vector_attribution TK_OC_SR TK_LIT_INT  {$$ = insert_leaf($2); $$ = insert_child($$, $1); $$ = insert_child($$, insert_leaf($3));}
-    ;
+  : id TK_OC_SL expression {$$ = new_ast(2, $1, $3); type_check(scope, INT, $3); declaration_check(scope, $1); usage_check(scope, $1, NATUREZA_IDENTIFICADOR);}
+  | id TK_OC_SR expression  {$$ = new_ast(2, $1, $3); type_check(scope, INT, $3); declaration_check(scope, $1); usage_check(scope, $1, NATUREZA_IDENTIFICADOR);}
+  | array TK_OC_SL expression {$$ = new_ast(2, $1, $3); type_check(scope, INT, $3); declaration_check(scope, $1); usage_check(scope, $1, NATUREZA_VETOR);}
+  | array TK_OC_SR expression {$$ = new_ast(2, $1, $3); type_check(scope, INT, $3); declaration_check(scope, $1); usage_check(scope, $1, NATUREZA_VETOR);}
+  ;
 
-func_call
-    : id '(' args ')' {$$ = $1; $$->data->lv.v.s = prepend($$->data->lv.v.s, "call "); $$ = insert_child($$, $3);}
-    ;
+// Control Flow and Loops
+if_stmt
+  : TK_PR_IF '(' expression ')' block {$$ = new_ast(2, $3, $5);create_if_else($$);}
+  | TK_PR_IF '(' expression ')' block TK_PR_ELSE block {$$ = new_ast(3, $3, $5, $7); create_if_else($$);}
+  ;
 
-args
-    : expr ',' args  {$$ = $1; $$ = insert_child($$, $3);}
-    | expr           {$$ = $1;}
-    |                {$$ = NULL;}
-    ;
+for_loop
+  : TK_PR_FOR '(' command_list ':' expression ':' command_list ')' block {$$ = new_ast(4, $3, $5, $7, $9); type_check(scope, BOOL, $5);}
+  ;
 
-operand_arit
-    : vector_attribution { $$ = $1;}
-    | id                 { $$ = $1;}
-    | TK_LIT_INT         { $$ = insert_leaf($1);}
-    | TK_LIT_FLOAT       { $$ = insert_leaf($1);}
-    | func_call          { $$ = $1;}
-    ;
+while_loop
+  : TK_PR_WHILE '(' expression ')' TK_PR_DO block {$$ = new_ast(2, $3, $6); create_while($3,$6,$$);}
+  ;
+
+// Return, Break and Continue
+return_stmt
+  : TK_PR_RETURN expression {$$ = new_ast(1, $2);}
+  ;
+
+break_stmt
+  : TK_PR_BREAK {$$ = new_ast(0);}
+  ;
+
+continue_stmt
+  : TK_PR_CONTINUE {$$ = new_ast(0);}
+  ;
+
+// Global Variable Declaration
+global_var_decl
+  : global_var ';' {$$ = NULL;}
+  | TK_PR_STATIC global_var ';' {$$ = NULL;}
+  ;
+
+global_var
+  : type id {$$ = NULL; add_id(scope, $1, $2); libera($2);}
+  | type id int_indexer {$$ = NULL; add_vector(scope, $1, $2, $3); libera($2); libera($3);}
+  ;
+
+int_indexer
+  : '[' literal ']' {type_check(scope, INT, $2); $$ = $2;}
+  | '[' literal ']' int_indexer {type_check(scope, INT, $2); chain_ast($2, $4);}
+  ;
+
+// Local Variable Declaration
+local_var_decl
+  : local_var {$$ = $1;}
+  | TK_PR_STATIC local_var {$$ = $2;}
+  | TK_PR_CONST local_var {$$ = $2;}
+  | TK_PR_STATIC TK_PR_CONST local_var {$$ = $3;}
+  ;
+
+local_var
+  : type id {$$ = NULL; add_id(scope, $1, $2); libera($2);}
+  | type id TK_OC_LE id {$$ = new_ast(2, $2, $4); add_id(scope, $1, $2);}
+  | type id TK_OC_LE literal {$$ = new_ast(2, $2, $4); add_id(scope, $1, $2);}
+  ;
+
+// Function Declaration
+function_decl
+  : type id '(' typed_argument_list ')' {add_function(scope, $1, $2, $4);} enter_scope block leave_scope {$$ = new_ast(1, $8->child); $8->child = NULL; declaration_check(scope, $2); usage_check(scope, $2, NATUREZA_FUNCAO); $$->code = $8->code; libera($2);}
+  | TK_PR_STATIC type id '(' typed_argument_list ')' {add_function(scope, $2, $3, $5);} enter_scope block leave_scope {$$ = new_ast(1, $9->child); $9->child = NULL; declaration_check(scope, $3); usage_check(scope, $3, NATUREZA_FUNCAO); $$->code = $9->code; libera($3);}
+  ;
+
+typed_argument
+  : %empty {$$ = NULL;}
+  | type id {$$ = NULL; libera($2);}
+  | TK_PR_CONST type id {$$ = NULL; libera($3);}
+  ;
+
+typed_argument_list
+  : typed_argument {$$ = $1;}
+  | typed_argument_list ',' typed_argument {$$ = NULL;}
+  ;
+
+// Function Call
+function_call
+  : id '(' argument_list ')' {declaration_check(scope, $1); usage_check(scope, $1, NATUREZA_FUNCAO); $$ = new_ast(1, $3); libera($1);}
+  ;
+
+argument_list
+  : %empty {$$ = NULL;}
+  | expression {$$ = $1;}
+  | argument_list ',' expression {$$ = chain_ast($1, $3);}
+  ;
+
+// Expression
+expression
+  : value {$$ = $1;}
+  | '(' expression ')' {$$ = $2;}
+  | '+' expression {$$ = new_ast(1, $2); type_check(scope, NUMERIC, $2);}
+  | '-' expression {$$ = new_ast(1, $2); type_check(scope, NUMERIC, $2);}
+  | '!' expression {$$ = new_ast(1, $2); type_check(scope, BOOL, $2);}
+  | '&' expression {$$ = new_ast(1, $2);}
+  | '*' expression {$$ = new_ast(1, $2);}
+  | '?' expression {$$ = new_ast(1, $2);}
+  | '#' expression {$$ = new_ast(1, $2);}
+  | expression '+' expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3); arithmetic(OP_ADD, $1, $$, $3);}
+  | expression '-' expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3); arithmetic(OP_SUB, $1, $$, $3);}
+  | expression '*' expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3); arithmetic(OP_MULT, $1, $$, $3);}
+  | expression '/' expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3); arithmetic(OP_DIV, $1, $$, $3);}
+  | expression '^' expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);}
+  | expression '%' expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);}
+  | expression '|' expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);}
+  | expression '&' expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);}
+  | expression '?' expression ':' expression {$$ = new_ast(3, $1, $3, $5); type_check(scope, BOOL, $1);}
+  | expression '<' expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);$$->temp=new_register();$$->code=numeric_cmp_expression(OP_CMP_LT,$1->temp,$3->temp,$$,chain_code($1->code,$3->code));}
+  | expression '>' expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);$$->temp=new_register();$$->code=numeric_cmp_expression(OP_CMP_GT,$1->temp,$3->temp,$$,chain_code($1->code,$3->code));}
+  | expression TK_OC_LE expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);$$->temp=new_register();$$->code=numeric_cmp_expression(OP_CMP_LE,$1->temp,$3->temp,$$,chain_code($1->code,$3->code));}
+  | expression TK_OC_GE expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);$$->temp=new_register();$$->code=numeric_cmp_expression(OP_CMP_GE,$1->temp,$3->temp,$$,chain_code($1->code,$3->code));}
+  | expression TK_OC_EQ expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);$$->temp=new_register();$$->code=numeric_cmp_expression(OP_CMP_EQ,$1->temp,$3->temp,$$,chain_code($1->code,$3->code));}
+  | expression TK_OC_NE expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);$$->temp=new_register();$$->code=numeric_cmp_expression(OP_CMP_NE,$1->temp,$3->temp,$$,chain_code($1->code,$3->code));}
+  | expression TK_OC_AND expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);$$->temp=new_register();$$->code=oc_and_expression($1,$3,$$);}
+  | expression TK_OC_OR expression {$$ = new_ast(2, $1, $3); $$->type = type_infer(scope, $1, $3);$$->temp=new_register();$$->code=oc_or_expression($1,$3,$$);}
+  ;
+
+expression_list
+  : expression {$$ = $1;}
+  | expression_list ',' expression {$$ = chain_ast($1, $3);}
+  ;
+
+// Definitions
+id
+  : TK_IDENTIFICADOR {$$ = new_valued_ast(STRING, $1);}
+  ;
+
+array
+  : id indexer {$$ = new_ast(2, $1, $2); type_check(scope, INT, $2);}
+  ;
+
+indexer
+  : '[' expression ']' {type_check(scope, INT, $2); $$ = $2;}
+  | '[' expression ']' indexer {type_check(scope, INT, $2); chain_ast($2, $4);}
+  ;
+
+value
+  : literal {$$ = $1; $$->code = new_code(load_imm(scope, $$));}
+  | id {$$ = $1; $$->code = new_code(load_id(scope, $$));}
+  | array {$$ = $1; $$->code = new_code(load_array(scope, $$));}
+  | function_call {$$ = $1;}
+  ;
 
 type
-    : TK_PR_INT     {$$ = NULL;}
-    | TK_PR_FLOAT   {$$ = NULL;}
-    | TK_PR_BOOL    {$$ = NULL;}
-    | TK_PR_CHAR    {$$ = NULL;}
-    | TK_PR_STRING  {$$ = NULL;}
-    ;
+  : TK_PR_INT {$$ = INT;}
+  | TK_PR_FLOAT {$$ = FLOAT;}
+  | TK_PR_BOOL {$$ = BOOL;}
+  | TK_PR_CHAR {$$ = CHAR;}
+  | TK_PR_STRING {$$ = STRING;}
+  ;
+
+literal
+  : TK_LIT_INT {$$ = new_valued_ast(INT, $1);}
+  | TK_LIT_FLOAT {$$ = new_valued_ast(FLOAT, $1);}
+  | TK_LIT_FALSE {$$ = new_valued_ast(BOOL, $1);}
+  | TK_LIT_TRUE {$$ = new_valued_ast(BOOL, $1);}
+  | TK_LIT_CHAR {$$ = new_valued_ast(CHAR, $1);}
+  | TK_LIT_STRING {$$ = new_valued_ast(STRING, $1);}
+  ;
 %%
 
     void yyerror (char const *s) {

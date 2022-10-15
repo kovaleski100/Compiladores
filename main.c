@@ -5,23 +5,24 @@
 # * André Carini                                                       *
 # * Matheus Kovaleski                                                  *
 # **********************************************************************/
+#include <stdio.h>
+#include "tree.h"
+#include "parser.tab.h" //arquivo gerado com bison -d parser.y
 
-build: clean scanner.l main.c parser.y
-	flex scanner.l
-	bison -d parser.y
-	gcc -o etapa6 iloc.c utils.c symbol.c code.c backpatch.c tree.c hash.c stack.c parser.tab.c lex.yy.c main.c -I.
 
-clean:
-	rm -f etapa1
-	rm -f etapa2
-	rm -f etapa3
-	rm -f etapa4
-	rm -f etapa5
-	rm -f etapa6
-	rm -f etapa7
-	rm -f lex.yy.c
-	rm -f parser.tab.h
-	rm -f parser.tab.c
-	rm -f parser.output
-	rm -f test.c
-	rm -f a.out
+extern int yyparse(void);
+extern int yylex_destroy(void);
+extern int yyerror(char const *s);
+
+void *arvore = NULL;
+void *pilha = NULL;
+
+int main (int argc, char **argv)
+{
+  int ret = yyparse();
+  exporta(arvore);
+  libera(arvore);
+  arvore = NULL;
+  yylex_destroy();
+  return ret;
+}
