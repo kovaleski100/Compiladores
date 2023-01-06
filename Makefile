@@ -1,14 +1,14 @@
 #/********************************************************************** 
-# * INF01147 - Compiladores - Turma B (2022/1)                         *
+# * INF01147 - Compiladores - Turma B (2022/2)                         *
 # *                                                                    *
 # *                                                                    *
-# * André Carini                                                       *
+# * Felipe Bastos                                                     *
 # * Matheus Kovaleski                                                  *
 # **********************************************************************/
 
-build: clean scanner.l main.c
-	flex scanner.l
-	gcc -o etapa1 lex.yy.c main.c -I.
+# build: clean scanner.l main.c
+# 	flex scanner.l
+# 	gcc -o etapa1 lex.yy.c main.c -I.
 
 clean:
 	rm -f etapa1
@@ -24,3 +24,13 @@ clean:
 	rm -f parser.output
 	rm -f test.c
 	rm -f a.out
+
+main: main.clean
+			gcc main.c -c
+
+scanner: scanner -l
+				flex scanner.l
+				gcc lex.yy.c -c
+
+all: main scanner
+		 gcc.lex.yy.o main.o -o etapa1

@@ -1,4 +1,4 @@
-
+import os
 
 
 file_name = "teste.sh"
@@ -24,7 +24,10 @@ for i in range(1,101,1):
     elif(i<100):
         number = "0"+str(i)
 
-    comand = "diff saida_"+number+".txt aval_"+number 
+    comand = "diff saida_"+number+".txt aval_"+number+ ".tesh"
+    command = "echo:" + '"' + number + '"'
+    file.write(command)
+    file.write("\n")
     file.write(comand)
     file.write("\n")
 

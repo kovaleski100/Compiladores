@@ -6,6 +6,7 @@
 }
 
 %option noyywrap
+extra int yylineo
 
 ESPECIAL [,;:()\[\]\{\}+-|*/<>=!&%#ˆ.$]
 
@@ -60,6 +61,8 @@ ESPECIAL [,;:()\[\]\{\}+-|*/<>=!&%#ˆ.$]
 "protected"		return TK_PR_PROTECTED;
 "end"			return TK_PR_END;
 "default"		return TK_PR_DEFAULT;
+"/"   return TK_ESPECIAL;
+"*" return TK_ESPECIAL;
 
   /* (5) -> Literais true e false
   **     Tive que colocar essas declarações aqui em cima pois se ficasse na categoria 5
@@ -114,7 +117,8 @@ ESPECIAL [,;:()\[\]\{\}+-|*/<>=!&%#ˆ.$]
 %%
 
 int get_line_number(void) {
-  return current_line_number;
+  // return current_line_number;
+  return yylineno
 }
 
 /********************************************************************** 
