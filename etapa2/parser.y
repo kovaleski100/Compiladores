@@ -34,6 +34,11 @@ void yyerror (char const *s);
 %start programa
 %%
 
-programa:
+programa: lista_de_elementos | ;
+lista_de_elementos: lista_de_elementos funcao;
+lista_de_elementos: lista_de_elementos declaracao;
+lista_de_elementos: funcao;
+lista_de_elementos: declaracao;
+
 
 %%
