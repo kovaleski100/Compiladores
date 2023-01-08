@@ -73,7 +73,7 @@ ESPECIAL [,;:()\[\]\{\}+-|*/<>=!&%#ˆ.$]
 
   /* (4) -> Identificadores */
 
-[A-Za-z_][A-Za-z0-9_]* return TK_IDENTIFICADOR;
+[A-Za-z]* return TK_IDENTIFICADOR;
 
   /* (3) -> Operadores compostos */
 

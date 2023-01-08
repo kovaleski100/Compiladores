@@ -5,14 +5,10 @@
 # * Matheus Kovaleski                                      					 	 *
 # **********************************************************************/
 
-clean:
-	rm -f etapa1
-	rm -f lex.yy.c
-	rm -f lex.yy.o
-	rm -f main.o
-
 main: main.c
-			gcc main.c -c
+			flex scanner.l
+			gcc lex.yy.c -c
+			gcc lex.yy.o main.c -o etapa1
 
 scanner: scanner.l
 				flex scanner.l
@@ -20,3 +16,9 @@ scanner: scanner.l
 
 all: main scanner
 		 gcc lex.yy.o main.o -o etapa1
+
+clean:
+	rm -f etapa1
+	rm -f lex.yy.c
+	rm -f lex.yy.o
+	rm -f main.o
