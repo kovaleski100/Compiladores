@@ -18,6 +18,8 @@
 extra int yylineo
 
 ESPECIAL [,;:()\{\}+/%^<>=!*-]
+%x COMENTARIO
+
 
 %%
   /*
@@ -98,7 +100,10 @@ ESPECIAL [,;:()\{\}+/%^<>=!*-]
 \/\/.*
 
   /* Ignorar comentários multi-line, mas contabilizar o número de newlines */
-"/*"			process_multiline_comments();
+"/*"			{BEGIN(COMENTARIO);}
+          <COMENTARIO>"*/" {BEGIN(INITIAL);}
+          <COMENTARIO>"\n" current_line_number++;
+          <COMENTARIO>.
 
   /* Qualquer outra coisa: lançar erro */
 .			return TK_ERRO;
