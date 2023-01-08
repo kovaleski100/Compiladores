@@ -40,5 +40,13 @@ lista_de_elementos: lista_de_elementos declaracao;
 lista_de_elementos: funcao;
 lista_de_elementos: declaracao;
 
+declaracao: tipo lista_identificador;
 
+lista_identificador: TK_IDENTIFICADOR "," lista_identificador |
+                     TK_IDENTIFICADOR ;
+
+tipo: TK_PR_FLOAT|
+      TK_PR_INT  |
+      TK_PR_CHAR |
+      TK_PR_BOOL;
 %%
