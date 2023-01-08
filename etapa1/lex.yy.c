@@ -369,9 +369,9 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[94] =
     {   0,
-        0,    0,   32,   30,   26,   27,   30,   25,   25,   25,
+        0,    0,   32,   30,   26,   27,   30,   25,   25,   30,
        30,   25,   25,   22,   25,   25,   25,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   25,   27,   19,
+       15,   15,   15,   15,   15,   15,   15,   30,   27,   19,
        20,    0,   22,   29,   28,    0,   16,   18,   17,   15,
        15,   15,   15,   15,   15,   15,    5,   15,   15,   15,
        15,   15,   15,   21,   24,   28,   23,   15,   15,   15,
@@ -387,18 +387,18 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    4,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    5,    1,    6,    6,    6,    7,    8,    6,
+        1,    2,    5,    1,    1,    1,    6,    7,    8,    6,
         6,    9,   10,    6,   10,   11,   12,   13,   13,   13,
        13,   13,   13,   13,   13,   13,   13,    6,    6,   14,
-       15,   16,    6,    6,   17,   17,   17,   17,   18,   17,
+       15,   16,    1,    1,   17,   17,   17,   17,   18,   17,
        17,   17,   17,   17,   17,   17,   17,   17,   17,   17,
        17,   17,   17,   17,   17,   17,   17,   17,   17,   17,
-        6,    6,    6,    6,   17,    6,   19,   20,   21,   17,
+        1,    1,    1,    6,    1,    1,   19,   20,   21,   17,
 
        22,   23,   17,   24,   25,   17,   17,   26,   17,   27,
        28,   29,   17,   30,   31,   32,   33,   17,   34,   17,
        17,   17,    6,   35,    6,    1,    1,    1,    1,    1,
-        1,    1,    1,    6,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -406,7 +406,7 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
 
-        1,    1,    6,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -417,7 +417,7 @@ static const YY_CHAR yy_ec[256] =
 static const YY_CHAR yy_meta[36] =
     {   0,
         1,    1,    2,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    3,    1,    1,    1,    3,    3,    3,    3,
+        1,    1,    1,    1,    1,    1,    3,    3,    3,    3,
         3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
         3,    3,    3,    3,    1
     } ;
@@ -455,7 +455,7 @@ static const flex_int16_t yy_def[97] =
 static const flex_int16_t yy_nxt[146] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,    9,   12,
-        9,   13,   14,   15,   16,   17,   18,   18,   18,   19,
+        4,   13,   14,   15,   16,   17,   18,   18,   18,   19,
        20,   21,   22,   18,   23,   18,   18,   24,   18,   25,
        18,   26,   18,   27,   28,   34,   44,   36,   35,   33,
        47,   51,   40,   45,   48,   46,   36,   52,   33,   64,
@@ -507,8 +507,16 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "scanner.l"
+/********************************************************************** 
+ * INF01147 - Compiladores - Turma B (2022/2)                         *
+ *                                                                    *
+ * Felipe Bastos                                                      *
+ * Matheus F Kovaleski                                                *
+ *                                                                    *
+ *                                                                    *
+ **********************************************************************/
 
-#line 512 "lex.yy.c"
+#line 520 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -725,9 +733,9 @@ YY_DECL
 		}
 
 	{
-#line 13 "scanner.l"
+#line 22 "scanner.l"
 
-#line 15 "scanner.l"
+#line 24 "scanner.l"
   /*
   ** Definição dos tokens a serem reconhecidos.
   ** 
@@ -751,7 +759,7 @@ YY_DECL
 
   /* (1) -> Palavras reservadas da linguagem */
 
-#line 755 "lex.yy.c"
+#line 763 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -810,62 +818,62 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 38 "scanner.l"
+#line 47 "scanner.l"
 return TK_PR_INT;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 39 "scanner.l"
+#line 48 "scanner.l"
 return TK_PR_FLOAT;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 40 "scanner.l"
+#line 49 "scanner.l"
 return TK_PR_BOOL;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 41 "scanner.l"
+#line 50 "scanner.l"
 return TK_PR_CHAR;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 42 "scanner.l"
+#line 51 "scanner.l"
 return TK_PR_IF;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 43 "scanner.l"
+#line 52 "scanner.l"
 return TK_PR_THEN;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 44 "scanner.l"
+#line 53 "scanner.l"
 return TK_PR_ELSE;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 45 "scanner.l"
+#line 54 "scanner.l"
 return TK_PR_WHILE;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 46 "scanner.l"
+#line 55 "scanner.l"
 return TK_PR_INPUT;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 47 "scanner.l"
+#line 56 "scanner.l"
 return TK_PR_OUTPUT;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 48 "scanner.l"
+#line 57 "scanner.l"
 return TK_PR_RETURN;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 49 "scanner.l"
+#line 58 "scanner.l"
 return TK_PR_FOR;
 	YY_BREAK
 /* (5) -> Literais true e false
@@ -873,111 +881,111 @@ return TK_PR_FOR;
   **     acabava sendo entendido como um identificador em vez de um literal. */
 case 13:
 YY_RULE_SETUP
-#line 55 "scanner.l"
+#line 64 "scanner.l"
 return TK_LIT_TRUE;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 56 "scanner.l"
+#line 65 "scanner.l"
 return TK_LIT_FALSE;
 	YY_BREAK
 /* (4) -> Identificadores */
 case 15:
 YY_RULE_SETUP
-#line 60 "scanner.l"
+#line 69 "scanner.l"
 return TK_IDENTIFICADOR;
 	YY_BREAK
 /* (3) -> Operadores compostos */
 case 16:
 YY_RULE_SETUP
-#line 64 "scanner.l"
+#line 73 "scanner.l"
 return TK_OC_LE;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 65 "scanner.l"
+#line 74 "scanner.l"
 return TK_OC_GE;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 66 "scanner.l"
+#line 75 "scanner.l"
 return TK_OC_EQ;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 67 "scanner.l"
+#line 76 "scanner.l"
 return TK_OC_NE;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 68 "scanner.l"
+#line 77 "scanner.l"
 return TK_OC_AND;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 69 "scanner.l"
+#line 78 "scanner.l"
 return TK_OC_OR;
 	YY_BREAK
 /* (5) -> Literais */
 case 22:
 YY_RULE_SETUP
-#line 73 "scanner.l"
+#line 82 "scanner.l"
 return TK_LIT_INT;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 74 "scanner.l"
+#line 83 "scanner.l"
 return TK_LIT_FLOAT;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 75 "scanner.l"
+#line 84 "scanner.l"
 return TK_LIT_CHAR;
 	YY_BREAK
 /* (2) -> Caracteres especiais */
 case 25:
 YY_RULE_SETUP
-#line 79 "scanner.l"
+#line 88 "scanner.l"
 return yytext[0];
 	YY_BREAK
 /* (6) -> Outros */
 /* Ignorar espaços e tabs */
 case 26:
 YY_RULE_SETUP
-#line 84 "scanner.l"
+#line 93 "scanner.l"
 
 	YY_BREAK
 /* Contar newlines (LF, opcionalmente precedido por CR) */
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 87 "scanner.l"
+#line 96 "scanner.l"
 current_line_number++;
 	YY_BREAK
 /* Ignorar comentários single-line. Note que o forward slash está escapado. */
 case 28:
 YY_RULE_SETUP
-#line 90 "scanner.l"
+#line 99 "scanner.l"
 
 	YY_BREAK
 /* Ignorar comentários multi-line, mas contabilizar o número de newlines */
 case 29:
 YY_RULE_SETUP
-#line 93 "scanner.l"
+#line 102 "scanner.l"
 process_multiline_comments();
 	YY_BREAK
 /* Qualquer outra coisa: lançar erro */
 case 30:
 YY_RULE_SETUP
-#line 96 "scanner.l"
+#line 105 "scanner.l"
 return TK_ERRO;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 98 "scanner.l"
+#line 107 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 981 "lex.yy.c"
+#line 989 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1982,21 +1990,15 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 98 "scanner.l"
+#line 107 "scanner.l"
 
 
 int get_line_number(void) {
-  // return current_line_number;
-  return yylineno;
+  return current_line_number;
+  //print("%d\n", yylineno)
+  //return yylineno;
 }
 
-/********************************************************************** 
- * Processa comentários multiline C, descartando o texto              *
- * e contabilizando corretamente a quantidade de newlines.            *
- *                                                                    *
- * Inspirado em http://www.lysator.liu.se/c/ANSI-C-grammar-l.html     *
- * e https://stackoverflow.com/a/15926440                             *
- **********************************************************************/
 void process_multiline_comments() {
   char c, c1;
 

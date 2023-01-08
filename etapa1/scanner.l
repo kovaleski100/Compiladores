@@ -1,3 +1,12 @@
+/********************************************************************** 
+ * INF01147 - Compiladores - Turma B (2022/2)                         *
+ *                                                                    *
+ * Felipe Bastos                                                      *
+ * Matheus F Kovaleski                                                *
+ *                                                                    *
+ *                                                                    *
+ **********************************************************************/
+
 %top{
   #include "tokens.h"
 
@@ -8,7 +17,7 @@
 %option noyywrap
 extra int yylineo
 
-ESPECIAL [,;:()\[\]\{\}+-|*/<>=!&%#ˆ.$]
+ESPECIAL [,;:()\{\}+/%^<>=!*-]
 
 %%
   /*
@@ -56,7 +65,7 @@ ESPECIAL [,;:()\[\]\{\}+-|*/<>=!&%#ˆ.$]
 
   /* (4) -> Identificadores */
 
-[A-Za-z_][A-Za-z0-9_]* return TK_IDENTIFICADOR;
+[A-Za-z][A-Za-z]* return TK_IDENTIFICADOR;
 
   /* (3) -> Operadores compostos */
 
@@ -97,17 +106,11 @@ ESPECIAL [,;:()\[\]\{\}+-|*/<>=!&%#ˆ.$]
 %%
 
 int get_line_number(void) {
-  // return current_line_number;
-  return yylineno;
+  return current_line_number;
+  //print("%d\n", yylineno)
+  //return yylineno;
 }
 
-/********************************************************************** 
- * Processa comentários multiline C, descartando o texto              *
- * e contabilizando corretamente a quantidade de newlines.            *
- *                                                                    *
- * Inspirado em http://www.lysator.liu.se/c/ANSI-C-grammar-l.html     *
- * e https://stackoverflow.com/a/15926440                             *
- **********************************************************************/
 void process_multiline_comments() {
   char c, c1;
 

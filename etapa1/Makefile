@@ -13,10 +13,7 @@ main: main.c
 scanner: scanner.l
 				flex scanner.l
 				gcc lex.yy.c -c
-
-all: main scanner
-		 gcc lex.yy.o main.o -o etapa1
-
+				
 clean:
 	rm -f etapa1
 	rm -f lex.yy.c
