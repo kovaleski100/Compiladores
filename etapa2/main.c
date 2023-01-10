@@ -13,6 +13,7 @@ Este arquivo será posteriormente substituído.
 #include <stdio.h>
 #include "parser.tab.h" //arquivo gerado com bison -d parser.y
 extern int yylex_destroy(void);
+int yyparse();
 
 int main (int argc, char **argv)
 {

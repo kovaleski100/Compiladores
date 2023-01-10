@@ -6,17 +6,18 @@
 # **********************************************************************/
 
 main: main.c
-			bison -d parser.y
+			bison -d -v parser.y
 			flex scanner.l
 			gcc parser.tab.c lex.yy.c -c
-			gcc lex.yy.o parser.tab.o main.c -o etapa1
+			gcc parser.tab.o lex.yy.o main.c -o etapa2
 
 scanner: scanner.l
 			flex scanner.l
 			gcc lex.yy.c -c
 
 bison: parser.y				
-			bison -d parser.y
+			bison -d -v parser.y
+
 clean:
 	rm -f etapa1
 	rm -f lex.yy.c

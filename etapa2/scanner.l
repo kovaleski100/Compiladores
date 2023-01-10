@@ -8,7 +8,7 @@
  **********************************************************************/
 
 %top{
-  #include "tokens.h"
+  #include "parser.tab.h"
 
   void process_multiline_comments();
   int current_line_number = 1;

@@ -1,14 +1,14 @@
-/* A Bison parser, made by GNU Bison 3.8.  */
+/* A Bison parser, made by GNU Bison 2.3.  */
 
-/* Bison interface for Yacc-like parsers in C
+/* Skeleton interface for Bison's Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
-   Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   Free Software Foundation, Inc.
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,7 +16,9 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,70 +33,75 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
-   especially those whose name start with YY_ or yy_.  They are
-   private implementation details that can be changed or removed.  */
-
-#ifndef YY_YY_PARSER_TAB_H_INCLUDED
-# define YY_YY_PARSER_TAB_H_INCLUDED
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
-
-/* Token kinds.  */
+/* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
-    YYEMPTY = -2,
-    YYEOF = 0,                     /* "end of file"  */
-    YYerror = 256,                 /* error  */
-    YYUNDEF = 257,                 /* "invalid token"  */
-    TK_PR_INT = 258,               /* TK_PR_INT  */
-    TK_PR_FLOAT = 259,             /* TK_PR_FLOAT  */
-    TK_PR_BOOL = 260,              /* TK_PR_BOOL  */
-    TK_PR_CHAR = 261,              /* TK_PR_CHAR  */
-    TK_PR_IF = 262,                /* TK_PR_IF  */
-    TK_PR_THEN = 263,              /* TK_PR_THEN  */
-    TK_PR_ELSE = 264,              /* TK_PR_ELSE  */
-    TK_PR_WHILE = 265,             /* TK_PR_WHILE  */
-    TK_PR_INPUT = 266,             /* TK_PR_INPUT  */
-    TK_PR_OUTPUT = 267,            /* TK_PR_OUTPUT  */
-    TK_PR_RETURN = 268,            /* TK_PR_RETURN  */
-    TK_PR_FOR = 269,               /* TK_PR_FOR  */
-    TK_OC_LE = 270,                /* TK_OC_LE  */
-    TK_OC_GE = 271,                /* TK_OC_GE  */
-    TK_OC_EQ = 272,                /* TK_OC_EQ  */
-    TK_OC_NE = 273,                /* TK_OC_NE  */
-    TK_OC_AND = 274,               /* TK_OC_AND  */
-    TK_OC_OR = 275,                /* TK_OC_OR  */
-    TK_LIT_INT = 276,              /* TK_LIT_INT  */
-    TK_LIT_FLOAT = 277,            /* TK_LIT_FLOAT  */
-    TK_LIT_FALSE = 278,            /* TK_LIT_FALSE  */
-    TK_LIT_TRUE = 279,             /* TK_LIT_TRUE  */
-    TK_LIT_CHAR = 280,             /* TK_LIT_CHAR  */
-    TK_IDENTIFICADOR = 281,        /* TK_IDENTIFICADOR  */
-    TK_ERRO = 282                  /* TK_ERRO  */
-  };
-  typedef enum yytokentype yytoken_kind_t;
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     TK_PR_INT = 258,
+     TK_PR_FLOAT = 259,
+     TK_PR_BOOL = 260,
+     TK_PR_CHAR = 261,
+     TK_PR_IF = 262,
+     TK_PR_THEN = 263,
+     TK_PR_ELSE = 264,
+     TK_PR_WHILE = 265,
+     TK_PR_INPUT = 266,
+     TK_PR_OUTPUT = 267,
+     TK_PR_RETURN = 268,
+     TK_PR_FOR = 269,
+     TK_OC_LE = 270,
+     TK_OC_GE = 271,
+     TK_OC_EQ = 272,
+     TK_OC_NE = 273,
+     TK_OC_AND = 274,
+     TK_OC_OR = 275,
+     TK_LIT_INT = 276,
+     TK_LIT_FLOAT = 277,
+     TK_LIT_FALSE = 278,
+     TK_LIT_TRUE = 279,
+     TK_LIT_CHAR = 280,
+     TK_IDENTIFICADOR = 281,
+     TK_ERRO = 282
+   };
 #endif
+/* Tokens.  */
+#define TK_PR_INT 258
+#define TK_PR_FLOAT 259
+#define TK_PR_BOOL 260
+#define TK_PR_CHAR 261
+#define TK_PR_IF 262
+#define TK_PR_THEN 263
+#define TK_PR_ELSE 264
+#define TK_PR_WHILE 265
+#define TK_PR_INPUT 266
+#define TK_PR_OUTPUT 267
+#define TK_PR_RETURN 268
+#define TK_PR_FOR 269
+#define TK_OC_LE 270
+#define TK_OC_GE 271
+#define TK_OC_EQ 272
+#define TK_OC_NE 273
+#define TK_OC_AND 274
+#define TK_OC_OR 275
+#define TK_LIT_INT 276
+#define TK_LIT_FLOAT 277
+#define TK_LIT_FALSE 278
+#define TK_LIT_TRUE 279
+#define TK_LIT_CHAR 280
+#define TK_IDENTIFICADOR 281
+#define TK_ERRO 282
 
-/* Value type.  */
+
+
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef int YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
+# define YYSTYPE_IS_TRIVIAL 1
 #endif
-
 
 extern YYSTYPE yylval;
 
-
-int yyparse (void);
-
-
-#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */

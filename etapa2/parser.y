@@ -3,8 +3,6 @@ int yylex(void);
 void yyerror (char const *s);
 %}
 
-%define parser.error verbose
-
 %token TK_PR_INT
 %token TK_PR_FLOAT
 %token TK_PR_BOOL
@@ -35,18 +33,27 @@ void yyerror (char const *s);
 %%
 
 programa: lista_de_elementos | ;
-lista_de_elementos: lista_de_elementos funcao;
-lista_de_elementos: lista_de_elementos declaracao;
-lista_de_elementos: funcao;
+// lista_de_elementos: lista_de_elementos funcao;
+// lista_de_elementos: lista_de_elementos declaracao;
+// lista_de_elementos: funcao;
 lista_de_elementos: declaracao;
 
 declaracao: tipo lista_identificador;
 
-lista_identificador: TK_IDENTIFICADOR "," lista_identificador |
-                     TK_IDENTIFICADOR ;
+lista_identificador:    TK_IDENTIFICADOR array "," lista_identificador ';' |
+                        TK_IDENTIFICADOR array | ;
+
+
+
+array:      '[' TK_LIT_INT ']'|
+            '[' lista_de_literais_inteiros ']' | ;
+
+lista_de_literais_inteiros :   TK_LIT_INT '^' lista_de_literais_inteiros | ;
+
 
 tipo: TK_PR_FLOAT|
       TK_PR_INT  |
       TK_PR_CHAR |
       TK_PR_BOOL;
+      
 %%
