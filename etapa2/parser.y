@@ -36,8 +36,8 @@ void yyerror (char const *s);
 %%
 
 programa: lista_de_elementos | ;
-// lista_de_elementos: lista_de_elementos funcao;
-// lista_de_elementos: funcao;
+lista_de_elementos: lista_de_elementos funcao;
+lista_de_elementos: funcao;
 lista_de_elementos:     declaracao |
                         lista_de_elementos declaracao;
 
@@ -47,10 +47,20 @@ lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador |
                         TK_IDENTIFICADOR array ';';
 
 array:      '[' TK_LIT_INT ']'|
-            '[' lista_de_literais_inteiros ']' | ;
+            '[' TK_LIT_INT '^' lista_de_literais_inteiros ']' | ;
 
-lista_de_literais_inteiros :   TK_LIT_INT '^' lista_de_literais_inteiros | ;
+lista_de_literais_inteiros :   TK_LIT_INT '^' lista_de_literais_inteiros | TK_LIT_INT;
 
+funcao: cabecalho
+
+cabecalho:  tipo TK_IDENTIFICADOR '(' ')' |
+            tipo TK_IDENTIFICADOR '(' lista_funcao ')'
+
+lista_funcao:   parametro_funcao ',' lista_funcao |
+                parametro_funcao
+
+            
+parametro_funcao: tipo TK_IDENTIFICADOR
 
 tipo: TK_PR_FLOAT|
       TK_PR_INT  |
