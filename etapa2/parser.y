@@ -51,21 +51,63 @@ array:      '[' TK_LIT_INT ']'|
 
 lista_de_literais_inteiros :   TK_LIT_INT '^' lista_de_literais_inteiros | TK_LIT_INT;
 
-funcao: cabecalho
+funcao: cabecalho corpo;
+
+corpo: bloco_de_comandos;
 
 cabecalho:  tipo TK_IDENTIFICADOR '(' ')' |
-            tipo TK_IDENTIFICADOR '(' lista_funcao ')'
+            tipo TK_IDENTIFICADOR '(' lista_funcao ')';
 
 lista_funcao:   parametro_funcao ',' lista_funcao |
-                parametro_funcao
+                parametro_funcao;
 
             
-parametro_funcao: tipo TK_IDENTIFICADOR
+parametro_funcao: tipo TK_IDENTIFICADOR;
+
+
+bloco_de_comandos: '{' comandos '}' | '{' '}';
+
+comandos: comandos_simples ';' comandos | comandos_simples ';';
+
+comandos_simples:   tipo declaracao_variavel_local | 
+                    atribuicao | 
+                    retorno;
+
+
+declaracao_variavel_local : TK_IDENTIFICADOR inicializacao_variavel_local ',' declaracao_variavel_local | 
+                            TK_IDENTIFICADOR  ',' declaracao_variavel_local |      
+                            TK_IDENTIFICADOR  inicializacao_variavel_local |
+                            TK_IDENTIFICADOR ;
+
+inicializacao_variavel_local: '<' '=' literais; 
+
+
+
+
+atribuicao: TK_IDENTIFICADOR '=' expressao | TK_IDENTIFICADOR arranjo_multi '=' expressao
+
+arranjo_multi:  '[' exp ']' |
+                '[' exp  '^' lista_de_expressoes ']';
+
+lista_de_expressoes: exp '^' lista_de_expressoes | exp;
+
+
+retorno:  TK_PR_RETURN exp;
+
+
+
 
 tipo: TK_PR_FLOAT|
       TK_PR_INT  |
       TK_PR_CHAR |
       TK_PR_BOOL;
+
+literais:   TK_LIT_FLOAT |
+            TK_LIT_INT |
+            TK_LIT_CHAR |
+            TK_LIT_TRUE |
+            TK_LIT_FALSE;
+
       
 %%
 void yyerror (char const *s) {
