@@ -17,7 +17,7 @@
 %option noyywrap
 extra int yylineo
 
-ESPECIAL [,;:()\{\}+/%^<>=!*-]
+ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 %x COMENTARIO
 
 

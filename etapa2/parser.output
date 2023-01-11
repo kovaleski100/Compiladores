@@ -1,47 +1,47 @@
-Terminals which are not used
+Terminais sem uso na gramática
 
-   TK_PR_IF
-   TK_PR_THEN
-   TK_PR_ELSE
-   TK_PR_WHILE
-   TK_PR_INPUT
-   TK_PR_OUTPUT
-   TK_PR_RETURN
-   TK_PR_FOR
-   TK_OC_LE
-   TK_OC_GE
-   TK_OC_EQ
-   TK_OC_NE
-   TK_OC_AND
-   TK_OC_OR
-   TK_LIT_FLOAT
-   TK_LIT_FALSE
-   TK_LIT_TRUE
-   TK_LIT_CHAR
-   TK_ERRO
+    TK_PR_IF
+    TK_PR_THEN
+    TK_PR_ELSE
+    TK_PR_WHILE
+    TK_PR_INPUT
+    TK_PR_OUTPUT
+    TK_PR_RETURN
+    TK_PR_FOR
+    TK_OC_LE
+    TK_OC_GE
+    TK_OC_EQ
+    TK_OC_NE
+    TK_OC_AND
+    TK_OC_OR
+    TK_LIT_FLOAT
+    TK_LIT_FALSE
+    TK_LIT_TRUE
+    TK_LIT_CHAR
+    TK_ERRO
 
 
-Grammar
+Gramática
 
     0 $accept: programa $end
 
     1 programa: lista_de_elementos
-    2         | /* empty */
+    2         | ε
 
     3 lista_de_elementos: declaracao
+    4                   | lista_de_elementos declaracao
 
-    4 declaracao: tipo lista_identificador
+    5 declaracao: tipo lista_identificador
 
-    5 lista_identificador: TK_IDENTIFICADOR array "," lista_identificador ';'
-    6                    | TK_IDENTIFICADOR array
-    7                    | /* empty */
+    6 lista_identificador: TK_IDENTIFICADOR array ',' lista_identificador
+    7                    | TK_IDENTIFICADOR array ';'
 
     8 array: '[' TK_LIT_INT ']'
     9      | '[' lista_de_literais_inteiros ']'
-   10      | /* empty */
+   10      | ε
 
    11 lista_de_literais_inteiros: TK_LIT_INT '^' lista_de_literais_inteiros
-   12                           | /* empty */
+   12                           | ε
 
    13 tipo: TK_PR_FLOAT
    14     | TK_PR_INT
@@ -49,262 +49,280 @@ Grammar
    16     | TK_PR_BOOL
 
 
-Terminals, with rules where they appear
+Terminais, com as regras onde eles aparecem
+
+    $end (0) 0
+    ',' (44) 6
+    ';' (59) 7
+    '[' (91) 8 9
+    ']' (93) 8 9
+    '^' (94) 11
+    error (256)
+    TK_PR_INT (258) 14
+    TK_PR_FLOAT (259) 13
+    TK_PR_BOOL (260) 16
+    TK_PR_CHAR (261) 15
+    TK_PR_IF (262)
+    TK_PR_THEN (263)
+    TK_PR_ELSE (264)
+    TK_PR_WHILE (265)
+    TK_PR_INPUT (266)
+    TK_PR_OUTPUT (267)
+    TK_PR_RETURN (268)
+    TK_PR_FOR (269)
+    TK_OC_LE (270)
+    TK_OC_GE (271)
+    TK_OC_EQ (272)
+    TK_OC_NE (273)
+    TK_OC_AND (274)
+    TK_OC_OR (275)
+    TK_LIT_INT (276) 8 11
+    TK_LIT_FLOAT (277)
+    TK_LIT_FALSE (278)
+    TK_LIT_TRUE (279)
+    TK_LIT_CHAR (280)
+    TK_IDENTIFICADOR (281) 6 7
+    TK_ERRO (282)
 
-$end (0) 0
-';' (59) 5
-'[' (91) 8 9
-']' (93) 8 9
-'^' (94) 11
-error (256)
-TK_PR_INT (258) 14
-TK_PR_FLOAT (259) 13
-TK_PR_BOOL (260) 16
-TK_PR_CHAR (261) 15
-TK_PR_IF (262)
-TK_PR_THEN (263)
-TK_PR_ELSE (264)
-TK_PR_WHILE (265)
-TK_PR_INPUT (266)
-TK_PR_OUTPUT (267)
-TK_PR_RETURN (268)
-TK_PR_FOR (269)
-TK_OC_LE (270)
-TK_OC_GE (271)
-TK_OC_EQ (272)
-TK_OC_NE (273)
-TK_OC_AND (274)
-TK_OC_OR (275)
-TK_LIT_INT (276) 8 11
-TK_LIT_FLOAT (277)
-TK_LIT_FALSE (278)
-TK_LIT_TRUE (279)
-TK_LIT_CHAR (280)
-TK_IDENTIFICADOR (281) 5 6
-TK_ERRO (282)
-"," (283) 5
 
+Não terminais com as regras onde eles aparecem
 
-Nonterminals, with rules where they appear
+    $accept (33)
+        à esquerda: 0
+    programa (34)
+        à esquerda: 1 2
+        à direita: 0
+    lista_de_elementos (35)
+        à esquerda: 3 4
+        à direita: 1 4
+    declaracao (36)
+        à esquerda: 5
+        à direita: 3 4
+    lista_identificador (37)
+        à esquerda: 6 7
+        à direita: 5 6
+    array (38)
+        à esquerda: 8 9 10
+        à direita: 6 7
+    lista_de_literais_inteiros (39)
+        à esquerda: 11 12
+        à direita: 9 11
+    tipo (40)
+        à esquerda: 13 14 15 16
+        à direita: 5
 
-$accept (33)
-    on left: 0
-programa (34)
-    on left: 1 2, on right: 0
-lista_de_elementos (35)
-    on left: 3, on right: 1
-declaracao (36)
-    on left: 4, on right: 3
-lista_identificador (37)
-    on left: 5 6 7, on right: 4 5
-array (38)
-    on left: 8 9 10, on right: 5 6
-lista_de_literais_inteiros (39)
-    on left: 11 12, on right: 9 11
-tipo (40)
-    on left: 13 14 15 16, on right: 4
 
+Estado 0
 
-state 0
+    0 $accept: • programa $end
 
-    0 $accept: . programa $end
+    TK_PR_INT    deslocar, e ir ao estado 1
+    TK_PR_FLOAT  deslocar, e ir ao estado 2
+    TK_PR_BOOL   deslocar, e ir ao estado 3
+    TK_PR_CHAR   deslocar, e ir ao estado 4
 
-    TK_PR_INT    shift, and go to state 1
-    TK_PR_FLOAT  shift, and go to state 2
-    TK_PR_BOOL   shift, and go to state 3
-    TK_PR_CHAR   shift, and go to state 4
+    $padrão  reduzir usando a regra 2 (programa)
 
-    $default  reduce using rule 2 (programa)
+    programa            ir ao estado 5
+    lista_de_elementos  ir ao estado 6
+    declaracao          ir ao estado 7
+    tipo                ir ao estado 8
 
-    programa            go to state 5
-    lista_de_elementos  go to state 6
-    declaracao          go to state 7
-    tipo                go to state 8
 
+Estado 1
 
-state 1
+   14 tipo: TK_PR_INT •
 
-   14 tipo: TK_PR_INT .
+    $padrão  reduzir usando a regra 14 (tipo)
 
-    $default  reduce using rule 14 (tipo)
 
+Estado 2
 
-state 2
+   13 tipo: TK_PR_FLOAT •
 
-   13 tipo: TK_PR_FLOAT .
+    $padrão  reduzir usando a regra 13 (tipo)
 
-    $default  reduce using rule 13 (tipo)
 
+Estado 3
 
-state 3
+   16 tipo: TK_PR_BOOL •
 
-   16 tipo: TK_PR_BOOL .
+    $padrão  reduzir usando a regra 16 (tipo)
 
-    $default  reduce using rule 16 (tipo)
 
+Estado 4
 
-state 4
+   15 tipo: TK_PR_CHAR •
 
-   15 tipo: TK_PR_CHAR .
+    $padrão  reduzir usando a regra 15 (tipo)
 
-    $default  reduce using rule 15 (tipo)
 
+Estado 5
 
-state 5
+    0 $accept: programa • $end
 
-    0 $accept: programa . $end
+    $end  deslocar, e ir ao estado 9
 
-    $end  shift, and go to state 9
 
+Estado 6
 
-state 6
+    1 programa: lista_de_elementos •
+    4 lista_de_elementos: lista_de_elementos • declaracao
 
-    1 programa: lista_de_elementos .
+    TK_PR_INT    deslocar, e ir ao estado 1
+    TK_PR_FLOAT  deslocar, e ir ao estado 2
+    TK_PR_BOOL   deslocar, e ir ao estado 3
+    TK_PR_CHAR   deslocar, e ir ao estado 4
 
-    $default  reduce using rule 1 (programa)
+    $padrão  reduzir usando a regra 1 (programa)
 
+    declaracao  ir ao estado 10
+    tipo        ir ao estado 8
 
-state 7
 
-    3 lista_de_elementos: declaracao .
+Estado 7
 
-    $default  reduce using rule 3 (lista_de_elementos)
+    3 lista_de_elementos: declaracao •
 
+    $padrão  reduzir usando a regra 3 (lista_de_elementos)
 
-state 8
 
-    4 declaracao: tipo . lista_identificador
+Estado 8
 
-    TK_IDENTIFICADOR  shift, and go to state 10
+    5 declaracao: tipo • lista_identificador
 
-    $default  reduce using rule 7 (lista_identificador)
+    TK_IDENTIFICADOR  deslocar, e ir ao estado 11
 
-    lista_identificador  go to state 11
+    lista_identificador  ir ao estado 12
 
 
-state 9
+Estado 9
 
-    0 $accept: programa $end .
+    0 $accept: programa $end •
 
-    $default  accept
+    $padrão  aceitar
 
 
-state 10
+Estado 10
 
-    5 lista_identificador: TK_IDENTIFICADOR . array "," lista_identificador ';'
-    6                    | TK_IDENTIFICADOR . array
+    4 lista_de_elementos: lista_de_elementos declaracao •
 
-    '['  shift, and go to state 12
+    $padrão  reduzir usando a regra 4 (lista_de_elementos)
 
-    $default  reduce using rule 10 (array)
 
-    array  go to state 13
+Estado 11
 
+    6 lista_identificador: TK_IDENTIFICADOR • array ',' lista_identificador
+    7                    | TK_IDENTIFICADOR • array ';'
 
-state 11
+    '['  deslocar, e ir ao estado 13
 
-    4 declaracao: tipo lista_identificador .
+    $padrão  reduzir usando a regra 10 (array)
 
-    $default  reduce using rule 4 (declaracao)
+    array  ir ao estado 14
 
 
-state 12
+Estado 12
 
-    8 array: '[' . TK_LIT_INT ']'
-    9      | '[' . lista_de_literais_inteiros ']'
+    5 declaracao: tipo lista_identificador •
 
-    TK_LIT_INT  shift, and go to state 14
+    $padrão  reduzir usando a regra 5 (declaracao)
 
-    $default  reduce using rule 12 (lista_de_literais_inteiros)
 
-    lista_de_literais_inteiros  go to state 15
+Estado 13
 
+    8 array: '[' • TK_LIT_INT ']'
+    9      | '[' • lista_de_literais_inteiros ']'
 
-state 13
+    TK_LIT_INT  deslocar, e ir ao estado 15
 
-    5 lista_identificador: TK_IDENTIFICADOR array . "," lista_identificador ';'
-    6                    | TK_IDENTIFICADOR array .
+    $padrão  reduzir usando a regra 12 (lista_de_literais_inteiros)
 
-    ","  shift, and go to state 16
+    lista_de_literais_inteiros  ir ao estado 16
 
-    $default  reduce using rule 6 (lista_identificador)
 
+Estado 14
 
-state 14
+    6 lista_identificador: TK_IDENTIFICADOR array • ',' lista_identificador
+    7                    | TK_IDENTIFICADOR array • ';'
 
-    8 array: '[' TK_LIT_INT . ']'
-   11 lista_de_literais_inteiros: TK_LIT_INT . '^' lista_de_literais_inteiros
+    ','  deslocar, e ir ao estado 17
+    ';'  deslocar, e ir ao estado 18
 
-    ']'  shift, and go to state 17
-    '^'  shift, and go to state 18
 
+Estado 15
 
-state 15
+    8 array: '[' TK_LIT_INT • ']'
+   11 lista_de_literais_inteiros: TK_LIT_INT • '^' lista_de_literais_inteiros
 
-    9 array: '[' lista_de_literais_inteiros . ']'
+    ']'  deslocar, e ir ao estado 19
+    '^'  deslocar, e ir ao estado 20
 
-    ']'  shift, and go to state 19
 
+Estado 16
 
-state 16
+    9 array: '[' lista_de_literais_inteiros • ']'
 
-    5 lista_identificador: TK_IDENTIFICADOR array "," . lista_identificador ';'
+    ']'  deslocar, e ir ao estado 21
 
-    TK_IDENTIFICADOR  shift, and go to state 10
 
-    $default  reduce using rule 7 (lista_identificador)
+Estado 17
 
-    lista_identificador  go to state 20
+    6 lista_identificador: TK_IDENTIFICADOR array ',' • lista_identificador
 
+    TK_IDENTIFICADOR  deslocar, e ir ao estado 11
 
-state 17
+    lista_identificador  ir ao estado 22
 
-    8 array: '[' TK_LIT_INT ']' .
 
-    $default  reduce using rule 8 (array)
+Estado 18
 
+    7 lista_identificador: TK_IDENTIFICADOR array ';' •
 
-state 18
+    $padrão  reduzir usando a regra 7 (lista_identificador)
 
-   11 lista_de_literais_inteiros: TK_LIT_INT '^' . lista_de_literais_inteiros
 
-    TK_LIT_INT  shift, and go to state 21
+Estado 19
 
-    $default  reduce using rule 12 (lista_de_literais_inteiros)
+    8 array: '[' TK_LIT_INT ']' •
 
-    lista_de_literais_inteiros  go to state 22
+    $padrão  reduzir usando a regra 8 (array)
 
 
-state 19
+Estado 20
 
-    9 array: '[' lista_de_literais_inteiros ']' .
+   11 lista_de_literais_inteiros: TK_LIT_INT '^' • lista_de_literais_inteiros
 
-    $default  reduce using rule 9 (array)
+    TK_LIT_INT  deslocar, e ir ao estado 23
 
+    $padrão  reduzir usando a regra 12 (lista_de_literais_inteiros)
 
-state 20
+    lista_de_literais_inteiros  ir ao estado 24
 
-    5 lista_identificador: TK_IDENTIFICADOR array "," lista_identificador . ';'
 
-    ';'  shift, and go to state 23
+Estado 21
 
+    9 array: '[' lista_de_literais_inteiros ']' •
 
-state 21
+    $padrão  reduzir usando a regra 9 (array)
 
-   11 lista_de_literais_inteiros: TK_LIT_INT . '^' lista_de_literais_inteiros
 
-    '^'  shift, and go to state 18
+Estado 22
 
+    6 lista_identificador: TK_IDENTIFICADOR array ',' lista_identificador •
 
-state 22
+    $padrão  reduzir usando a regra 6 (lista_identificador)
 
-   11 lista_de_literais_inteiros: TK_LIT_INT '^' lista_de_literais_inteiros .
 
-    $default  reduce using rule 11 (lista_de_literais_inteiros)
+Estado 23
 
+   11 lista_de_literais_inteiros: TK_LIT_INT • '^' lista_de_literais_inteiros
 
-state 23
+    '^'  deslocar, e ir ao estado 20
 
-    5 lista_identificador: TK_IDENTIFICADOR array "," lista_identificador ';' .
 
-    $default  reduce using rule 5 (lista_identificador)
+Estado 24
+
+   11 lista_de_literais_inteiros: TK_LIT_INT '^' lista_de_literais_inteiros •
+
+    $padrão  reduzir usando a regra 11 (lista_de_literais_inteiros)

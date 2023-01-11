@@ -1,4 +1,7 @@
 %{
+
+#include <stdio.h>
+extern int current_line_number;
 int yylex(void);
 void yyerror (char const *s);
 %}
@@ -34,16 +37,14 @@ void yyerror (char const *s);
 
 programa: lista_de_elementos | ;
 // lista_de_elementos: lista_de_elementos funcao;
-// lista_de_elementos: lista_de_elementos declaracao;
 // lista_de_elementos: funcao;
-lista_de_elementos: declaracao;
+lista_de_elementos:     declaracao |
+                        lista_de_elementos declaracao;
 
 declaracao: tipo lista_identificador;
 
-lista_identificador:    TK_IDENTIFICADOR array "," lista_identificador ';' |
-                        TK_IDENTIFICADOR array | ;
-
-
+lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador |
+                        TK_IDENTIFICADOR array ';';
 
 array:      '[' TK_LIT_INT ']'|
             '[' lista_de_literais_inteiros ']' | ;
@@ -57,3 +58,6 @@ tipo: TK_PR_FLOAT|
       TK_PR_BOOL;
       
 %%
+void yyerror (char const *s) {
+    fprintf (stderr, "%s on line %d\n", s, current_line_number);
+}
