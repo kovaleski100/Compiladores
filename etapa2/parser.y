@@ -86,13 +86,45 @@ inicializacao_variavel_local: '<' '=' literais;
 
 atribuicao: TK_IDENTIFICADOR '=' expressao | TK_IDENTIFICADOR arranjo_multi '=' expressao
 
-arranjo_multi:  '[' exp ']' |
-                '[' exp  '^' lista_de_expressoes ']';
+arranjo_multi:  '[' expressao ']' |
+                '[' expressao  '^' lista_de_expressoes ']';
 
-lista_de_expressoes: exp '^' lista_de_expressoes | exp;
+lista_de_expressoes: expressao '^' lista_de_expressoes | expressao;
 
 
-retorno:  TK_PR_RETURN exp;
+retorno:  TK_PR_RETURN expressao;
+
+
+expressao:  TK_IDENTIFICADOR |
+            TK_IDENTIFICADOR '[' expressao ']' |
+            TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
+            literais |
+            // chamada_funcao |
+            unarios_prefixados expressao |
+            expressao binarios expressao |
+            expressao '<' expressao |
+            expressao '>' expressao |
+            expressao operadores_controles_de_fluxo expressao |
+            '(' expressao ')'
+            
+
+unarios_prefixados: '-' | '!';
+
+binarios:   '*' |
+            '/' |
+            '%' |
+            '+' |
+            '-' ;
+//             operadores_compostos
+
+
+// operadores_compostos:   '+' '+' |
+//                         '-' '-' |
+//                         '+' '=' |
+//                         '-' '=' |
+//                         '*' '=' |
+//                         '/' '=' |
+//                         '%' '='
 
 
 
@@ -107,6 +139,14 @@ literais:   TK_LIT_FLOAT |
             TK_LIT_CHAR |
             TK_LIT_TRUE |
             TK_LIT_FALSE;
+
+operadores_controles_de_fluxo:  TK_OC_LE |
+                                TK_OC_GE  |
+                                TK_OC_EQ |
+                                TK_OC_NE |
+                                TK_OC_AND |
+                                TK_OC_OR |   
+                                
 
       
 %%
