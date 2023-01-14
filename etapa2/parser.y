@@ -70,7 +70,9 @@ bloco_de_comandos: '{' comandos '}' | '{' '}';
 comandos: comandos_simples ';' comandos | comandos_simples ';';
 
 comandos_simples:   tipo declaracao_variavel_local | 
-                    atribuicao | 
+                    atribuicao |
+                    controle_de_fluxo |
+                    chamada_funcao |
                     retorno;
 
 
@@ -95,27 +97,67 @@ lista_de_expressoes: expressao '^' lista_de_expressoes | expressao;
 retorno:  TK_PR_RETURN expressao;
 
 
-expressao:  TK_IDENTIFICADOR |
-            TK_IDENTIFICADOR '[' expressao ']' |
-            TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
-            literais |
-            // chamada_funcao |
-            unarios_prefixados expressao |
-            expressao binarios expressao |
-            expressao '<' expressao |
-            expressao '>' expressao |
-            expressao operadores_controles_de_fluxo expressao |
-            '(' expressao ')'
+controle_de_fluxo: TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos |
+                   TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos TK_PR_ELSE bloco_de_comandos |
+                   TK_PR_WHILE '(' expressao ')' bloco_de_comandos
+
+chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')'
+
+lista_de_argumentos: argumento |
+                     argumento ',' lista_de_argumentos;
+
+argumento : expressao;
+
+
+// PRECISARIA DE %left e %right PARA FUNCIONAR
+// expressao:  TK_IDENTIFICADOR |
+//             TK_IDENTIFICADOR '[' expressao ']' |
+//             TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
+//             literais |
+//             chamada_funcao |
+//             unarios_prefixados expressao |
+//             expressao binarios expressao
+//             expressao '*' expressao
+//             expressao '<' expressao |
+//             expressao '>' expressao |
+//             expressao operadores_controles_de_fluxo expressao |
+//             '(' expressao ')'
             
+expressao: expressao TK_OC_OR sexta_precedencia |
+           sexta_precedencia;
 
-unarios_prefixados: '-' | '!';
+sexta_precedencia:  sexta_precedencia TK_OC_AND quinta_precedencia |
+                    quinta_precedencia;
 
-binarios:   '*' |
-            '/' |
-            '%' |
-            '+' |
-            '-' ;
-//             operadores_compostos
+quinta_precedencia: quinta_precedencia TK_OC_EQ quarta_precedencia |
+                    quinta_precedencia TK_OC_NE quarta_precedencia |
+                    quarta_precedencia;
+
+quarta_precedencia: quarta_precedencia TK_OC_GE  terceira_precedencia |
+                    quarta_precedencia TK_OC_LE  terceira_precedencia |
+                    quarta_precedencia '>'  terceira_precedencia |
+                    quarta_precedencia '<'  terceira_precedencia |
+                    terceira_precedencia;
+
+terceira_precedencia:   terceira_precedencia '-' segunda_precedencia |
+                        terceira_precedencia '+' segunda_precedencia |
+                        segunda_precedencia;
+
+segunda_precedencia:    segunda_precedencia '%' primeira_precedencia |
+                        segunda_precedencia '/' primeira_precedencia |
+                        segunda_precedencia '*' primeira_precedencia |
+                        primeira_precedencia;
+
+primeira_precedencia:   '(' expressao ')' |
+                        '!' primeira_precedencia |
+                        '-' primeira_precedencia |
+                        fator;
+
+fator:  TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
+        TK_IDENTIFICADOR '[' expressao ']' |
+        literais |
+        chamada_funcao |
+        TK_IDENTIFICADOR ;
 
 
 // operadores_compostos:   '+' '+' |
@@ -139,17 +181,9 @@ literais:   TK_LIT_FLOAT |
             TK_LIT_CHAR |
             TK_LIT_TRUE |
             TK_LIT_FALSE;
-
-operadores_controles_de_fluxo:  TK_OC_LE |
-                                TK_OC_GE  |
-                                TK_OC_EQ |
-                                TK_OC_NE |
-                                TK_OC_AND |
-                                TK_OC_OR |   
                                 
-
       
 %%
 void yyerror (char const *s) {
-    fprintf (stderr, "%s on line %d\n", s, current_line_number);
+    fprintf (stderr, "%s na linha %d\n", s, current_line_number);
 }
