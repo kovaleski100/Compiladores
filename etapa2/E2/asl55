@@ -1,0 +1,6 @@
+//ERROR simbolo não identificado
+int f(int a, int b)
+{
+  int x;
+  f(x, .);
+}

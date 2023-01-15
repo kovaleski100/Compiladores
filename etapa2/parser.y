@@ -1,3 +1,13 @@
+/********************************************************************** 
+ * INF01147 - Compiladores - Turma B (2022/2)                         *
+ *                                                                    *
+ * Felipe Bastos                                                      *
+ * Matheus F Kovaleski                                                *
+ *                                                                    *
+ *                                                                    *
+ **********************************************************************/
+
+
 %{
 
 #include <stdio.h>
@@ -36,10 +46,11 @@ void yyerror (char const *s);
 %%
 
 programa: lista_de_elementos | ;
-lista_de_elementos: lista_de_elementos funcao;
-lista_de_elementos: funcao;
+
 lista_de_elementos:     declaracao |
-                        lista_de_elementos declaracao;
+                        lista_de_elementos declaracao |
+                        lista_de_elementos funcao |
+                        funcao;
 
 declaracao: tipo lista_identificador;
 
@@ -73,6 +84,7 @@ comandos_simples:   tipo declaracao_variavel_local |
                     atribuicao |
                     controle_de_fluxo |
                     chamada_funcao |
+                    bloco_de_comandos |
                     retorno;
 
 
@@ -81,7 +93,7 @@ declaracao_variavel_local : TK_IDENTIFICADOR inicializacao_variavel_local ',' de
                             TK_IDENTIFICADOR  inicializacao_variavel_local |
                             TK_IDENTIFICADOR ;
 
-inicializacao_variavel_local: '<' '=' literais; 
+inicializacao_variavel_local: TK_OC_LE literais; 
 
 
 
@@ -107,7 +119,6 @@ lista_de_argumentos: argumento |
                      argumento ',' lista_de_argumentos;
 
 argumento : expressao;
-
 
 // PRECISARIA DE %left e %right PARA FUNCIONAR
 // expressao:  TK_IDENTIFICADOR |
@@ -158,18 +169,6 @@ fator:  TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
         literais |
         chamada_funcao |
         TK_IDENTIFICADOR ;
-
-
-// operadores_compostos:   '+' '+' |
-//                         '-' '-' |
-//                         '+' '=' |
-//                         '-' '=' |
-//                         '*' '=' |
-//                         '/' '=' |
-//                         '%' '='
-
-
-
 
 tipo: TK_PR_FLOAT|
       TK_PR_INT  |

@@ -1,0 +1,3 @@
+//O tipo pode estar precedido opcionalmente pela palavra res. static.
+//variáveis globais
+int v;
