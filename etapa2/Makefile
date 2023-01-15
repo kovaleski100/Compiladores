@@ -17,6 +17,9 @@ scanner: scanner.l
 bison: parser.y				
 			bison -d -v parser.y
 
+zip:
+	tar cvzf etapa2.tgz Makefile main.c parser.y scanner.l
+
 clean:
 	rm -f etapa2
 	rm -f parser.tab.c
