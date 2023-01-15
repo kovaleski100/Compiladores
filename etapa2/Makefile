@@ -18,10 +18,11 @@ bison: parser.y
 			bison -d -v parser.y
 
 clean:
-	rm -f etapa1
+	rm -f etapa2
 	rm -f parser.tab.c
 	rm -f parser.tab.o
 	rm -f parser.tab.h
+	rm -f parser.output
 	rm -f lex.yy.c
 	rm -f lex.yy.o
 	rm -f main.o
