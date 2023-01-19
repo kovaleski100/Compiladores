@@ -1,8 +1,5 @@
-int iiii()
+//CORRECT
+int f()
 {
-    int i <= 10;
-    if(i+j>10)
-    then{
-        i = i+j;
-    };
+  f();
 }

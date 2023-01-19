@@ -113,7 +113,7 @@ controle_de_fluxo: TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos |
                    TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos TK_PR_ELSE bloco_de_comandos |
                    TK_PR_WHILE '(' expressao ')' bloco_de_comandos
 
-chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')'
+chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')'| TK_IDENTIFICADOR '('  ')';
 
 lista_de_argumentos: argumento |
                      argumento ',' lista_de_argumentos;
