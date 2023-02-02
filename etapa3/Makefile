@@ -6,7 +6,7 @@
 # **********************************************************************/
 
 main: main.c
-			bison -d -v parser.y
+			bison -d parser.y
 			flex scanner.l
 			gcc parser.tab.c lex.yy.c main.c -o etapa2
 
@@ -14,8 +14,11 @@ scanner: scanner.l
 			flex scanner.l
 			gcc lex.yy.c -c
 
-bison: parser.y				
+bison: parser.y			
 			bison -d -v parser.y
+
+zip:
+	tar cvzf etapa2.tgz Makefile main.c parser.y scanner.l
 
 clean:
 	rm -f etapa2

@@ -1,3 +1,11 @@
+#/********************************************************************** 
+# * INF01147 - Compiladores - Turma B (2022/2)                         *
+# *                                                                    *
+# * Felipe Bastos                                                      *
+# * Matheus Kovaleski                                      					 	 *
+# **********************************************************************/
+
+
 /*
   Função principal para realização da E3.
   Não modifique este arquivo.

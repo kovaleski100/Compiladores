@@ -72,7 +72,8 @@ lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador |
 array:      '[' TK_LIT_INT ']'|
             '[' TK_LIT_INT '^' lista_de_literais_inteiros ']' | ;
 
-lista_de_literais_inteiros :   TK_LIT_INT '^' lista_de_literais_inteiros | TK_LIT_INT;
+lista_de_literais_inteiros :    TK_LIT_INT '^' lista_de_literais_inteiros |
+                                TK_LIT_INT;
 
 funcao: cabecalho corpo;
 
@@ -84,13 +85,12 @@ cabecalho:  tipo TK_IDENTIFICADOR '(' ')' |
 lista_funcao:   parametro_funcao ',' lista_funcao |
                 parametro_funcao;
 
-            
 parametro_funcao: tipo TK_IDENTIFICADOR;
-
 
 bloco_de_comandos: '{' comandos '}' | '{' '}';
 
-comandos: comandos_simples ';' comandos | comandos_simples ';';
+comandos:   comandos_simples ';' comandos | 
+            comandos_simples ';';
 
 comandos_simples:   tipo declaracao_variavel_local | 
                     atribuicao |
@@ -99,7 +99,6 @@ comandos_simples:   tipo declaracao_variavel_local |
                     bloco_de_comandos |
                     retorno;
 
-
 declaracao_variavel_local : TK_IDENTIFICADOR inicializacao_variavel_local ',' declaracao_variavel_local | 
                             TK_IDENTIFICADOR  ',' declaracao_variavel_local |      
                             TK_IDENTIFICADOR  inicializacao_variavel_local |
@@ -107,10 +106,8 @@ declaracao_variavel_local : TK_IDENTIFICADOR inicializacao_variavel_local ',' de
 
 inicializacao_variavel_local: TK_OC_LE literais; 
 
-
-
-
-atribuicao: TK_IDENTIFICADOR '=' expressao | TK_IDENTIFICADOR arranjo_multi '=' expressao
+atribuicao: TK_IDENTIFICADOR '=' expressao | 
+            TK_IDENTIFICADOR arranjo_multi '=' expressao
 
 arranjo_multi:  '[' expressao ']' |
                 '[' expressao  '^' lista_de_expressoes ']';
@@ -125,7 +122,7 @@ controle_de_fluxo: TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos |
                    TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos TK_PR_ELSE bloco_de_comandos |
                    TK_PR_WHILE '(' expressao ')' bloco_de_comandos
 
-chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')'
+chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')'| TK_IDENTIFICADOR '('  ')';
 
 lista_de_argumentos: argumento |
                      argumento ',' lista_de_argumentos;
