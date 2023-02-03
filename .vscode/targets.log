@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Oct 14 22:19:18 2022
+# Make data base, printed on Fri Feb  3 20:33:04 2023
 
 # Variables
 
@@ -52,8 +52,8 @@ _ = /usr/share/code/code
 XDG_CONFIG_DIRS = /etc/xdg/xdg-cinnamon:/etc/xdg
 # environment
 GTK_OVERLAY_SCROLLING = 1
-# makefile (from 'Makefile', line 1)
-MAKEFILE_LIST :=  Makefile
+# makefile
+MAKEFILE_LIST := 
 # automatic
 @F = $(notdir $@)
 # environment
@@ -77,11 +77,11 @@ XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session0
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/kovaleski100/.local/bin:/home/kovaleski100/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /home/kovaleski100/.local/bin:/home/kovaleski100/anaconda3/bin:/home/kovaleski100/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/kovaleski100-300E5K-300E5Q:@/tmp/.ICE-unix/1035,unix/kovaleski100-300E5K-300E5Q:/tmp/.ICE-unix/1035
+SESSION_MANAGER = local/kovaleski100-300E5K-300E5Q:@/tmp/.ICE-unix/1059,unix/kovaleski100-300E5K-300E5Q:/tmp/.ICE-unix/1059
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -99,7 +99,7 @@ XDG_SESSION_DESKTOP = cinnamon
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 3406
+GIO_LAUNCHED_DESKTOP_FILE_PID = 5493
 # automatic
 %F = $(notdir $%)
 # environment
@@ -115,7 +115,7 @@ QT_QPA_PLATFORMTHEME = qt5ct
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1119
+SSH_AGENT_PID = 1158
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = X-Cinnamon
 # environment
@@ -149,13 +149,13 @@ MAKECMDGOALS := all
 # environment
 SHLVL = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-5468daba-ce00-4ea9-9cec-7d8029423061.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-686f735b-cd33-44b4-b106-ba9ec5caaa03.sock
 # environment
 XDG_SESSION_ID = c1
 # environment
 USER = kovaleski100
 # makefile
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := 
 # environment
 XDG_CURRENT_DESKTOP = X-Cinnamon
 # automatic
@@ -213,9 +213,9 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 3406
+VSCODE_PID = 5493
 # variable set hash-table stats:
-# Load=101/1024=10%, Rehash=0, Collisions=7/126=6%
+# Load=101/1024=10%, Rehash=0, Collisions=7/123=6%
 
 # Pattern-specific Variable Values
 
@@ -223,21 +223,15 @@ VSCODE_PID = 3406
 
 # Directories
 
-# . (device 2052, inode 91053): 17 files, no impossibilities.
+# . (device 2052, inode 91053): 10 files, no impossibilities.
 
-# 17 files, no impossibilities in 1 directories.
+# 10 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
 # No implicit rules.
 
 # Files
-
-# Not a target:
-scanner.l:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
 
 # Not a target:
 all:
@@ -247,25 +241,18 @@ all:
 #  File has not been updated.
 
 # Not a target:
-main.c:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-10-14 22:18:15.227821954
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Failed to be updated.
 
-build: clean scanner.l main.c
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 10):
-	flex scanner.l
-	gcc -o etapa1 main.c -I.
+# Not a target:
+makefile:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
 
 # Not a target:
 .DEFAULT:
@@ -273,41 +260,28 @@ build: clean scanner.l main.c
 #  Modification time never checked.
 #  File has not been updated.
 
-clean:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 14):
-	rm -f etapa1
-	rm -f etapa2
-	rm -f etapa3
- 
-	rm -f etapa4
- 
-	rm -f etapa5
-	rm -f etapa6
-	rm -f etapa7
-	rm -f lex.yy.c
-	rm -f parser.tab.h
-	rm -f parser.tab.c
-	rm -f parser.output
-	rm -f test.c
-	rm -f a.out
+# Not a target:
+GNUmakefile:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
 
 # files hash-table stats:
-# Load=8/1024=1%, Rehash=0, Collisions=0/22=0%
+# Load=6/1024=1%, Rehash=0, Collisions=0/15=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 24 / storage = 172 B / avg = 7 B
-# current buf: size = 8162 B / used = 172 B / count = 24 / avg = 7 B
+# strcache buffers: 1 (0) / strings = 18 / storage = 176 B / avg = 9 B
+# current buf: size = 8162 B / used = 176 B / count = 18 / avg = 9 B
 
-# strcache performance: lookups = 33 / hit rate = 27%
+# strcache performance: lookups = 21 / hit rate = 14%
 # hash-table stats:
-# Load=24/8192=0%, Rehash=0, Collisions=1/33=3%
-# Finished Make data base on Fri Oct 14 22:19:18 2022
+# Load=18/8192=0%, Rehash=0, Collisions=1/21=5%
+# Finished Make data base on Fri Feb  3 20:33:04 2023
+ 
 
  

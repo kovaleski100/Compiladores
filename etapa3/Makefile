@@ -8,7 +8,7 @@
 main: main.c
 			bison -d parser.y
 			flex scanner.l
-			gcc parser.tab.c lex.yy.c main.c -o etapa2
+			gcc ast.c parser.tab.c lex.yy.c main.c -o etapa2
 
 scanner: scanner.l
 			flex scanner.l
@@ -18,7 +18,7 @@ bison: parser.y
 			bison -d -v parser.y
 
 zip:
-	tar cvzf etapa2.tgz Makefile main.c parser.y scanner.l
+	tar cvzf etapa2.tgz Makefile main.c parser.y scanner.l ast.h ast.c
 
 clean:
 	rm -f etapa2
