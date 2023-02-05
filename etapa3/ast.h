@@ -30,5 +30,6 @@ typedef struct ast
 ast* create_node(int tipo, valor_lexico *valor);
 ast* create_leaf(int tipo, valor_lexico *valor);
 ast* add_child(ast *arvore, ast nodo);
-print_arvore(ast *arvore);
-print_dados(ast *arvore);
+void print_dados(ast *arvore);
+void libera(ast *arvore);
+void exporta(ast *arvore);

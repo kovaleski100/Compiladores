@@ -24,7 +24,7 @@ ast* add_child(ast *arvore, ast nodo)
     return arvore;
 }
 
-print_arvore(ast *arvore)
+void exporta(ast *arvore)
 {
     for(int i=0; i< arvore->num_filhos; i++)
     {
@@ -36,9 +36,13 @@ print_arvore(ast *arvore)
     }
 }
 
-
 //acho que essa função tem que ser implementada conforme for ocorrendo os testes
-print_dados(ast *arvore)
+void print_dados(ast *arvore)
 {
 
+}
+
+void libera(ast *arvore)
+{
+    free(arvore);
 }
