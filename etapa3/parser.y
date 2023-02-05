@@ -128,20 +128,6 @@ lista_de_argumentos: argumento |
                      argumento ',' lista_de_argumentos;
 
 argumento : expressao;
-
-// PRECISARIA DE %left e %right PARA FUNCIONAR
-// expressao:  TK_IDENTIFICADOR |
-//             TK_IDENTIFICADOR '[' expressao ']' |
-//             TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
-//             literais |
-//             chamada_funcao |
-//             unarios_prefixados expressao |
-//             expressao binarios expressao
-//             expressao '*' expressao
-//             expressao '<' expressao |
-//             expressao '>' expressao |
-//             expressao operadores_controles_de_fluxo expressao |
-//             '(' expressao ')'
             
 expressao: expressao TK_OC_OR sexta_precedencia |
            sexta_precedencia;

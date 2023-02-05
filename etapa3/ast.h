@@ -13,6 +13,7 @@ union Literal
 typedef struct valor_lexico
 {
     int numero_linha;
+    int tipo_token;
     char *valor_token;
     union Literal literal;
     /* data */
@@ -20,15 +21,14 @@ typedef struct valor_lexico
 
 typedef struct ast
 {
-    valor_lexico valor_lexico;
-    int tipo_token;
+    valor_lexico *valor_lexico;
     struct ast *filho;
     int num_filhos;
     /* data */
 } ast;
 
-ast* create_node(int tipo, valor_lexico valor);
-ast* create_leaf(int tipo, valor_lexico valor);
+ast* create_node(int tipo, valor_lexico *valor);
+ast* create_leaf(int tipo, valor_lexico *valor);
 ast* add_child(ast *arvore, ast nodo);
 print_arvore(ast *arvore);
 print_dados(ast *arvore);

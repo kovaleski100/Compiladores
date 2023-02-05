@@ -1,11 +1,14 @@
 #include "ast.h"
 
-ast* create_node(int tipo, valor_lexico valor)
+ast* create_node(int tipo, valor_lexico *valor)
 {
+    if(valor == NULL){
+        return; 
+    }
     ast *node = (ast*)malloc(sizeof(ast));
 
     node->filho = NULL;
-    node->tipo_token = tipo;
+    // node->tipo_token = tipo;
     node->valor_lexico = valor;
 
     return node;
@@ -25,7 +28,7 @@ print_arvore(ast *arvore)
 {
     for(int i=0; i< arvore->num_filhos; i++)
     {
-        print_dados(&arvore->valor_lexico)
+        print_dados(&arvore->valor_lexico);
     }
     for(int i = 0; i< arvore->num_filhos; i++)
     {
