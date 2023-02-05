@@ -34,8 +34,8 @@ int yydebug=1;
 // %type<no> segunda_precedencia
 // %type<no> primeira_precedencia
 // %type<no> expressao
-// %type<no> literais
-// %type<no> fator
+%type<no> literais
+%type<no> retorno
 
 
 %token TK_PR_INT
@@ -128,7 +128,7 @@ arranjo_multi:  '[' expressao ']' |
 lista_de_expressoes: expressao '^' lista_de_expressoes | expressao;
 
 
-retorno:  TK_PR_RETURN expressao;
+retorno:  TK_PR_RETURN expressao {$$ = create_node(TK_PR_RETURN, $1);};
 
 
 controle_de_fluxo: TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos |
@@ -177,20 +177,20 @@ fator:  TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
         TK_IDENTIFICADOR '[' expressao ']' |
         literais |
         chamada_funcao |
-        TK_IDENTIFICADOR; //{$$ = $1;};
+        TK_IDENTIFICADOR;
 
 tipo: TK_PR_FLOAT | //{$$ = create_node_from_token(TIPO_FLOAT, $1);};|
       TK_PR_INT  |
       TK_PR_CHAR |
       TK_PR_BOOL;
 
-literais:   TK_LIT_FLOAT | // {$$ = create_leaf(LIT_FLOAT, $1);}; |
-            TK_LIT_INT   | //{$$ = create_leaf(LIT_INT, $1);};|
-            TK_LIT_CHAR  | //{$$ = create_leaf(LIT_CHAR, $1);};|
-            TK_LIT_TRUE  | //{$$ = create_leaf(LIT_TRUE, $1);};|
-            TK_LIT_FALSE; //{$$ = create_leaf(LIT_FALSE, $1);};;
+literais:   TK_LIT_FLOAT  {$$ = create_node(literal, $1);}| // {$$ = create_leaf(LIT_FLOAT, $1);}; |
+            TK_LIT_INT    {$$ = create_node(literal, $1);}| //{$$ = create_leaf(LIT_INT, $1);};|
+            TK_LIT_CHAR   {$$ = create_node(literal, $1);}| //{$$ = create_leaf(LIT_CHAR, $1);};|
+            TK_LIT_TRUE   {$$ = create_node(literal, $1);}| //{$$ = create_leaf(LIT_TRUE, $1);};|
+            TK_LIT_FALSE  {$$ = create_node(literal, $1);}; //{$$ = create_leaf(LIT_FALSE, $1);};;
                                 
-//identificador: TK_IDENTIFICADOR {$$ = create_node_from_token(IDENTIFICADOR, $1);}; // create_leaf
+//identificador: {$$  TK_IDENTIFICADOR= create_node_from_token(IDENTIFICADOR, $1);}; // create_leaf
 
 //filho do if sem else, colocar como filho nulo
 %%

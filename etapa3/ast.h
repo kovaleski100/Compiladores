@@ -9,7 +9,8 @@ enum tipos_tokens
     operador_composto,
     palavra_reservada,
     identificador,
-    literal
+    literal,
+    operador_unario
 };
 
 enum literais

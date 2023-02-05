@@ -2,15 +2,17 @@
 
 ast* create_node(int tipo, valor_lexico *valor)
 {
+    printf("Entrou create node \n");
     if(valor == NULL){
         return NULL;
     }
     ast *node = (ast*)malloc(sizeof(ast));
-
     node->filho = NULL;
+    node->num_filhos = 0;
     // node->tipo_token = tipo;
     node->valor_lexico = valor;
-
+    printf("%s\n", node->valor_lexico->valorToken);
+    printf("Criou nodo\n");
     return node;
 
 }
@@ -26,6 +28,9 @@ ast* add_child(ast *arvore, ast *nodo)
 
 void exporta(ast *arvore)
 {
+    printf("Exporta\n");
+    printf("%d\n", arvore->num_filhos);
+    printf("%s", arvore->valor_lexico->valorToken);
     for(int i=0; i< arvore->num_filhos; i++)
     {
         print_nodo(arvore);
@@ -38,6 +43,7 @@ void exporta(ast *arvore)
 
 void print_nodo(ast *arvore)
 {
+    printf("Printando nodo\n");
     for(int i=0; i < arvore->num_filhos; i++)
     {
         ast *child = (ast*)malloc(sizeof(ast));
@@ -84,5 +90,8 @@ valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, i
     else{
         vl->valorToken = strdup(texto);
     }
+    printf("tipo: %d\n", vl->tipo_token);
+    printf("linha: %d\n", vl->numero_linha);
+    printf("literal: %d\n", vl->literal.d);
     return vl;
 }

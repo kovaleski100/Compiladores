@@ -1,5 +1,5 @@
 //CORRECT
 int f()
 {
-  f();
+  i = 4;
 }
