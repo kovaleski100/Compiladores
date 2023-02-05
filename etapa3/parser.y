@@ -171,7 +171,7 @@ primeira_precedencia:   '(' expressao ')' | //{$$ = $2;} |
                         '!' primeira_precedencia | //{$$ = create_node(EXCLAMACAO_UNARIO, '!') ; add_child($$, $2);} |
                         '-' primeira_precedencia | //{$$ = create_node(MENOS_UNARIO, "-"); add_child($$, $2);} |
                         // fator {$$ = $1;};
-                        fator
+                        fator;
 
 fator:  TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
         TK_IDENTIFICADOR '[' expressao ']' |
@@ -179,7 +179,7 @@ fator:  TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
         chamada_funcao |
         TK_IDENTIFICADOR; //{$$ = $1;};
 
-tipo: TK_PR_FLOAT //{$$ = create_node_from_token(TIPO_FLOAT, $1);};|
+tipo: TK_PR_FLOAT | //{$$ = create_node_from_token(TIPO_FLOAT, $1);};|
       TK_PR_INT  |
       TK_PR_CHAR |
       TK_PR_BOOL;

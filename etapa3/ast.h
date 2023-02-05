@@ -19,7 +19,7 @@ enum literais
     inteiro,
     caracter,
     flutuante,
-    nulo, 
+    nulo
 };
 
 typedef union tipo_literal
@@ -41,20 +41,21 @@ typedef struct valor_lexico
     int numero_linha;
     valor_token *valorToken;
     int tipo_token;
+    union tipo_literal literal;
     /* data */
 } valor_lexico;
 
 typedef struct ast
 {
     valor_lexico *valor_lexico;
-    struct ast *filho;
+    struct ast **filho;
     int num_filhos;
     /* data */
 } ast;
 
 ast* create_node(int tipo, valor_lexico *valor);
 ast* create_leaf(int tipo, valor_lexico *valor);
-ast* add_child(ast *arvore, ast nodo);
+ast* add_child(ast *arvore, ast *nodo);
 void print_dados(ast *arvore);
 void print_nodo(ast *arvore);
 void libera(ast *arvore);

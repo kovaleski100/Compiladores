@@ -16,9 +16,9 @@ ast* create_node(int tipo, valor_lexico *valor)
 }
 
 // ast* create_leaf(int tipo, valor_lexico valor); precisa?
-ast* add_child(ast *arvore, ast nodo)
+ast* add_child(ast *arvore, ast *nodo)
 {
-    arvore->filho = realloc(arvore->filho, sizeof(arvore->filho)*(arvore->num_filhos+1));
+    arvore->filho = (ast**)realloc(arvore->filho, sizeof(arvore->filho)*(arvore->num_filhos+1));
     arvore->filho[arvore->num_filhos] = nodo;
     arvore->num_filhos += 1;
     return arvore;
@@ -41,7 +41,7 @@ void print_nodo(ast *arvore)
     for(int i=0; i < arvore->num_filhos; i++)
     {
         ast *child = (ast*)malloc(sizeof(ast));
-        child = &arvore->filho[i];
+        child = arvore->filho[i];
         printf("%p, %p", arvore, child);
         print_nodo(child);
     }
@@ -61,6 +61,7 @@ void libera(ast *arvore)
 
 valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal)
 {
+
     valor_lexico *vl = (valor_lexico*)malloc(sizeof(valor_lexico));
     vl->tipo_token = tipo_token;
     vl->numero_linha = current_line_number;
