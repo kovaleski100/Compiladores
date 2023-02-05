@@ -49,14 +49,14 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 "float"			return TK_PR_FLOAT;
 "bool"			return TK_PR_BOOL;
 "char"			return TK_PR_CHAR;
-"if"			  return TK_PR_IF;
+"if"			  {yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_IF;}
 "then"			return TK_PR_THEN;
 "else"			return TK_PR_ELSE;
-"while"			return TK_PR_WHILE;
-"input"			return TK_PR_INPUT;
-"output"		return TK_PR_OUTPUT;
-"return"		return TK_PR_RETURN;
-"for"			  return TK_PR_FOR;
+"while"			{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_WHILE;}
+"input"			{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_INPUT;}
+"output"		{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_OUTPUT;}
+"return"		{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_RETURN;}
+"for"			  {yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_FOR;}
 
   /* (5) -> Literais true e false
   **     Tive que colocar essas declarações aqui em cima pois se ficasse na categoria 5
@@ -71,12 +71,12 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 
   /* (3) -> Operadores compostos */
 
-"<="			return TK_OC_LE;
-">="			return TK_OC_GE;
-"=="			return TK_OC_EQ;
-"!="			return TK_OC_NE;
-"&&"			return TK_OC_AND;
-"||"			return TK_OC_OR;
+"<="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_LE;}
+">="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_GE;}
+"=="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_EQ;}
+"!="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_NE;}
+"&&"		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_AND;}
+"||"		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_OR;}
 
   /* (5) -> Literais */
 

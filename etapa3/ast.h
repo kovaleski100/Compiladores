@@ -11,13 +11,21 @@ enum tipos_tokens
     literal
 };
 
-enum tipo_literal
+enum literais
 {
+    falso,
+    verdadeiro,
     inteiro,
     caracter,
-    flutuante,
-    verdadeiro,
-    falso
+    flutuante 
+};
+
+union tipo_literal
+{
+    int inteiro;
+    char *caracter;
+    float flutuante;
+    bool booleano;
 };
 
 typedef struct valor_lexico
@@ -25,7 +33,7 @@ typedef struct valor_lexico
     int numero_linha;
     char *valor_token;
     int tipo_token;
-    union literal;
+    union tipo_literal literal;
     /* data */
 } valor_lexico;
 
