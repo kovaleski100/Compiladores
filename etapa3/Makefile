@@ -10,6 +10,11 @@ main: main.c
 			flex scanner.l
 			gcc ast.c parser.tab.c lex.yy.c main.c -o etapa3
 
+debug: 
+		bison -d parser.y
+			flex scanner.l
+			gcc -g ast.c parser.tab.c lex.yy.c main.c
+
 scanner: scanner.l
 			flex scanner.l
 			gcc lex.yy.c -c
@@ -21,6 +26,7 @@ zip:
 	tar cvzf etapa3.tgz Makefile main.c parser.y scanner.l ast.h ast.c
 
 clean:
+	rm -f a.out
 	rm -f etapa3
 	rm -f parser.tab.c
 	rm -f parser.tab.o
