@@ -2,6 +2,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+enum tipos_tokens
+{
+    caracter_especial,
+    operador_composto,
+    palavra_reservada,
+    identificador,
+    literal
+};
+
 union Literal
 {
     int d;
@@ -13,7 +22,6 @@ union Literal
 typedef struct valor_lexico
 {
     int numero_linha;
-    int tipo_token;
     char *valor_token;
     union Literal literal;
     /* data */
@@ -23,6 +31,7 @@ typedef struct ast
 {
     valor_lexico *valor_lexico;
     struct ast *filho;
+    int tipo_token;
     int num_filhos;
     /* data */
 } ast;
