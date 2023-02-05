@@ -28,19 +28,28 @@ void exporta(ast *arvore)
 {
     for(int i=0; i< arvore->num_filhos; i++)
     {
-        print_dados(&arvore->valor_lexico);
+        print_nodo(&arvore);
     }
-    for(int i = 0; i< arvore->num_filhos; i++)
+    // for(int i = 0; i< arvore->num_filhos; i++)
+    // {
+    //     print_dados(&arvore->filho[i]);
+    // }
+}
+
+void print_nodo(ast *arvore)
+{
+    for(int i=0; i < arvore->num_filhos; i++)
     {
-        print_arvore(&arvore->filho[i]);
+        printf("%p, %p", arvore, arvore->filho[i]);
+        print_nodo(&arvore->filho[i]);
     }
 }
 
 //acho que essa função tem que ser implementada conforme for ocorrendo os testes
-void print_dados(ast *arvore)
-{
-
-}
+// void print_dados(ast *arvore)
+// {
+    
+// }
 
 void libera(ast *arvore)
 {
