@@ -16,7 +16,8 @@ enum tipo_literal
     inteiro,
     caracter,
     flutuante,
-    boleando
+    verdadeiro,
+    falso
 };
 
 typedef struct valor_lexico
@@ -43,4 +44,4 @@ void print_dados(ast *arvore);
 void print_nodo(ast *arvore);
 void libera(ast *arvore);
 void exporta(ast *arvore);
-valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto);
+valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal);

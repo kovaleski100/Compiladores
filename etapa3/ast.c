@@ -56,11 +56,19 @@ void libera(ast *arvore)
     free(arvore);
 }
 
-valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto)
+
+valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal)
 {
     valor_lexico *vl = (valor_lexico*)malloc(sizeof(valor_lexico));
     vl->tipo_token = tipo_token;
-    vl->numero_linha = current_line_number;
-    vl->valor_token = texto;
+    vl->numero_linha = current_line_number;    
+    if(tipo_token == literal && tipo_literal == inteiro){
+        vl->valor_token = atoi(texto);
+    }
+
+    else{
+        vl->valor_token = strdup(texto);
+    }
     return vl;
-  }
+
+}

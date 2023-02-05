@@ -11,6 +11,7 @@
 %{
 
 #include <stdio.h>
+#include "ast.h"
 extern int current_line_number;
 int yylex(void);
 void yyerror (char const *s);
@@ -18,12 +19,22 @@ int yydebug=1
 %}
 
 %union{
- node_t *no;
- valor_t *valor_lexico; // etapa3 - 2.1 
+ ast *no;
+ valor_lexico *valor_lexico; // etapa3 - 2.1 
 }
 
-%type<no> arranjo_opcional
-%type<no> nivel7 //setima_precedencia
+// %type<no> arranjo_opcional
+// %type<no> nivel7 //setima_precedencia
+%type<no> sexta_precedencia
+%type<no> quinta_precedencia
+%type<no> quarta_precedencia
+%type<no> terceira_precedencia
+%type<no> segunda_precedencia
+%type<no> primeira_precedencia
+%type<no> expressao
+%type<no> literais
+%type<no> fator
+
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
