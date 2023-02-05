@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 enum tipos_tokens
 {
@@ -20,20 +21,25 @@ enum literais
     flutuante 
 };
 
-union tipo_literal
+typedef union tipo_literal
 {
-    int inteiro;
-    char *caracter;
-    float flutuante;
-    bool booleano;
-};
+    int d;
+    char *s;
+    float f;
+    bool b;
+}tipo_literal;
+
+typedef struct valor_token
+{
+    char *valor_token;
+    union tipo_literal *tl;
+}valor_token;
 
 typedef struct valor_lexico
 {
     int numero_linha;
-    char *valor_token;
+    valor_token *valorToken;
     int tipo_token;
-    union tipo_literal literal;
     /* data */
 } valor_lexico;
 

@@ -3,7 +3,7 @@
 ast* create_node(int tipo, valor_lexico *valor)
 {
     if(valor == NULL){
-        return; 
+        return NULL;
     }
     ast *node = (ast*)malloc(sizeof(ast));
 
@@ -18,7 +18,7 @@ ast* create_node(int tipo, valor_lexico *valor)
 // ast* create_leaf(int tipo, valor_lexico valor); precisa?
 ast* add_child(ast *arvore, ast nodo)
 {
-    realloc(arvore->filho, sizeof(arvore->filho)*(arvore->num_filhos+1));
+    arvore->filho = realloc(arvore->filho, sizeof(arvore->filho)*(arvore->num_filhos+1));
     arvore->filho[arvore->num_filhos] = nodo;
     arvore->num_filhos += 1;
     return arvore;
@@ -28,7 +28,7 @@ void exporta(ast *arvore)
 {
     for(int i=0; i< arvore->num_filhos; i++)
     {
-        print_nodo(&arvore);
+        print_nodo(arvore);
     }
     // for(int i = 0; i< arvore->num_filhos; i++)
     // {
@@ -40,8 +40,10 @@ void print_nodo(ast *arvore)
 {
     for(int i=0; i < arvore->num_filhos; i++)
     {
-        printf("%p, %p", arvore, arvore->filho[i]);
-        print_nodo(&arvore->filho[i]);
+        ast *child = (ast*)malloc(sizeof(ast));
+        child = &arvore->filho[i];
+        printf("%p, %p", arvore, child);
+        print_nodo(child);
     }
 }
 
@@ -65,19 +67,19 @@ valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, i
     vl->numero_linha = current_line_number;
 
     if(tipo_token == literal && tipo_literal == inteiro){
-        vl->literal.inteiro = atoi(texto);
+        vl->valorToken->tl->d = atoi(texto);
     }
     else if(tipo_token == literal && tipo_literal == flutuante){
-        vl->tipo_literal = tipo_literal;
+        vl->valorToken->tl->f = tipo_literal;
     }
     else if(tipo_token == literal && tipo_literal == falso){
-        vl->tipo_literal = false;
+        vl->valorToken->tl->b = false;
     } 
     else if(tipo_token == literal && tipo_literal == verdadeiro){
-            vl->tipo_literal = tipo_literal;= true;
+        vl->valorToken->tl->b = true;
     }
     else{
-        vl->valor_token = strdup(texto);
+        vl->valorToken->valor_token = strdup(texto);
     }
     return vl;
 }
