@@ -62,7 +62,6 @@ void libera(ast *arvore)
 valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal)
 {
     valor_lexico *vl = (valor_lexico*)malloc(sizeof(valor_lexico));
-    // SALVA CARACTERISTICAS DO VALOR LEXICO
     vl->tipo_token = tipo_token;
     vl->numero_linha = current_line_number;
 
@@ -70,7 +69,7 @@ valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, i
         vl->valorToken->tl->d = atoi(texto);
     }
     else if(tipo_token == literal && tipo_literal == flutuante){
-        vl->valorToken->tl->f = tipo_literal;
+        vl->valorToken->tl->f = atof(texto);
     }
     else if(tipo_token == literal && tipo_literal == falso){
         vl->valorToken->tl->b = false;
@@ -78,8 +77,12 @@ valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, i
     else if(tipo_token == literal && tipo_literal == verdadeiro){
         vl->valorToken->tl->b = true;
     }
+    else if(tipo_token == literal && tipo_literal == caracter){
+        vl->valorToken->tl->s = strdup(texto);
+    }
     else{
         vl->valorToken->valor_token = strdup(texto);
+
     }
     return vl;
 }

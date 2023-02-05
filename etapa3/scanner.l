@@ -49,14 +49,14 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 "float"			return TK_PR_FLOAT;
 "bool"			return TK_PR_BOOL;
 "char"			return TK_PR_CHAR;
-"if"			  {yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_IF;}
+"if"			  {yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, nulo); return TK_PR_IF;}
 "then"			return TK_PR_THEN;
 "else"			return TK_PR_ELSE;
-"while"			{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_WHILE;}
-"input"			{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_INPUT;}
-"output"		{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_OUTPUT;}
-"return"		{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_RETURN;}
-"for"			  {yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, NULL); return TK_PR_FOR;}
+"while"			{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, nulo); return TK_PR_WHILE;}
+"input"			{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, nulo); return TK_PR_INPUT;}
+"output"		{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, nulo); return TK_PR_OUTPUT;}
+"return"		{yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, nulo); return TK_PR_RETURN;}
+"for"			  {yylval.valor_lexico = cria_valor(palavra_reservada, current_line_number, yytext, nulo); return TK_PR_FOR;}
 
   /* (5) -> Literais true e false
   **     Tive que colocar essas declarações aqui em cima pois se ficasse na categoria 5
@@ -67,16 +67,16 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 
   /* (4) -> Identificadores */
 
-[A-Za-z][A-Za-z]* {yylval.valor_lexico = cria_valor(identificador, current_line_number, yytext, NULL); return TK_IDENTIFICADOR;} // dentro dessa func vai ter um malloc 2.1
+[A-Za-z][A-Za-z]* {yylval.valor_lexico = cria_valor(identificador, current_line_number, yytext, nulo); return TK_IDENTIFICADOR;} // dentro dessa func vai ter um malloc 2.1
 
   /* (3) -> Operadores compostos */
 
-"<="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_LE;}
-">="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_GE;}
-"=="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_EQ;}
-"!="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_NE;}
-"&&"		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_AND;}
-"||"		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, NULL); return TK_OC_OR;}
+"<="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, nulo); return TK_OC_LE;}
+">="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, nulo); return TK_OC_GE;}
+"=="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, nulo); return TK_OC_EQ;}
+"!="		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, nulo); return TK_OC_NE;}
+"&&"		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, nulo); return TK_OC_AND;}
+"||"		{yylval.valor_lexico = cria_valor(operador_composto, current_line_number, yytext, nulo); return TK_OC_OR;}
 
   /* (5) -> Literais */
 

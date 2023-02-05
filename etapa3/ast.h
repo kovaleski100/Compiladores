@@ -18,7 +18,8 @@ enum literais
     verdadeiro,
     inteiro,
     caracter,
-    flutuante 
+    flutuante,
+    nulo, 
 };
 
 typedef union tipo_literal
