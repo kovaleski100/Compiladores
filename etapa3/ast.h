@@ -23,6 +23,7 @@ typedef struct valor_lexico
 {
     int numero_linha;
     char *valor_token;
+    int tipo_token;
     union Literal literal;
     /* data */
 } valor_lexico;
@@ -31,7 +32,6 @@ typedef struct ast
 {
     valor_lexico *valor_lexico;
     struct ast *filho;
-    int tipo_token;
     int num_filhos;
     /* data */
 } ast;

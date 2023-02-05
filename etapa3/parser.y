@@ -29,26 +29,26 @@ int yydebug=1
 %token TK_PR_FLOAT
 %token TK_PR_BOOL
 %token TK_PR_CHAR
-%token TK_PR_IF
+%token <valor_lexico> TK_PR_IF
 %token TK_PR_THEN
 %token TK_PR_ELSE
-%token TK_PR_WHILE
-%token TK_PR_INPUT
-%token TK_PR_OUTPUT
-%token TK_PR_RETURN
-%token TK_PR_FOR
-%token TK_OC_LE
-%token TK_OC_GE
-%token TK_OC_EQ
-%token TK_OC_NE
-%token TK_OC_AND
-%token TK_OC_OR
-%token TK_LIT_INT
-%token TK_LIT_FLOAT
-%token TK_LIT_FALSE
-%token TK_LIT_TRUE
-%token TK_LIT_CHAR
-%token<valor_lexico>TK_IDENTIFICADOR
+%token <valor_lexico> TK_PR_WHILE
+%token <valor_lexico> TK_PR_INPUT
+%token <valor_lexico> TK_PR_OUTPUT
+%token <valor_lexico> TK_PR_RETURN
+%token <valor_lexico> TK_PR_FOR
+%token <valor_lexico> TK_OC_LE
+%token <valor_lexico> TK_OC_GE
+%token <valor_lexico> TK_OC_EQ
+%token <valor_lexico> TK_OC_NE
+%token <valor_lexico> TK_OC_AND
+%token <valor_lexico> TK_OC_OR
+%token <valor_lexico> TK_LIT_INT
+%token <valor_lexico> TK_LIT_FLOAT
+%token <valor_lexico> TK_LIT_FALSE
+%token <valor_lexico> TK_LIT_TRUE
+%token <valor_lexico> TK_LIT_CHAR
+%token <valor_lexico> TK_IDENTIFICADOR
 %token TK_ERRO
 
 %start programa
@@ -129,35 +129,36 @@ lista_de_argumentos: argumento |
 
 argumento : expressao;
             
-expressao: expressao TK_OC_OR sexta_precedencia |
+expressao: expressao TK_OC_OR sexta_precedencia {$$ = create_node(OU_LOGICO, '||'); add_child($$, $1); add_child($$, $3);} |
            sexta_precedencia;
 
-sexta_precedencia:  sexta_precedencia TK_OC_AND quinta_precedencia |
+sexta_precedencia:  sexta_precedencia TK_OC_AND quinta_precedencia {$$ = create_node(E_LOGICO, '&&'); add_child($$, $1); add_child($$, $3);} |
                     quinta_precedencia;
 
-quinta_precedencia: quinta_precedencia TK_OC_EQ quarta_precedencia |
-                    quinta_precedencia TK_OC_NE quarta_precedencia |
+quinta_precedencia: quinta_precedencia TK_OC_EQ quarta_precedencia {$$ = create_node(IGUAL, '='); add_child($$, $1); add_child($$, $3);} |
+                    quinta_precedencia TK_OC_NE quarta_precedencia {$$ = create_node(DIFERENTE, '!-'); add_child($$, $1); add_child($$, $3);} |
                     quarta_precedencia;
 
-quarta_precedencia: quarta_precedencia TK_OC_GE  terceira_precedencia |
-                    quarta_precedencia TK_OC_LE  terceira_precedencia |
-                    quarta_precedencia '>'  terceira_precedencia |
-                    quarta_precedencia '<'  terceira_precedencia |
+quarta_precedencia: quarta_precedencia TK_OC_GE  terceira_precedencia {$$ = create_node(MAIOR_IGUAL, '>='); add_child($$, $1); add_child($$, $3);} |
+                    quarta_precedencia TK_OC_LE  terceira_precedencia {$$ = create_node(MENOR_IGUAL, '<='); add_child($$, $1); add_child($$, $3);} |
+                    quarta_precedencia '>'  terceira_precedencia {$$ = create_node(MAIOR_QUE, '>'); add_child($$, $1); add_child($$, $3);} |
+                    quarta_precedencia '<'  terceira_precedencia {$$ = create_node(MENOR_QUE, '<'); add_child($$, $1); add_child($$, $3);} |
                     terceira_precedencia;
 
-terceira_precedencia:   terceira_precedencia '-' segunda_precedencia |
-                        terceira_precedencia '+' segunda_precedencia |
+terceira_precedencia:   terceira_precedencia '-' segunda_precedencia {$$ = create_node(SUBSTRACAO_BINARIA, '-'); add_child($$, $1); add_child($$, $3);} |
+                        terceira_precedencia '+' segunda_precedencia {$$ = create_node(SOMA_BINARIA, '+'); add_child($$, $1); add_child($$, $3);} |
                         segunda_precedencia;
 
-segunda_precedencia:    segunda_precedencia '%' primeira_precedencia {$$ = create_node(RESTO_BINARIO), '%'); add_child($$, $1); add_child($$, $3);}|
-                        segunda_precedencia '/' primeira_precedencia |
-                        segunda_precedencia '*' primeira_precedencia |
+segunda_precedencia:    segunda_precedencia '%' primeira_precedencia {$$ = create_node(RESTO_BINARIO, '%'); add_child($$, $1); add_child($$, $3);} |
+                        segunda_precedencia '/' primeira_precedencia {$$ = create_node(DIVISAO_BINARIA, '/'); add_child($$, $1); add_child($$, $3);} |
+                        segunda_precedencia '*' primeira_precedencia {$$ = create_node(MULTIPLICACAO_BINARIA, '*'); add_child($$, $1); add_child($$, $3);} |
                         primeira_precedencia;
 
 primeira_precedencia:   '(' expressao ')' {$$ = $2;} |
-                        '!' primeira_precedencia {$$ = create_node(EXCLAMACAO_UNARIO, '!');} |
+                        '!' primeira_precedencia {$$ = create_node(EXCLAMACAO_UNARIO, '!') ; add_child($$, $2);} |
                         '-' primeira_precedencia {$$ = create_node(MENOS_UNARIO, "-"); add_child($$, $2);} |
-                        fator {$$ = $1;};
+                        // fator {$$ = $1;};
+                        fator
 
 fator:  TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
         TK_IDENTIFICADOR '[' expressao ']' |
@@ -165,16 +166,16 @@ fator:  TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' |
         chamada_funcao |
         TK_IDENTIFICADOR {$$ = $1;};
 
-tipo: TK_PR_FLOAT|
+tipo: TK_PR_FLOAT //{$$ = create_node_from_token(TIPO_FLOAT, $1);};|
       TK_PR_INT  |
       TK_PR_CHAR |
       TK_PR_BOOL;
 
-literais:   TK_LIT_FLOAT |
-            TK_LIT_INT |
-            TK_LIT_CHAR |
-            TK_LIT_TRUE |
-            TK_LIT_FALSE;
+literais:   TK_LIT_FLOAT {$$ = create_leaf(LIT_FLOAT, $1);}; |
+            TK_LIT_INT   {$$ = create_leaf(LIT_INT, $1);};|
+            TK_LIT_CHAR  {$$ = create_leaf(LIT_CHAR, $1);};|
+            TK_LIT_TRUE  {$$ = create_leaf(LIT_TRUE, $1);};|
+            TK_LIT_FALSE {$$ = create_leaf(LIT_FALSE, $1);};;
                                 
 //identificador: TK_IDENTIFICADOR {$$ = create_node_from_token(IDENTIFICADOR, $1);}; // create_leaf
 

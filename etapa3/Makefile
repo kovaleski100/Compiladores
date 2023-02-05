@@ -18,10 +18,10 @@ bison: parser.y
 			bison -d -v parser.y
 
 zip:
-	tar cvzf etapa2.tgz Makefile main.c parser.y scanner.l ast.h ast.c
+	tar cvzf etapa3.tgz Makefile main.c parser.y scanner.l ast.h ast.c
 
 clean:
-	rm -f etapa2
+	rm -f etapa3
 	rm -f parser.tab.c
 	rm -f parser.tab.o
 	rm -f parser.tab.h
@@ -29,3 +29,4 @@ clean:
 	rm -f lex.yy.c
 	rm -f lex.yy.o
 	rm -f main.o
+	rm -f ast.o

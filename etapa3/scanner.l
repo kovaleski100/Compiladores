@@ -6,13 +6,24 @@
  *                                                                    *
  *                                                                    *
  **********************************************************************/
-
 %top{
   #include "parser.tab.h"
 
   void process_multiline_comments();
   int current_line_number = 1;
 }
+
+%{
+  void cria_valor(int tipo_token){
+
+    yylval.valor_lexico->tipo_token = tipo_token;
+    yylval.valor_lexico->numero_linha = current_line_number;
+    if(tipo_token == TK_IDENTIFICADOR && tipo_token == TK_OC_LE){
+      yyval.valor_lexico->valor_token = strdup(yytext)
+    }
+    return;
+  }   
+%}
 
 %option noyywrap
 extra int yylineo
@@ -67,7 +78,7 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 
   /* (4) -> Identificadores */
 
-[A-Za-z][A-Za-z]* {yylval.valor_lexico = cria_valor(); return TK_IDENTIFICADOR;} // dentro dessa func vai ter um malloc 2.1
+[A-Za-z][A-Za-z]* {yylval.valor_lexico = cria_valor(TK_IDENTIFICADOR); return TK_IDENTIFICADOR;} // dentro dessa func vai ter um malloc 2.1
 
   /* (3) -> Operadores compostos */
 
@@ -80,9 +91,9 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 
   /* (5) -> Literais */
 
-[-+]?[0-9]+ 				{yyval.valor_lexico = cria_valor(); return TK_LIT_INT;}
-[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)? 	{yyval.valor_lexico = cria_valor(); return TK_LIT_FLOAT;}
-\'.\'					{yyval.valor_lexico = cria_valor(); return TK_LIT_CHAR;}
+[-+]?[0-9]+ 				{yyval.valor_lexico = cria_valor(TK_LIT_INT); return TK_LIT_INT;}
+[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)? 	{yyval.valor_lexico = cria_valor(TK_LIT_FLOAT); return TK_LIT_FLOAT;}
+\'.\'					{yyval.valor_lexico = cria_valor(TK_LIT_CHAR); return TK_LIT_CHAR;}
 
   /* (2) -> Caracteres especiais */
 
