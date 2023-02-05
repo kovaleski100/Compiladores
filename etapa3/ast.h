@@ -30,16 +30,16 @@ typedef union tipo_literal
     bool b;
 }tipo_literal;
 
-typedef struct valor_token
-{
-    char *valor_token;
-    union tipo_literal *tl;
-}valor_token;
+// typedef struct valor_token
+// {
+//     char *valor_token;
+//     union tipo_literal *tl;
+// }valor_token;
 
 typedef struct valor_lexico
 {
     int numero_linha;
-    valor_token *valorToken;
+    char *valorToken;
     int tipo_token;
     union tipo_literal literal;
     /* data */
