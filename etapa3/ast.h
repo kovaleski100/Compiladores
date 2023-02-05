@@ -11,12 +11,12 @@ enum tipos_tokens
     literal
 };
 
-union Literal
+enum tipo_literal
 {
-    int d;
-    float f;
-    char *s;
-    bool b;
+    inteiro,
+    caracter,
+    flutuante,
+    boleando
 };
 
 typedef struct valor_lexico
@@ -24,7 +24,7 @@ typedef struct valor_lexico
     int numero_linha;
     char *valor_token;
     int tipo_token;
-    union Literal literal;
+    union literal;
     /* data */
 } valor_lexico;
 
@@ -43,3 +43,4 @@ void print_dados(ast *arvore);
 void print_nodo(ast *arvore);
 void libera(ast *arvore);
 void exporta(ast *arvore);
+valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto);

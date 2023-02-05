@@ -8,22 +8,11 @@
  **********************************************************************/
 %top{
   #include "parser.tab.h"
+  #include "ast.h"
 
   void process_multiline_comments();
   int current_line_number = 1;
 }
-
-%{
-  void cria_valor(int tipo_token){
-
-    yylval.valor_lexico->tipo_token = tipo_token;
-    yylval.valor_lexico->numero_linha = current_line_number;
-    if(tipo_token == TK_IDENTIFICADOR && tipo_token == TK_OC_LE){
-      yyval.valor_lexico->valor_token = strdup(yytext)
-    }
-    return;
-  }   
-%}
 
 %option noyywrap
 extra int yylineo

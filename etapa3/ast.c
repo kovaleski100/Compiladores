@@ -55,3 +55,12 @@ void libera(ast *arvore)
 {
     free(arvore);
 }
+
+valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto)
+{
+    valor_lexico *vl = (valor_lexico*)malloc(sizeof(valor_lexico));
+    vl->tipo_token = tipo_token;
+    vl->numero_linha = current_line_number;
+    vl->valor_token = texto;
+    return vl;
+  }
