@@ -13,7 +13,8 @@ enum tipos_tokens
     literal_float,
     literal_char,
     literal_bool,
-    operador_unario
+    operador_unario,
+    operador_simples
 };
  
 enum literais
