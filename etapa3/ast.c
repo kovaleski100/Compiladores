@@ -2,7 +2,7 @@
 
 ast* create_node(int tipo, valor_lexico *valor)
 {
-    printf("Entrou create node \n");
+    //printf("Entrou create node \n");
     if(valor == NULL){
         return NULL;
     }
@@ -11,8 +11,8 @@ ast* create_node(int tipo, valor_lexico *valor)
     node->num_filhos = 0;
     // node->tipo_token = tipo;
     node->valor_lexico = valor;
-    printf("%s\n", node->valor_lexico->valorToken);
-    printf("Criou nodo\n");
+    // printf("%s\n", node->valor_lexico->valorToken);
+    // printf("Criou nodo\n");
     return node;
 
 }
@@ -28,22 +28,14 @@ ast* add_child(ast *arvore, ast *nodo)
 
 void exporta(ast *arvore)
 {
-    printf("Exporta\n");
-    printf("%d\n", arvore->num_filhos);
-    printf("%s", arvore->valor_lexico->valorToken);
-    for(int i=0; i< arvore->num_filhos; i++)
-    {
-        print_nodo(arvore);
-    }
-    // for(int i = 0; i< arvore->num_filhos; i++)
-    // {
-    //     print_dados(&arvore->filho[i]);
-    // }
+    print_nodo(arvore);
+    print_dados(arvore);
+    
 }
 
 void print_nodo(ast *arvore)
 {
-    printf("Printando nodo\n");
+    //printf("Printando nodo\n");
     for(int i=0; i < arvore->num_filhos; i++)
     {
         ast *child = (ast*)malloc(sizeof(ast));
@@ -54,10 +46,43 @@ void print_nodo(ast *arvore)
 }
 
 //acho que essa função tem que ser implementada conforme for ocorrendo os testes
-// void print_dados(ast *arvore)
-// {
-    
-// }
+void print_dados(ast *arvore)
+{
+    for(int i = 0; i< arvore->num_filhos; i++)
+    {
+        printf("%p ", arvore->filho[i]);
+        switch (arvore->valor_lexico->tipo_token)
+        {
+        case caracter_especial:
+            printf("[label = \"%s\" ]", arvore->valor_lexico->valorToken);
+            break;
+        case operador_composto:
+            printf("[label = \"%s\" ]", arvore->valor_lexico->valorToken);
+            break;
+        case palavra_reservada:
+            printf("[label = \"%s\" ]", arvore->valor_lexico->valorToken);
+            break;
+        case identificador:
+            printf("[label = \"%s\" ]", arvore->valor_lexico->valorToken);
+            break;
+        case literal_bool:
+            printf("[label = \"%s\" ]", arvore->valor_lexico->literal.b == true?"TRUE":"FALSE");
+            break;
+        case literal_char:
+            printf("[label = \"%s\" ]", arvore->valor_lexico->literal.s);
+            break;
+        case literal_float:
+            printf("[label = \"%f\" ]", arvore->valor_lexico->literal.f);
+            break;
+        case literal_inteiro:
+            printf("[label = \"%d\" ]", arvore->valor_lexico->literal.d);
+            break;
+        case operador_unario:
+            printf("[label = \"%s\" ]", arvore->valor_lexico->valorToken);
+            break;
+        }
+    }
+}
 
 void libera(ast *arvore)
 {
@@ -67,31 +92,28 @@ void libera(ast *arvore)
 
 valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal)
 {
-    printf("Cria Valor\n");
+    //printf("Cria Valor\n");
     valor_lexico *vl = (valor_lexico*)malloc(sizeof(valor_lexico));
     vl->tipo_token = tipo_token;
     vl->numero_linha = current_line_number;
     
-    if(tipo_token == literal && tipo_literal == inteiro){
+    if(tipo_token == literal_inteiro){
         vl->literal.d = atoi(texto);
     }
-    else if(tipo_token == literal && tipo_literal == flutuante){
+    else if(tipo_token == literal_float){
         vl->literal.f = atof(texto);
     }
-    else if(tipo_token == literal && tipo_literal == falso){
-        vl->literal.b = false;
-    } 
-    else if(tipo_token == literal && tipo_literal == verdadeiro){
-        vl->literal.b = true;
+    else if(tipo_token == literal_bool){
+        vl->literal.b = tipo_literal==falso ? false : true;
     }
-    else if(tipo_token == literal && tipo_literal == caracter){
+    else if(tipo_token == literal_char){
         vl->literal.s= strdup(texto);
     }
     else{
         vl->valorToken = strdup(texto);
     }
-    printf("tipo: %d\n", vl->tipo_token);
-    printf("linha: %d\n", vl->numero_linha);
-    printf("literal: %d\n", vl->literal.d);
+    // printf("tipo: %d\n", vl->tipo_token);
+    // printf("linha: %d\n", vl->numero_linha);
+    // printf("literal: %d\n", vl->literal.d);
     return vl;
 }

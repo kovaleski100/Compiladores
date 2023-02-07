@@ -9,10 +9,13 @@ enum tipos_tokens
     operador_composto,
     palavra_reservada,
     identificador,
-    literal,
+    literal_inteiro,
+    literal_float,
+    literal_char,
+    literal_bool,
     operador_unario
 };
-
+ 
 enum literais
 {
     falso,

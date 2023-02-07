@@ -1,6 +1,4 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'all'.  Stop.
-
 # GNU Make 4.2.1
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
@@ -8,7 +6,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Feb  5 18:39:36 2023
+# Make data base, printed on Mon Feb  6 19:55:11 2023
 
 # Variables
 
@@ -81,7 +79,7 @@ PATH = /home/kovaleski100/.local/bin:/home/kovaleski100/anaconda3/bin:/home/kova
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/kovaleski100-300E5K-300E5Q:@/tmp/.ICE-unix/1063,unix/kovaleski100-300E5K-300E5Q:/tmp/.ICE-unix/1063
+SESSION_MANAGER = local/kovaleski100-300E5K-300E5Q:@/tmp/.ICE-unix/1060,unix/kovaleski100-300E5K-300E5Q:/tmp/.ICE-unix/1060
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -99,7 +97,7 @@ XDG_SESSION_DESKTOP = cinnamon
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2066
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2208
 # automatic
 %F = $(notdir $%)
 # environment
@@ -115,7 +113,7 @@ QT_QPA_PLATFORMTHEME = qt5ct
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1159
+SSH_AGENT_PID = 1149
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = X-Cinnamon
 # environment
@@ -149,7 +147,7 @@ MAKECMDGOALS := all
 # environment
 SHLVL = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-b62c9674-de75-4ada-9aca-fd50d3d74f23.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-5a8ce549-3a93-4c33-8fe9-cd7f7c919e24.sock
 # environment
 XDG_SESSION_ID = c1
 # environment
@@ -210,11 +208,10 @@ CHROME_DESKTOP = code-url-handler.desktop
 GJS_DEBUG_OUTPUT = stderr
 # default
 .RECIPEPREFIX := 
- 
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2066
+VSCODE_PID = 2208
 # variable set hash-table stats:
 # Load=101/1024=10%, Rehash=0, Collisions=7/123=6%
 
@@ -282,6 +279,9 @@ GNUmakefile:
 # strcache performance: lookups = 21 / hit rate = 14%
 # hash-table stats:
 # Load=18/8192=0%, Rehash=0, Collisions=1/21=5%
-# Finished Make data base on Sun Feb  5 18:39:36 2023
+# Finished Make data base on Mon Feb  6 19:55:11 2023
+ 
+make: *** No rule to make target 'all'.  Stop.
+
 
  

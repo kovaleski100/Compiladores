@@ -22,7 +22,7 @@ int main (int argc, char **argv)
 {
   //printf("Inicio");
   int ret = yyparse();
-  printf("Antes do exporta\n"); 
+  //printf("Antes do exporta\n"); 
   exporta (arvore);
   //printf("Depois do exporta");
   // libera(arvore);
