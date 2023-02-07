@@ -81,6 +81,7 @@ void print_dados(ast *arvore)
             printf("[label = \"%s\" ]", arvore->valor_lexico->valorToken);
             break;
         }
+        print_dados(arvore->filho[i]);
     }
 }
 
