@@ -62,8 +62,8 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
   **     Tive que colocar essas declarações aqui em cima pois se ficasse na categoria 5
   **     acabava sendo entendido como um identificador em vez de um literal. */
 
-"true"			{yylval.valor_lexico = cria_valor(literal, current_line_number, yytext, verdadeiro); return TK_LIT_TRUE;}
-"false"			{yylval.valor_lexico = cria_valor(literal, current_line_number, yytext, falso); return TK_LIT_FALSE;}
+"true"			{yylval.valor_lexico = cria_valor(literal_bool, current_line_number, yytext, verdadeiro); return TK_LIT_TRUE;}
+"false"			{yylval.valor_lexico = cria_valor(literal_bool, current_line_number, yytext, falso); return TK_LIT_FALSE;}
 
   /* (4) -> Identificadores */
 
@@ -80,9 +80,9 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 
   /* (5) -> Literais */
 
-[-+]?[0-9]+ 				{yylval.valor_lexico = cria_valor(literal, current_line_number, yytext, inteiro); return TK_LIT_INT;}
-[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)? 	{yylval.valor_lexico = cria_valor(literal, current_line_number, yytext, flutuante); return TK_LIT_FLOAT;}
-\'.\'					{yylval.valor_lexico = cria_valor(literal, current_line_number, yytext, caracter); return TK_LIT_CHAR;}
+[-+]?[0-9]+ 				{yylval.valor_lexico = cria_valor(literal_inteiro, current_line_number, yytext, inteiro); return TK_LIT_INT;}
+[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)? 	{yylval.valor_lexico = cria_valor(literal_float, current_line_number, yytext, flutuante); return TK_LIT_FLOAT;}
+\'.\'					{yylval.valor_lexico = cria_valor(literal_char, current_line_number, yytext, caracter); return TK_LIT_CHAR;}
 
   /* (2) -> Caracteres especiais */
 

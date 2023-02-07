@@ -35,12 +35,12 @@ void exporta(ast *arvore)
 
 void print_nodo(ast *arvore)
 {
-    //printf("Printando nodo\n");
+    printf("Printando nodo\n");
     for(int i=0; i < arvore->num_filhos; i++)
     {
         ast *child = (ast*)malloc(sizeof(ast));
         child = arvore->filho[i];
-        printf("%p, %p", arvore, child);
+        printf("%p, %p\n", arvore, child);
         print_nodo(child);
     }
 }
@@ -48,9 +48,13 @@ void print_nodo(ast *arvore)
 //acho que essa função tem que ser implementada conforme for ocorrendo os testes
 void print_dados(ast *arvore)
 {
-    for(int i = 0; i< arvore->num_filhos; i++)
+    printf("Printando dados\n");
+    printf("%d", arvore->num_filhos);
+    printf("Printando dados2\n");
+    for(int i = 0; i < arvore->num_filhos; i++)
     {
-        printf("%p ", arvore->filho[i]);
+        printf("entrei");
+        //printf("%p ", arvore->filho[i]);
         switch (arvore->valor_lexico->tipo_token)
         {
         case caracter_especial:
@@ -83,6 +87,7 @@ void print_dados(ast *arvore)
         }
         print_dados(arvore->filho[i]);
     }
+    printf("entrei");
 }
 
 void libera(ast *arvore)
