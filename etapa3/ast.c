@@ -1,5 +1,6 @@
 #include "ast.h"
 
+
 ast* create_node(int tipo, valor_lexico *valor)
 {
     //printf("Entrou create node \n");
@@ -11,6 +12,7 @@ ast* create_node(int tipo, valor_lexico *valor)
     node->num_filhos = 0;
     // node->tipo_token = tipo;
     node->valor_lexico = valor;
+    node->valor_lexico->tipo_token = tipo;
     // printf("%s\n", node->valor_lexico->valorToken);
     // printf("Criou nodo\n");
     return node;
@@ -35,7 +37,6 @@ void exporta(ast *arvore)
 
 void print_nodo(ast *arvore)
 {
-    printf("Printando nodo\n");
     for(int i=0; i < arvore->num_filhos; i++)
     {
         ast *child = (ast*)malloc(sizeof(ast));
@@ -48,13 +49,15 @@ void print_nodo(ast *arvore)
 //acho que essa função tem que ser implementada conforme for ocorrendo os testes
 void print_dados(ast *arvore)
 {
-    printf("Printando dados\n");
-    printf("%d", arvore->num_filhos);
-    printf("Printando dados2\n");
+    if (arvore == NULL) return;
+    printf("\n");
     for(int i = 0; i < arvore->num_filhos; i++)
-    {
-        printf("entrei");
-        //printf("%p ", arvore->filho[i]);
+        {
+            {
+                print_dados(arvore->filho[i]);
+            }
+        }
+        printf("%p ", arvore);
         switch (arvore->valor_lexico->tipo_token)
         {
         case caracter_especial:
@@ -84,10 +87,11 @@ void print_dados(ast *arvore)
         case operador_unario:
             printf("[label = \"%s\" ]", arvore->valor_lexico->valorToken);
             break;
+        case call:
+            printf("[label = \"call %s\" ]", arvore->valor_lexico->valorToken);
+            break;
         }
-        print_dados(arvore->filho[i]);
-    }
-    printf("entrei");
+        printf("\n");
 }
 
 void libera(ast *arvore)
@@ -102,7 +106,6 @@ valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, i
     valor_lexico *vl = (valor_lexico*)malloc(sizeof(valor_lexico));
     vl->tipo_token = tipo_token;
     vl->numero_linha = current_line_number;
-    
     if(tipo_token == literal_inteiro){
         vl->literal.d = atoi(texto);
     }
@@ -121,5 +124,6 @@ valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, i
     // printf("tipo: %d\n", vl->tipo_token);
     // printf("linha: %d\n", vl->numero_linha);
     // printf("literal: %d\n", vl->literal.d);
+    printf("fim cria_valor\n");
     return vl;
 }

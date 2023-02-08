@@ -86,7 +86,7 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 
   /* (2) -> Caracteres especiais */
 
-{ESPECIAL}              return yytext[0];
+{ESPECIAL}              {yylval.valor_lexico = cria_valor(caracter_especial, current_line_number, yytext, nulo) ;return yytext[0];};
 
   /* (6) -> Outros */
 
