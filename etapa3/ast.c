@@ -8,13 +8,13 @@ ast* create_node(int tipo, valor_lexico *valor)
         return NULL;
     }
     ast *node = (ast*)malloc(sizeof(ast));
+    if(node == NULL){
+        return NULL;
+    }
     node->filho = NULL;
     node->num_filhos = 0;
-    // node->tipo_token = tipo;
     node->valor_lexico = valor;
     node->valor_lexico->tipo_token = tipo;
-    // printf("%s\n", node->valor_lexico->valorToken);
-    // printf("Criou nodo\n");
     return node;
 
 }
@@ -23,6 +23,9 @@ ast* create_node(int tipo, valor_lexico *valor)
 ast* add_child(ast *arvore, ast *nodo)
 {
     arvore->filho = (ast**)realloc(arvore->filho, sizeof(arvore->filho)*(arvore->num_filhos+1));
+    if(arvore->filho == NULL){
+        return NULL;
+    }
     arvore->filho[arvore->num_filhos] = nodo;
     arvore->num_filhos += 1;
     return arvore;
@@ -50,7 +53,6 @@ void print_nodo(ast *arvore)
 void print_dados(ast *arvore)
 {
     if (arvore == NULL) return;
-    printf("\n");
     for(int i = 0; i < arvore->num_filhos; i++)
         {
             {
@@ -94,16 +96,44 @@ void print_dados(ast *arvore)
         printf("\n");
 }
 
-void libera(ast *arvore)
-{
+void destroiNodo(ast* arvore){
+    if(arvore == NULL){
+        return;
+    }
+    for (int i = 0; i < arvore->num_filhos; i++){
+        libera(arvore->filho[i]);
+        arvore->filho[i] = NULL;
+    }
+    destroiVL(arvore->valor_lexico);
+    arvore->valor_lexico = NULL;
+    free(arvore->filho);
+    free(arvore->valor_lexico);
     free(arvore);
+}
+
+void libera(void *arvore)
+{
+    destroiNodo((ast*)arvore);
+}
+
+void destroiVL(valor_lexico *vl){
+    if(vl == NULL){
+        return;
+    }
+    if(vl->tipo_token == literal_char){
+        free(vl->literal.s);
+    }
+    free(vl->valorToken);
+    free(vl);
 }
 
 
 valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal)
 {
-    //printf("Cria Valor\n");
     valor_lexico *vl = (valor_lexico*)malloc(sizeof(valor_lexico));
+    if(vl == NULL){
+        return NULL;
+    }
     vl->tipo_token = tipo_token;
     vl->numero_linha = current_line_number;
     if(tipo_token == literal_inteiro){
@@ -121,9 +151,5 @@ valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, i
     else{
         vl->valorToken = strdup(texto);
     }
-    // printf("tipo: %d\n", vl->tipo_token);
-    // printf("linha: %d\n", vl->numero_linha);
-    // printf("literal: %d\n", vl->literal.d);
-    printf("fim cria_valor\n");
     return vl;
 }

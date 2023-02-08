@@ -64,6 +64,7 @@ ast* create_leaf(int tipo, valor_lexico *valor);
 ast* add_child(ast *arvore, ast *nodo);
 void print_dados(ast *arvore);
 void print_nodo(ast *arvore);
-void libera(ast *arvore);
+void libera(void *arvore);
 void exporta(ast *arvore);
+void destroiVL(valor_lexico *valor);
 valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal);

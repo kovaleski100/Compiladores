@@ -105,7 +105,10 @@ int yydebug=1;
 %token <valor_lexico> '{'
 %token <valor_lexico> '}'
 %token <valor_lexico> '^'
-
+%token <valor_lexico> '('
+%token <valor_lexico> ')'
+%token <valor_lexico> ';'
+%token <valor_lexico> ','
 %start inicio
 %%
 
@@ -119,11 +122,11 @@ lista_de_elementos:     declaracao {$$ = $1;}|
 
 declaracao: tipo lista_identificador {$$ = $2;};
 
-lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$ = create_node(identificador, $1); $$ = add_child($$, $2);$$ = add_child($$, $4);}|
-                        TK_IDENTIFICADOR array ';' {$$ = create_node(identificador, $1); $$ = add_child($$, $2);};
+lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$ = create_node(identificador, $1); $$ = add_child($$, $2);$$ = add_child($$, $4); destroiVL($3);}|
+                        TK_IDENTIFICADOR array ';' {$$ = create_node(identificador, $1); $$ = add_child($$, $2); destroiVL($3);};
 
-array:      '[' litInt ']'|
-            '[' litInt '^' lista_de_literais_inteiros ']'  {$$ = create_node(caracter_especial, $3); $$ = add_child($$, $2); $$ = add_child($$, $4);}| ;
+array:      '[' litInt ']' {destroiVL($1);destroiVL($3);}|
+            '[' litInt '^' lista_de_literais_inteiros ']'  {$$ = create_node(caracter_especial, $3); $$ = add_child($$, $2); $$ = add_child($$, $4); destroiVL($1);destroiVL($5);}| ;
 
 lista_de_literais_inteiros :    litInt '^' lista_de_literais_inteiros {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}|
                                 TK_LIT_INT {$$ = create_node(literal_inteiro, $1);};
@@ -132,19 +135,19 @@ funcao: cabecalho corpo {$$ = $1; add_child($$, $2);};
 
 corpo: bloco_de_comandos {$$ = $1;};
 
-cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2);}|
-            tipo TK_IDENTIFICADOR '(' lista_funcao ')' {$$ = create_node(identificador, $2); $$ = add_child($$, $4);};
+cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($4);}|
+            tipo TK_IDENTIFICADOR '(' lista_funcao ')' {$$ = create_node(identificador, $2); $$ = add_child($$, $4); destroiVL($3);destroiVL($5);};
 
-lista_funcao:   parametro_funcao ',' lista_funcao | // REVISAR
+lista_funcao:   parametro_funcao ',' lista_funcao {destroiVL($2);}| // REVISAR
                 parametro_funcao {$$ = $1;};
 
 parametro_funcao: tipo ID;
 
-bloco_de_comandos: '{' comandos '}'  { $$ = $2;}| 
-                   '{' '}'; // REVISAR PRINT
+bloco_de_comandos: '{' comandos '}'  { $$ = $2; destroiVL($1);destroiVL($3);}| 
+                   '{' '}' {destroiVL($1);destroiVL($2);}; // REVISAR PRINT
 
-comandos:   comandos_simples ';' comandos |  // REVISAR
-            comandos_simples ';' {$$ = $1;};
+comandos:   comandos_simples ';' comandos {destroiVL($2);}|  // REVISAR
+            comandos_simples ';' {$$ = $1; destroiVL($2);};
 
 comandos_simples:   tipo declaracao_variavel_local {$$ = $2;}| 
                     atribuicao {$$ = $1;}|
@@ -153,8 +156,8 @@ comandos_simples:   tipo declaracao_variavel_local {$$ = $2;}|
                     bloco_de_comandos {$$ = $1;}|
                     retorno {$$ = $1;};
 
-declaracao_variavel_local : inicializacao_variavel_local ',' declaracao_variavel_local |  // REVISAR
-                            ID  ',' declaracao_variavel_local |      
+declaracao_variavel_local : inicializacao_variavel_local ',' declaracao_variavel_local {destroiVL($2);} |  // REVISAR
+                            ID  ',' declaracao_variavel_local {destroiVL($2);}|      
                             inicializacao_variavel_local {$$ = $1;} |
                             ID ;
 
@@ -183,8 +186,8 @@ inicializacao_variavel_local: ID TK_OC_LE literais {$$ = create_node(caracter_es
 atribuicao: ID '=' expressao {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}|  // TESTAR
             arranjo_multi '=' expressao  {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}
 
-arranjo_multi:  ID '[' expressao ']' {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}|
-                ID '[' expressao_aux ']' {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);};
+arranjo_multi:  ID '[' expressao ']' {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);}|
+                ID '[' expressao_aux ']' {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);};
 
 // lista_de_expressoes: expressao '^' lista_de_expressoes | expressao;
 
@@ -202,15 +205,15 @@ lista_de_expressoes: expressao '^' lista_de_expressoes {$$ = create_node(caracte
 
 retorno:  TK_PR_RETURN expressao {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $2);};
 
-controle_de_fluxo: TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6);}|
-                   TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos TK_PR_ELSE bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); $$ = add_child($$, $8);}|
-                   TK_PR_WHILE '(' expressao ')' bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $5);}
+controle_de_fluxo: TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); destroiVL($2); destroiVL($4);}|
+                   TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos TK_PR_ELSE bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); $$ = add_child($$, $8);destroiVL($2); destroiVL($4);}|
+                   TK_PR_WHILE '(' expressao ')' bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $5); destroiVL($2); destroiVL($4);}
 
-chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(call,$1); $$ = add_child($$, $3);}|
-                TK_IDENTIFICADOR '('  ')' {$$ = create_node(call,$1);};
+chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(call,$1); $$ = add_child($$, $3); destroiVL($2); destroiVL($4);}|
+                TK_IDENTIFICADOR '('  ')' {$$ = create_node(call,$1); destroiVL($2); destroiVL($3);};
 
 lista_de_argumentos: argumento {$$ = $1;}|
-                     argumento ',' lista_de_argumentos; // REVISAR
+                     argumento ',' lista_de_argumentos {destroiVL($2);}; // REVISAR
 
 argumento : expressao {$$ = $1;};
 
@@ -253,7 +256,7 @@ segunda_precedencia:    segunda_precedencia '%' primeira_precedencia {$$ = creat
                         segunda_precedencia '*' primeira_precedencia {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);} |
                         primeira_precedencia {$$ = $1;};
 
-primeira_precedencia:   '(' expressao ')' {$$ = $2;}|
+primeira_precedencia:   '(' expressao ')' {$$ = $2; destroiVL($1); destroiVL($3);}|
                         '!' primeira_precedencia {$$ = create_node(caracter_especial, $1) ; $$ = add_child($$, $2);}|
                         '-' primeira_precedencia {$$ = create_node(caracter_especial, $1); $$ = add_child($$, $2);} |
                         fator {$$ = $1;};
