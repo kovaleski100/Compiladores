@@ -96,6 +96,9 @@ void print_dados(ast *arvore)
         case call:
             printf("[label = \"call %s\" ]", arvore->valor_lexico->valorToken);
             break;
+        case arranjo:
+            printf("[label = \"[]\" ]");
+            break;
         }
         printf("\n");
 }

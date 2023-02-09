@@ -15,7 +15,8 @@ enum tipos_tokens
     literal_bool,
     operador_unario,
     operador_simples,
-    call
+    call,
+    arranjo
 };
  
 enum literais

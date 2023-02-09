@@ -138,10 +138,10 @@ corpo: bloco_de_comandos {$$ = $1;};
 cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($4);}|
             tipo TK_IDENTIFICADOR '(' lista_funcao ')' {$$ = create_node(identificador, $2); $$ = add_child($$, $4); destroiVL($3);destroiVL($5);};
 
-lista_funcao:   parametro_funcao ',' lista_funcao {destroiVL($2);}| // REVISAR
+lista_funcao:   parametro_funcao ',' lista_funcao {$$ = add_child($1,$3); destroiVL($2);}| // REVISAR
                 parametro_funcao {$$ = $1;};
 
-parametro_funcao: tipo ID;
+parametro_funcao: tipo ID {$$ = $2;};
 
 bloco_de_comandos: '{' comandos '}'  { $$ = $2; destroiVL($1);destroiVL($3);}| 
                    '{' '}' {destroiVL($1);destroiVL($2);}; // REVISAR PRINT
@@ -186,8 +186,8 @@ inicializacao_variavel_local: ID TK_OC_LE literais {$$ = create_node(caracter_es
 atribuicao: ID '=' expressao {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}|  // TESTAR
             arranjo_multi '=' expressao  {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}
 
-arranjo_multi:  ID '[' expressao ']' {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);}|
-                ID '[' expressao_aux ']' {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);};
+arranjo_multi:  ID '[' expressao ']' {$$ = create_node(arranjo, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);}|
+                ID '[' expressao_aux ']' {$$ = create_node(arranjo, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);};
 
 // lista_de_expressoes: expressao '^' lista_de_expressoes | expressao;
 
@@ -262,9 +262,9 @@ primeira_precedencia:   '(' expressao ')' {$$ = $2; destroiVL($1); destroiVL($3)
                         fator {$$ = $1;};
 
 fator:  arranjo_multi {$$ = $1;} |
-        literais |
+        literais {$$ = $1;} |
         chamada_funcao {$$ = $1;} |
-        ID;
+        ID {$$ = $1;};
 
         //TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' {$$ = create_node(caracter_especial, $4); $$ = addChild($$, $3); $$ = addChild($$, $5); $$ = create_node(caracter_especial, '[]'); $$ = addChild($$, create_node(identificador, $1)); $$ = addChild($$,)} //{$$ = create_node(caracter_especial, '[]'); $$ = addChild($$, create_node(identificador, $1)); $$ = addChild($$, create_node(caracter_especial, $4));}
         // TK_IDENTIFICADOR '[' expressao ']' {$$ = create_node(caracter_especial, '[]'); $$ = addChild($$, create_node(identificador, $1)); $$ = addChild($$, $3)} |
