@@ -20,14 +20,10 @@ void libera (void *arvore);
 
 int main (int argc, char **argv)
 {
-  //printf("Inicio");
-  int ret = yyparse();
-  printf("Antes do exporta\n"); 
+  int ret = yyparse(); 
   exporta (arvore);
-  printf("Depois do exporta");
-  // libera(arvore);
-  //printf("Depois do libera");
-  // arvore = NULL;
+  libera(arvore);
+  arvore = NULL;
   yylex_destroy();
   return ret;
 }

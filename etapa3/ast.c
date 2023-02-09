@@ -40,12 +40,16 @@ void exporta(ast *arvore)
 
 void print_nodo(ast *arvore)
 {
+    if(arvore == NULL)
+    {
+        return;
+    }
     for(int i=0; i < arvore->num_filhos; i++)
     {
-        ast *child = (ast*)malloc(sizeof(ast));
-        child = arvore->filho[i];
-        printf("%p, %p\n", arvore, child);
-        print_nodo(child);
+        // ast *child = (ast*)malloc(sizeof(ast));
+        // child = arvore->filho[i];
+        printf("%p, %p\n", arvore, arvore->filho[i]);
+        print_nodo(arvore->filho[i]);
     }
 }
 
@@ -134,6 +138,8 @@ valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, i
     if(vl == NULL){
         return NULL;
     }
+    memset(vl,0,sizeof(valor_lexico));//memset para evitar condicional erro
+
     vl->tipo_token = tipo_token;
     vl->numero_linha = current_line_number;
     if(tipo_token == literal_inteiro){
