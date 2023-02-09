@@ -112,7 +112,7 @@ int yydebug=1;
 %start inicio
 %%
 
-inicio: programa {arvore = $1;} | ;
+inicio: programa {arvore = $1;} | {$$ = NULL;};
 programa: lista_de_elementos {$$ = $1;}; //REVISAR
 
 lista_de_elementos:     declaracao {$$ = $1;}|
@@ -126,7 +126,7 @@ lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$ = cre
                         TK_IDENTIFICADOR array ';' {$$ = create_node(identificador, $1); $$ = add_child($$, $2); destroiVL($3);};
 
 array:      '[' litInt ']' {destroiVL($1);destroiVL($3);}|
-            '[' litInt '^' lista_de_literais_inteiros ']'  {$$ = create_node(caracter_especial, $3); $$ = add_child($$, $2); $$ = add_child($$, $4); destroiVL($1);destroiVL($5);}| ;
+            '[' litInt '^' lista_de_literais_inteiros ']'  {$$ = create_node(caracter_especial, $3); $$ = add_child($$, $2); $$ = add_child($$, $4); destroiVL($1);destroiVL($5);}| {$$ = NULL;};
 
 lista_de_literais_inteiros :    litInt '^' lista_de_literais_inteiros {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}|
                                 TK_LIT_INT {$$ = create_node(literal_inteiro, $1);};
@@ -146,7 +146,7 @@ parametro_funcao: tipo ID;
 bloco_de_comandos: '{' comandos '}'  { $$ = $2; destroiVL($1);destroiVL($3);}| 
                    '{' '}' {destroiVL($1);destroiVL($2);}; // REVISAR PRINT
 
-comandos:   comandos_simples ';' comandos {destroiVL($2);}|  // REVISAR
+comandos:   comandos_simples ';' comandos {$$ = add_child($1, $3);destroiVL($2);}|  // REVISAR
             comandos_simples ';' {$$ = $1; destroiVL($2);};
 
 comandos_simples:   tipo declaracao_variavel_local {$$ = $2;}| 
@@ -156,10 +156,10 @@ comandos_simples:   tipo declaracao_variavel_local {$$ = $2;}|
                     bloco_de_comandos {$$ = $1;}|
                     retorno {$$ = $1;};
 
-declaracao_variavel_local : inicializacao_variavel_local ',' declaracao_variavel_local {destroiVL($2);} |  // REVISAR
-                            ID  ',' declaracao_variavel_local {destroiVL($2);}|      
+declaracao_variavel_local : inicializacao_variavel_local ',' declaracao_variavel_local {$$ = add_child($1, $3);destroiVL($2);} |  // REVISAR
+                            ID  ',' declaracao_variavel_local {$$ = add_child($1, $3);destroiVL($2);}|      
                             inicializacao_variavel_local {$$ = $1;} |
-                            ID ;
+                            ID {$$ = $1;} ;
 
 inicializacao_variavel_local: ID TK_OC_LE literais {$$ = create_node(caracter_especial, $2); $$ = add_child($$,$1); $$ = add_child($$,$3);}; 
 
@@ -213,7 +213,7 @@ chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(c
                 TK_IDENTIFICADOR '('  ')' {$$ = create_node(call,$1); destroiVL($2); destroiVL($3);};
 
 lista_de_argumentos: argumento {$$ = $1;}|
-                     argumento ',' lista_de_argumentos {destroiVL($2);}; // REVISAR
+                     argumento ',' lista_de_argumentos {$$ = add_child($1, $3);destroiVL($2);}; // REVISAR
 
 argumento : expressao {$$ = $1;};
 
@@ -269,10 +269,10 @@ fator:  arranjo_multi {$$ = $1;} |
         //TK_IDENTIFICADOR '[' expressao  '^' lista_de_expressoes ']' {$$ = create_node(caracter_especial, $4); $$ = addChild($$, $3); $$ = addChild($$, $5); $$ = create_node(caracter_especial, '[]'); $$ = addChild($$, create_node(identificador, $1)); $$ = addChild($$,)} //{$$ = create_node(caracter_especial, '[]'); $$ = addChild($$, create_node(identificador, $1)); $$ = addChild($$, create_node(caracter_especial, $4));}
         // TK_IDENTIFICADOR '[' expressao ']' {$$ = create_node(caracter_especial, '[]'); $$ = addChild($$, create_node(identificador, $1)); $$ = addChild($$, $3)} |
 
-tipo: TK_PR_FLOAT {$$ = TK_PR_FLOAT;} | //{$$ = create_node_from_token(TIPO_FLOAT, $1);};|
-      TK_PR_INT  {$$ = TK_PR_INT;}  |
-      TK_PR_CHAR {$$ = TK_PR_CHAR;} |
-      TK_PR_BOOL {$$ = TK_PR_BOOL;};
+tipo: TK_PR_FLOAT {$$ = NULL;} | //{$$ = create_node_from_token(TIPO_FLOAT, $1);};|
+      TK_PR_INT  {$$ = NULL;}  |
+      TK_PR_CHAR {$$ = NULL;} |
+      TK_PR_BOOL {$$ = NULL;};
 
 literais:   TK_LIT_FLOAT  {$$ = create_node(literal_float, $1);}| // {$$ = create_leaf(LIT_FLOAT, $1);}; |
             TK_LIT_INT    {$$ = create_node(literal_inteiro, $1);}| //{$$ = create_leaf(LIT_INT, $1);};|
