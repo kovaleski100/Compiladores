@@ -8,7 +8,9 @@
         "stdlib.h": "c",
         "backpatch.h": "c",
         "stack.h": "c",
-        "iloc.h": "c"
+        "iloc.h": "c",
+        "symboltable.h": "c",
+        "ast.h": "c"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }

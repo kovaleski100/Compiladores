@@ -8,16 +8,16 @@ typedef struct conteudo{
   int tamanho;
   union tipo_literal valor_literal;
   // faltou o outros definido na 2.1
-} conteudo;
+} CONTEUDO;
 
 
 typedef struct TabelaSimbolos{
   int chave;
-  conteudo  *conteudo;
+  CONTEUDO  *conteudo;
 } TabelaSimbolos;
 
-TabelaSimbolos *inicializa_tabela();
-void *adiciona_simbolo(TabelaSimbolos *tabela_de_simbolos, conteudo *conteudo);
+//TabelaSimbolos *inicializa_tabela();
+void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, conteudo *conteudo, int valor_lexico);
 //conteudo *procura_simbolo(TabelaSimbolos *tabela_de_simbolos, conteudo *conteudo)
 
 

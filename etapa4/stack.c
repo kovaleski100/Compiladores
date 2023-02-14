@@ -31,3 +31,25 @@ void pop(Pilha *pilha)
         return aux;
     }
 } // Devolve a pilha retirada
+
+CONTEUDO* procura_simbolo(Pilha *pilha, int chave)
+{
+    if(pilha == NULL)
+    {
+        return NULL;
+    }
+    Pilha *aux = NULL;
+    TabelaSimbolos *tabela = NULL;
+
+    tabela = pilha->tabela_de_simbolos;
+    int tam = strlen(tabela);
+
+    for(int i =0; i<tam; i++)
+    {
+        if(tabela->chave == chave)
+        {
+            return tabela->conteudo;
+        }
+    }
+    return procura_simbolo(pilha->proxima_tabela, chave);
+}
