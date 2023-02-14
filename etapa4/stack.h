@@ -1,5 +1,6 @@
 #include "symbolTable.h"
 
+
 typedef struct Pilha{
   TabelaSimbolos* tabela_de_simbolos;
   struct Pilha* proxima_tabela;
@@ -7,6 +8,7 @@ typedef struct Pilha{
 
 
 
-Pilha *inicializa_pilha(TabelaSimbolos*);
+//Pilha *inicializa_pilha(TabelaSimbolos*);
 void push(Pilha*, TabelaSimbolos*);
 void pop(Pilha*); // Devolve a pilha retirada
+conteudo* procura_simbolo(Pilha *pilha, int chave);

@@ -1,5 +1,4 @@
 #include "ast.h"
-#include "stack.h"
 
 typedef struct conteudo{
   int linha;
@@ -20,6 +19,5 @@ typedef struct TabelaSimbolos{
 TabelaSimbolos *inicializa_tabela();
 void *adiciona_simbolo(TabelaSimbolos *tabela_de_simbolos, conteudo *conteudo);
 //conteudo *procura_simbolo(TabelaSimbolos *tabela_de_simbolos, conteudo *conteudo)
-conteudo *procura_simbolo(Pilha *pilha, int chave);
 
 
