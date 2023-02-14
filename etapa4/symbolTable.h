@@ -16,8 +16,5 @@ typedef struct TabelaSimbolos{
   CONTEUDO  *conteudo;
 } TabelaSimbolos;
 
-//TabelaSimbolos *inicializa_tabela();
-void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, conteudo *conteudo, int valor_lexico);
-//conteudo *procura_simbolo(TabelaSimbolos *tabela_de_simbolos, conteudo *conteudo)
-
+void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int valor_lexico);
 

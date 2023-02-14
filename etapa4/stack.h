@@ -12,3 +12,4 @@ typedef struct Pilha{
 void push(Pilha*, TabelaSimbolos*);
 void pop(Pilha*); // Devolve a pilha retirada
 CONTEUDO* procura_simbolo(Pilha *pilha, int chave);
+void destroi_pilha(Pilha pilha);
