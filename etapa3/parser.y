@@ -115,36 +115,36 @@ int yydebug=1;
 inicio: programa {arvore = $1;} | {$$ = NULL;};
 programa: lista_de_elementos {$$ = $1;}; //REVISAR
 
-lista_de_elementos:     declaracao {$$ = $1;}|
-                        lista_de_elementos declaracao {$$ = $2; add_child($$, $1);}|
-                        lista_de_elementos funcao {$$ = $2; add_child($$, $1);}|
+lista_de_elementos:     lista_de_elementos declaracao {$$ = $1; $$ = add_child($$, $2);}|
+                        lista_de_elementos funcao {$$ = $1; $$ = add_child($$, $2);}|
+                        declaracao {$$ = $1;}|
                         funcao {$$ = $1;};
 
 declaracao: tipo lista_identificador {$$ = $2;};
 
-lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$ = create_node(identificador, $1); $$ = add_child($$, $2);$$ = add_child($$, $4); destroiVL($3);}|
-                        TK_IDENTIFICADOR array ';' {$$ = create_node(identificador, $1); $$ = add_child($$, $2); destroiVL($3);};
+lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$=NULL; destroiVL($3);}|
+                        TK_IDENTIFICADOR array ';' {$$ = NULL; destroiVL($3);};
 
-array:      '[' litInt ']' {destroiVL($1);destroiVL($3);}|
-            '[' litInt '^' lista_de_literais_inteiros ']'  {$$ = create_node(caracter_especial, $3); $$ = add_child($$, $2); $$ = add_child($$, $4); destroiVL($1);destroiVL($5);}| {$$ = NULL;};
+array:      '[' litInt ']' {$$ = NULL;destroiVL($1);destroiVL($3);}|
+            '[' litInt '^' lista_de_literais_inteiros ']'  {$$ = NULL;destroiVL($1);destroiVL($3);destroiVL($5);}| {$$ = NULL;};
 
-lista_de_literais_inteiros :    litInt '^' lista_de_literais_inteiros {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}|
-                                TK_LIT_INT {$$ = create_node(literal_inteiro, $1);};
+lista_de_literais_inteiros :    litInt '^' lista_de_literais_inteiros {$$=NULL;destroiVL($2);}|
+                                TK_LIT_INT {$$ = NULL;};
 
 funcao: cabecalho corpo {$$ = $1; add_child($$, $2);};
 
 corpo: bloco_de_comandos {$$ = $1;};
 
 cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($4);}|
-            tipo TK_IDENTIFICADOR '(' lista_funcao ')' {$$ = create_node(identificador, $2); $$ = add_child($$, $4); destroiVL($3);destroiVL($5);};
+            tipo TK_IDENTIFICADOR '(' lista_funcao ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($5);};
 
-lista_funcao:   parametro_funcao ',' lista_funcao {$$ = add_child($1,$3); destroiVL($2);}| // REVISAR
+lista_funcao:   parametro_funcao ',' lista_funcao {destroiVL($2);}| // REVISAR CORRIGIR MEMORIA ETAPA 3
                 parametro_funcao {$$ = $1;};
 
 parametro_funcao: tipo ID {$$ = $2;};
 
 bloco_de_comandos: '{' comandos '}'  { $$ = $2; destroiVL($1);destroiVL($3);}| 
-                   '{' '}' {destroiVL($1);destroiVL($2);}; // REVISAR PRINT
+                   '{' '}' {destroiVL($1);destroiVL($2); $$=NULL;}; // REVISAR PRINT
 
 comandos:   comandos_simples ';' comandos {$$ = add_child($1, $3);destroiVL($2);}|  // REVISAR
             comandos_simples ';' {$$ = $1; destroiVL($2);};
@@ -157,9 +157,9 @@ comandos_simples:   tipo declaracao_variavel_local {$$ = $2;}|
                     retorno {$$ = $1;};
 
 declaracao_variavel_local : inicializacao_variavel_local ',' declaracao_variavel_local {$$ = add_child($1, $3);destroiVL($2);} |  // REVISAR
-                            ID  ',' declaracao_variavel_local {$$ = add_child($1, $3);destroiVL($2);}|      
+                            TK_IDENTIFICADOR  ',' declaracao_variavel_local {$$ = $3;destroiVL($2);}|      
                             inicializacao_variavel_local {$$ = $1;} |
-                            ID {$$ = $1;} ;
+                            TK_IDENTIFICADOR {$$ = NULL;} ;
 
 inicializacao_variavel_local: ID TK_OC_LE literais {$$ = create_node(caracter_especial, $2); $$ = add_child($$,$1); $$ = add_child($$,$3);}; 
 
@@ -213,7 +213,7 @@ chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(c
                 TK_IDENTIFICADOR '('  ')' {$$ = create_node(call,$1); destroiVL($2); destroiVL($3);};
 
 lista_de_argumentos: argumento {$$ = $1;}|
-                     argumento ',' lista_de_argumentos {$$ = add_child($1, $3);destroiVL($2);}; // REVISAR
+                     argumento ',' lista_de_argumentos {$$ = add_child($1, $3);destroiVL($2);}; // REVISAR CORRECAO ETAPA 3
 
 argumento : expressao {$$ = $1;};
 
