@@ -23,6 +23,10 @@ int yydebug=1;
  struct ast *no;
  struct valor_lexico *valor_lexico; // etapa3 - 2.1 
 }
+
+
+%type<no> lista_variaveis
+%type<no> variavel
 %type<no> inicio
 %type<no> programa
 %type<no> corpo
@@ -33,7 +37,7 @@ int yydebug=1;
 %type<no> array
 %type<no> lista_de_literais_inteiros
 %type<no> lista_identificador
-%type<no> inicializacao_variavel_local
+//%type<no> inicializacao_variavel_local
 %type<no> declaracao_variavel_local
 %type<no> expressao
 %type<no> comandos
@@ -45,7 +49,7 @@ int yydebug=1;
 %type<no> atribuicao
 %type<no> comandos_simples
 %type<no> arranjo_multi
-%type<no> expressao_aux
+//%type<no> expressao_aux
 %type<no> funcao
 %type<no> declaracao
 %type<no> chamada_funcao
@@ -112,13 +116,28 @@ int yydebug=1;
 %start inicio
 %%
 
-inicio: programa {arvore = $1;} | {$$ = NULL;};
-programa: lista_de_elementos {$$ = $1;}; //REVISAR
+inicio: programa {arvore = $1;};
 
-lista_de_elementos:     lista_de_elementos declaracao {$$ = $1; $$ = add_child($$, $2);}|
-                        lista_de_elementos funcao {$$ = $1; $$ = add_child($$, $2);}|
-                        declaracao {$$ = $1;}|
+
+
+
+
+
+
+programa: lista_de_elementos programa {$$ = $1; $$ = add_child($$, $2);} | {$$ = NULL;}; //REVISAR
+
+// lista_de_elementos:     lista_de_elementos declaracao {$$ = add_child($1, $2);}|
+//                         lista_de_elementos funcao {add_child($1, $2);}|
+//                         declaracao {$$ = $1;}|
+//                         funcao {$$ = $1;};
+
+
+lista_de_elementos:     declaracao {$$ = $1;}|
                         funcao {$$ = $1;};
+
+
+
+
 
 declaracao: tipo lista_identificador {$$ = $2;};
 
@@ -131,7 +150,7 @@ array:      '[' litInt ']' {$$ = NULL;destroiVL($1);destroiVL($3);}|
 lista_de_literais_inteiros :    litInt '^' lista_de_literais_inteiros {$$=NULL;destroiVL($2);}|
                                 TK_LIT_INT {$$ = NULL;};
 
-funcao: cabecalho corpo {$$ = $1; add_child($$, $2);};
+funcao: cabecalho corpo {$$ = add_child($1, $2);};
 
 corpo: bloco_de_comandos {$$ = $1;};
 
@@ -146,22 +165,92 @@ parametro_funcao: tipo ID {$$ = $2;};
 bloco_de_comandos: '{' comandos '}'  { $$ = $2; destroiVL($1);destroiVL($3);}| 
                    '{' '}' {destroiVL($1);destroiVL($2); $$=NULL;}; // REVISAR PRINT
 
-comandos:   comandos_simples ';' comandos {$$ = add_child($1, $3);destroiVL($2);}|  // REVISAR
+
+comandos:   comandos_simples ';' comandos {$$ = ($1) == NULL ? ($3) : add_child($1, $3);destroiVL($2);}|  // REVISAR
             comandos_simples ';' {$$ = $1; destroiVL($2);};
 
-comandos_simples:   tipo declaracao_variavel_local {$$ = $2;}| 
+
+// comandos:   comandos comandos_simples ';' {$$ = add_child($1, $2);destroiVL($3);}|  // REVISAR
+//             comandos_simples ';' {$$ = $1; destroiVL($2);};
+
+
+
+
+
+
+comandos_simples:   declaracao_variavel_local {$$ = $1;}| 
                     atribuicao {$$ = $1;}|
                     controle_de_fluxo {$$ = $1;}|
                     chamada_funcao {$$ = $1;}|
                     bloco_de_comandos {$$ = $1;}|
                     retorno {$$ = $1;};
 
-declaracao_variavel_local : inicializacao_variavel_local ',' declaracao_variavel_local {$$ = add_child($1, $3);destroiVL($2);} |  // REVISAR
-                            TK_IDENTIFICADOR  ',' declaracao_variavel_local {$$ = $3;destroiVL($2);}|      
-                            inicializacao_variavel_local {$$ = $1;} |
-                            TK_IDENTIFICADOR {$$ = NULL;} ;
+// declaracao_variavel_local : inicializacao_variavel_local ',' declaracao_variavel_local {$$ = add_child($1, $3);destroiVL($2);} |  // REVISAR
+//                             TK_IDENTIFICADOR  ',' declaracao_variavel_local {$$ = $3;destroiVL($2);}|      
+//                             inicializacao_variavel_local {$$ = $1;} |
+//                             TK_IDENTIFICADOR {$$ = NULL;} ;
 
-inicializacao_variavel_local: ID TK_OC_LE literais {$$ = create_node(caracter_especial, $2); $$ = add_child($$,$1); $$ = add_child($$,$3);}; 
+// inicializacao_variavel_local: ID TK_OC_LE literais {$$ = create_node(caracter_especial, $2); $$ = add_child($$,$1); $$ = add_child($$,$3);}; 
+
+
+
+
+
+
+
+
+
+// declaracao_variavel_local : inicializacao_variavel_local {$$ = $1;} |
+//                             inicializacao_variavel_local ',' declaracao_variavel_local {$$ = ($1) == NULL ? ($3) : add_child($1, $3);destroiVL($2);};  // REVISAR
+
+// inicializacao_variavel_local: ID TK_OC_LE literais {$$ = create_node(caracter_especial, $2); $$ = add_child($$,$1); $$ = add_child($$,$3);}|
+//                               TK_IDENTIFICADOR {$$ = NULL;} ; 
+
+
+
+
+
+declaracao_variavel_local: tipo lista_variaveis {$$ = $2;}
+
+lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);destroiVL($2);}|
+                 TK_IDENTIFICADOR ',' lista_variaveis {$$ = $3;}|
+                 variavel {$$ = $1;}|
+                 TK_IDENTIFICADOR {$$ = NULL;}; 
+
+variavel: ID TK_OC_LE literais {$$ = create_node(caracter_especial, $2); $$ = add_child($$,$1); $$ = add_child($$,$3);};
+
+
+
+
+
+// declaracao_variavel_local: tipo lista_variaveis {$$ = $2;}|
+//                            declaracao_variavel_local tipo lista_variaveis {$$ = ($1) == NULL ? ($3) : add_child($1, $3);};
+
+// lista_variaveis: variavel {$$ = $1;}|
+//                  lista_variaveis ',' variavel  {$$ = ($1) == NULL ? ($3) : add_child($1, $3);destroiVL($2);};
+
+// variavel: ID TK_OC_LE literais {$$ = create_node(caracter_especial, $2); $$ = add_child($$,$1); $$ = add_child($$,$3);}|
+//           TK_IDENTIFICADOR {$$ = NULL;} ; 
+
+
+
+
+
+
+
+
+
+
+// declaracao_variavel_local : declaracao_variavel_local ',' inicializacao_variavel_local {$$ = add_child($1, $3);destroiVL($2);} |
+//                             inicializacao_variavel_local {$$ = $1;}|
+//                             TK_IDENTIFICADOR {$$ = NULL;}   // REVISAR
+
+// inicializacao_variavel_local: ID TK_OC_LE literais {$$ = create_node(caracter_especial, $2); $$ = add_child($$,$1); $$ = add_child($$,$3);};
+
+
+
+
+
 
 
 
@@ -186,17 +275,21 @@ inicializacao_variavel_local: ID TK_OC_LE literais {$$ = create_node(caracter_es
 atribuicao: ID '=' expressao {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}|  // TESTAR
             arranjo_multi '=' expressao  {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}
 
-arranjo_multi:  ID '[' expressao ']' {$$ = create_node(arranjo, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);}|
-                ID '[' expressao_aux ']' {$$ = create_node(arranjo, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);};
+arranjo_multi:  ID '[' lista_de_expressoes ']' {$$ = create_node(arranjo, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);}
+                // ID '[' expressao_aux ']' {$$ = create_node(arranjo, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);};
 
 // lista_de_expressoes: expressao '^' lista_de_expressoes | expressao;
 
 // arranjo_multi:  ID '[' expressao ']' {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}|
 
 
-expressao_aux :  expressao  '^' lista_de_expressoes  {$$ = create_node(caracter_especial, $2); add_child($$,$1); add_child($$, $3);};
+// expressao_aux :  expressao  '^' lista_de_expressoes  {$$ = create_node(caracter_especial, $2); add_child($$,$1); add_child($$, $3);};
 
-lista_de_expressoes: expressao '^' lista_de_expressoes {$$ = create_node(caracter_especial, $2); add_child($$,$1); add_child($$, $3);}|
+// lista_de_expressoes: expressao '^' lista_de_expressoes {$$ = create_node(caracter_especial, $2); add_child($$,$1); add_child($$, $3);}|
+//                      expressao {$$ = $1;};
+
+
+lista_de_expressoes: lista_de_expressoes '^' expressao   {$$ = create_node(caracter_especial, $2); add_child($$,$1); add_child($$, $3);}|
                      expressao {$$ = $1;};
 
 // lista_de_expressoes: lista_de_expressoes '^' expressao |
