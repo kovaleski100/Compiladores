@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "erro.h"
 
 typedef struct arranjo{
   int *dim;
@@ -34,4 +35,3 @@ typedef struct TabelaSimbolos{
 } TabelaSimbolos;
 
 void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int valor_lexico);
-

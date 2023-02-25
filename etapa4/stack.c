@@ -32,7 +32,7 @@ void pop(Pilha *pilha)
     }
 } // Devolve a pilha retirada
 
-CONTEUDO* procura_simbolo(Pilha *pilha, int chave)
+CONTEUDO* procura_simbolo(Pilha *pilha, int chave, bool escopolocal)
 {
     if(pilha == NULL)
     {
@@ -51,5 +51,26 @@ CONTEUDO* procura_simbolo(Pilha *pilha, int chave)
             return tabela[i]->conteudo;
         }
     }
-    return procura_simbolo(pilha->proxima_tabela, chave);
+    if(escopolocal == false)
+    {
+        return procura_simbolo(pilha->proxima_tabela, chave);
+    }
+}
+
+int declaracao_var(Pilha *escopo, CONTEUDO * conteudo,int chave)
+{
+    if(!procura_simbolo(escopo, chave, true))
+    {
+        
+        adiciona_simbolo(escopo->tabela_de_simbolos, conteudo, chave);
+        return;
+    }
+    else{
+        exit(ERR_DECLARED);
+    }
+}
+
+int atribuiVariavel(Pilha *escopo, CONTEUDO * conteudo,int chave)
+{
+    procura_simbolo()
 }
