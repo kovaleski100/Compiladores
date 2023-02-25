@@ -78,9 +78,9 @@ void atribuiVariavel(PILHA *escopo,int chave )
 
 void print_pilha(PILHA* pilha){
     if(pilha == NULL){
-        printf("Pilha vazia");
+        printf("Pilha vazia\n");
     }
-    printf("Pilha");
+    printf("Pilha %d\n", pilha->tabela_de_simbolos->conteudo->tipo);
 }
 
 TabelaSimbolos* devolve_primeira_tabela(PILHA *pilha){
