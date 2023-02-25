@@ -1,8 +1,8 @@
 #include "stack.h"
 
-void push(Pilha *pilha, TabelaSimbolos *tabela)
+void push(PILHA *pilha, TabelaSimbolos *tabela)
 {
-    Pilha *aux = (Pilha*)malloc(sizeof(Pilha));
+    PILHA *aux = (PILHA*)malloc(sizeof(PILHA));
     aux->tabela_de_simbolos = tabela;
     if(pilha != NULL)
     {
@@ -16,7 +16,7 @@ void push(Pilha *pilha, TabelaSimbolos *tabela)
     return aux;
 
 }
-void pop(Pilha *pilha)
+void pop(PILHA *pilha)
 {
     if(pilha == NULL)
     {
@@ -24,7 +24,7 @@ void pop(Pilha *pilha)
     }
     else
     {
-        Pilha *aux = (Pilha*)malloc(sizeof(Pilha));
+        PILHA *aux = (PILHA*)malloc(sizeof(PILHA));
         aux = pilha->proxima_tabela;
         pilha->proxima_tabela = NULL;
         free(pilha);
@@ -32,13 +32,13 @@ void pop(Pilha *pilha)
     }
 } // Devolve a pilha retirada
 
-CONTEUDO* procura_simbolo(Pilha *pilha, int chave, bool escopolocal)
+CONTEUDO* procura_simbolo(PILHA *pilha, int chave, bool escopolocal)
 {
     if(pilha == NULL)
     {
         return NULL;
     }
-    Pilha *aux = NULL;
+    PILHA *aux = NULL;
     TabelaSimbolos **tabela = NULL;
 
     tabela = pilha->tabela_de_simbolos;
@@ -57,7 +57,7 @@ CONTEUDO* procura_simbolo(Pilha *pilha, int chave, bool escopolocal)
     }
 }
 
-int declaracao_var(Pilha *escopo, CONTEUDO * conteudo,int chave)
+int declaracao_var(PILHA *escopo, CONTEUDO * conteudo,int chave)
 {
     if(!procura_simbolo(escopo, chave, true))
     {
@@ -70,7 +70,10 @@ int declaracao_var(Pilha *escopo, CONTEUDO * conteudo,int chave)
     }
 }
 
-int atribuiVariavel(Pilha *escopo, CONTEUDO * conteudo,int chave)
+int atribuiVariavel(PILHA *escopo, CONTEUDO * conteudo,int chave, CONTEUDO *valorAtribuido)
 {
-    procura_simbolo()
+    if(!procura_simbolo(escopo, chave, false))
+    {
+        exit(ERR_UNDECLARED);
+    }
 }

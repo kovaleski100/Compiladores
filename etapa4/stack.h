@@ -9,8 +9,8 @@ typedef struct Pilha{
 
 
 //Pilha *inicializa_pilha(TabelaSimbolos*);
-void push(Pilha*, TabelaSimbolos*);
-void pop(Pilha*); // Devolve a pilha retirada
+void push(PILHA* pilha, TabelaSimbolos* escopo);
+void pop(PILHA* pilha); // Devolve a pilha retirada
 CONTEUDO* procura_simbolo(PILHA *pilha, int chave);
-void destroi_pilha(Pilha pilha);
+void destroi_pilha(PILHA pilha);
 int check_declaracao(PILHA* escopo, int chave, bool escopolocal);

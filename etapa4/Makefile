@@ -8,7 +8,7 @@
 main: main.c
 			bison -d parser.y
 			flex scanner.l
-			gcc -Wall -Wextra ast.c stack.c symbolTable.c parser.tab.c lex.yy.c main.c -o etapa3
+			gcc -Wall -Wextra ast.c symbolTable.c stack.c parser.tab.c lex.yy.c main.c -o etapa3
 
 debug: 
 		bison -d parser.y
