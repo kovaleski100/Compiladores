@@ -24,10 +24,12 @@ void pop(PILHA *pilha)
     }
     else
     {
+
         PILHA *aux = (PILHA*)malloc(sizeof(PILHA));
-        aux = pilha->proxima_tabela;
-        pilha->proxima_tabela = NULL;
-        free(pilha);
+        aux = pilha;
+        aux->proxima_tabela = NULL;
+        pilha = pilha->proxima_tabela;
+        free(aux);
         //return aux;
     }
 } // Devolve a pilha retirada
@@ -38,11 +40,10 @@ CONTEUDO* procura_simbolo(PILHA *pilha, int chave, bool escopolocal)
     {
         return NULL;
     }
-    PILHA *aux = NULL;
     TabelaSimbolos **tabela = NULL;
 
-    tabela = pilha->tabela_de_simbolos;
-    int tam = strlen(tabela);
+    tabela = &pilha->tabela_de_simbolos;
+    int tam = getTabelaSimbolosSize(tabela);
 
     for(int i =0; i<tam; i++)
     {
@@ -62,7 +63,7 @@ void declaracao_var(PILHA *escopo, CONTEUDO * conteudo,int chave)
     if(!procura_simbolo(escopo, chave, true))
     {
         
-        adiciona_simbolo(escopo->tabela_de_simbolos, conteudo, chave);
+        adiciona_simbolo(&escopo->tabela_de_simbolos, conteudo, chave);
         return;
     }
     else{
@@ -70,7 +71,7 @@ void declaracao_var(PILHA *escopo, CONTEUDO * conteudo,int chave)
     }
 }
 
-void atribuiVariavel(PILHA *escopo, CONTEUDO * conteudo,int chave, CONTEUDO *valorAtribuido)
+void atribuiVariavel(PILHA *escopo,int chave )
 {
     if(!procura_simbolo(escopo, chave, false))
     {
