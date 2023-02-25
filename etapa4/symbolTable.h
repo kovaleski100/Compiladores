@@ -18,6 +18,7 @@ typedef union ArranjoOuVetor{
 
 
 typedef struct CONTEUDO{
+  char* nome;
   int linha;
   int coluna;
   int natureza;
