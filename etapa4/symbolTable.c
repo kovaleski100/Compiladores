@@ -2,15 +2,19 @@
 
 void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int valor_lexico)
 {
-    
-    int tam = strlen(&tabela_de_simbolos);
-    tabela_de_simbolos = realloc(&tabela_de_simbolos,sizeof(&tabela_de_simbolos)*(tam+1));
-    if(tabela_de_simbolos == NULL){
-      return;
+    int tam = 0;
+    if (*tabela_de_simbolos != NULL)
+    {
+        tam = sizeof(**tabela_de_simbolos) / sizeof(TabelaSimbolos);
     }
-    tabela_de_simbolos[tam]->conteudo = conteudo;
-    tabela_de_simbolos[tam]->chave = valor_lexico;
+    *tabela_de_simbolos = realloc(*tabela_de_simbolos, (tam + 1) * sizeof(TabelaSimbolos));
+    if (*tabela_de_simbolos == NULL) {
+        return;
+    }
+    (*tabela_de_simbolos)[tam].conteudo = conteudo;
+    (*tabela_de_simbolos)[tam].chave = valor_lexico;
 }
+
 
 CONTEUDO *cria_conteudo(valor_lexico* vl){
   CONTEUDO * conteudo = (CONTEUDO *)malloc(sizeof(CONTEUDO));
