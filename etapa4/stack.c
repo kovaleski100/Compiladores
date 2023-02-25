@@ -16,23 +16,20 @@ void push(PILHA *pilha, TabelaSimbolos *tabela)
     //return aux;
 
 }
-void pop(PILHA *pilha)
+void pop(PILHA **pilha)
 {
-    if(pilha == NULL)
+    if (*pilha == NULL)
     {
         return;
     }
     else
     {
-
-        PILHA *aux = (PILHA*)malloc(sizeof(PILHA));
-        aux = pilha;
-        aux->proxima_tabela = NULL;
-        pilha = pilha->proxima_tabela;
+        PILHA *aux = *pilha;
+        *pilha = (*pilha)->proxima_tabela;
         free(aux);
-        //return aux;
     }
-} // Devolve a pilha retirada
+}
+
 
 CONTEUDO* procura_simbolo(PILHA *pilha, int chave, bool escopolocal)
 {
