@@ -78,25 +78,14 @@ extern int yydebug;
     TK_LIT_TRUE = 279,             /* TK_LIT_TRUE  */
     TK_LIT_CHAR = 280,             /* TK_LIT_CHAR  */
     TK_IDENTIFICADOR = 281,        /* TK_IDENTIFICADOR  */
-    TK_ERRO = 282,                 /* TK_ERRO  */
-    CALL = 283                     /* CALL  */
+    TK_ERRO = 282                  /* TK_ERRO  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
-#line 22 "parser.y"
-
- struct ast *no;
- struct valor_lexico *valor_lexico; // etapa3 - 2.1 
-
-#line 97 "parser.tab.h"
-
-};
-typedef union YYSTYPE YYSTYPE;
+typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

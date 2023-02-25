@@ -1,11 +1,3 @@
-/********************************************************************** 
- * INF01147 - Compiladores - Turma B (2022/2)                         *
- *                                                                    *
- * Felipe Bastos                                                      *
- * Matheus F Kovaleski                                                *
- *                                                                    *
- *                                                                    *
- **********************************************************************/
 %top{
   #include "parser.tab.h"
   #include "ast.h"
@@ -22,30 +14,7 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 
 
 %%
-  /*
-  ** Definição dos tokens a serem reconhecidos.
-  ** 
-  ** Existem  tokens  que  correspondem  a  caracteres  particulares, como vírgula,
-  ** ponto-e-vírgula, parênteses, para os quais é mais conveniente usar seu próprio
-  ** código ASCII (convertido  para  inteiro)  como  valor  de  retorno  que  os 
-  ** identifica.  
-  **
-  ** Para os tokens compostos, como palavras reservadas e identificadores, utiliza-se
-  ** uma constante, conforme o arquivo tokens.h fornecido, com  um  código  maior  do
-  ** que 255 para representá-los.
-  **
-  ** Os tokens se enquadram em diferentes categorias: 
-  **   (1) palavras reservadas da linguagem;
-  **   (2) caracteres especiais;
-  **   (3) operadores compostos; 
-  **   (4) identificadores;
-  **   (5) literais;
-  **   (6) outros (espaços, tabs, newlines, comentários e tokens inválidos).
-  */
-
-  /* (1) -> Palavras reservadas da linguagem */
-
-"int"			  return TK_PR_INT;
+"int"			return TK_PR_INT;
 "float"			return TK_PR_FLOAT;
 "bool"			return TK_PR_BOOL;
 "char"			return TK_PR_CHAR;
@@ -80,13 +49,13 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 
   /* (5) -> Literais */
 
-[-+]?[0-9]+ 				{yylval.valor_lexico = cria_valor(literal_inteiro, current_line_number, yytext, inteiro); return TK_LIT_INT;}
-[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)? 	{yylval.valor_lexico = cria_valor(literal_float, current_line_number, yytext, flutuante); return TK_LIT_FLOAT;}
+[-+]?[0-9]+\s*				{yylval.valor_lexico = cria_valor(literal_inteiro, current_line_number, yytext, inteiro); printf("%s", yytext);return TK_LIT_INT;}
+\s*[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)?\s* 	{yylval.valor_lexico = cria_valor(literal_float, current_line_number, yytext, flutuante); return TK_LIT_FLOAT;}
+
 \'.\'					{yylval.valor_lexico = cria_valor(literal_char, current_line_number, yytext, caracter); return TK_LIT_CHAR;}
 
   /* (2) -> Caracteres especiais */
-
-{ESPECIAL}              {yylval.valor_lexico = cria_valor(caracter_especial, current_line_number, yytext, nulo) ;return yytext[0];};
+\s*({ESPECIAL}\s*)?              {yylval.valor_lexico = cria_valor(caracter_especial, current_line_number, yytext, nulo); printf("%s", yytext) ;return yytext[0];};
 
   /* (6) -> Outros */
 

@@ -80,13 +80,13 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 
   /* (5) -> Literais */
 
-[-+]?[0-9]+ 				return TK_LIT_INT;
+[0-9]+\s* 				return TK_LIT_INT;
 [-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)? 	return TK_LIT_FLOAT;
 \'.\'					return TK_LIT_CHAR;
 
   /* (2) -> Caracteres especiais */
 
-{ESPECIAL}              return yytext[0];
+\s*({ESPECIAL}\s*)?              return yytext[0];
 
   /* (6) -> Outros */
 
