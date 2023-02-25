@@ -14,3 +14,5 @@ void pop(PILHA* pilha); // Devolve a pilha retirada
 CONTEUDO* procura_simbolo(PILHA *pilha, int chave, bool escopolocal);
 void destroi_pilha(PILHA pilha);
 int check_declaracao(PILHA* escopo, int chave, bool escopolocal);
+void print_pilha(PILHA* pilha);
+TabelaSimbolos* devolve_primeira_tabela(PILHA *pilha);

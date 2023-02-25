@@ -57,10 +57,6 @@ CONTEUDO* procura_simbolo(PILHA *pilha, int chave, bool escopolocal)
     }
 }
 
-TabelaSimbolos* devolve_primeira_tabela(PILHA *pilha){
-    return pilha->proxima_tabela;
-}
-
 void declaracao_var(PILHA *escopo, CONTEUDO * conteudo,int chave)
 {
     if(!procura_simbolo(escopo, chave, true))
@@ -80,4 +76,15 @@ void atribuiVariavel(PILHA *escopo, CONTEUDO * conteudo,int chave, CONTEUDO *val
     {
         exit(ERR_UNDECLARED);
     }
+}
+
+void print_pilha(PILHA* pilha){
+    if(pilha == NULL){
+        printf("Pilha vazia");
+    }
+    printf("Pilha");
+}
+
+TabelaSimbolos* devolve_primeira_tabela(PILHA *pilha){
+        return pilha->tabela_de_simbolos;
 }

@@ -22,6 +22,9 @@ ast* create_node(int tipo, valor_lexico *valor)
 // ast* create_leaf(int tipo, valor_lexico valor); precisa?
 ast* add_child(ast *arvore, ast *nodo)
 {
+    if(arvore == NULL){
+        return nodo;
+    }
     arvore->filho = (ast**)realloc(arvore->filho, sizeof(arvore->filho)*(arvore->num_filhos+1));
     if(arvore->filho == NULL){
         return NULL;
@@ -35,7 +38,6 @@ void exporta(ast *arvore)
 {
     print_nodo(arvore);
     print_dados(arvore);
-    
 }
 
 void print_nodo(ast *arvore)
@@ -44,12 +46,15 @@ void print_nodo(ast *arvore)
     {
         return;
     }
+    
     for(int i=0; i < arvore->num_filhos; i++)
     {
         // ast *child = (ast*)malloc(sizeof(ast));
         // child = arvore->filho[i];
-        printf("%p, %p\n", arvore, arvore->filho[i]);
         print_nodo(arvore->filho[i]);
+        if(arvore->filho[i] != NULL){
+            printf("%p, %p\n", arvore, arvore->filho[i]);
+        }
     }
 }
 
@@ -57,12 +62,6 @@ void print_nodo(ast *arvore)
 void print_dados(ast *arvore)
 {
     if (arvore == NULL) return;
-    for(int i = 0; i < arvore->num_filhos; i++)
-        {
-            {
-                print_dados(arvore->filho[i]);
-            }
-        }
         printf("%p ", arvore);
         switch (arvore->valor_lexico->tipo_token)
         {
@@ -101,6 +100,12 @@ void print_dados(ast *arvore)
             break;
         }
         printf("\n");
+        for(int i = 0; i < arvore->num_filhos; i++)
+        {
+            {
+                print_dados(arvore->filho[i]);
+            }
+        }
 }
 
 void destroiNodo(ast* arvore){
