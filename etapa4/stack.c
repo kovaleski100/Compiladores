@@ -4,9 +4,9 @@ void push(PILHA **pilha, TabelaSimbolos *tabela)
 {
     PILHA *aux = (PILHA*)malloc(sizeof(PILHA));
     aux->tabela_de_simbolos = tabela;
-    if(pilha != NULL)
+    if(*pilha != NULL)
     {
-        aux->proxima_tabela = pilha;
+        aux->proxima_tabela = *pilha;
     }
     else
     {
