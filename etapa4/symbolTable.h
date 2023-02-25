@@ -1,5 +1,21 @@
 #include "ast.h"
 
+typedef struct arranjo{
+  int *dim;
+}ARR;
+
+typedef struct argumentos
+{
+  char *argumeto;
+}ARGS;
+
+
+typedef union ArranjoOuVetor{
+  ARGS arg;
+  ARR arranjo;
+}ARRANJOOUVETOR;
+
+
 typedef struct conteudo{
   int linha;
   int coluna;
@@ -7,6 +23,7 @@ typedef struct conteudo{
   int tipo;
   int tamanho;
   union tipo_literal valor_literal;
+  union ArranjoOuVetor arrOuVet;
   // faltou o outros definido na 2.1
 } CONTEUDO;
 
