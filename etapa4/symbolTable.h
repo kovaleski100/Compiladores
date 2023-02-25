@@ -17,7 +17,7 @@ typedef union ArranjoOuVetor{
 }ARRANJOOUVETOR;
 
 
-typedef struct conteudo{
+typedef struct CONTEUDO{
   int linha;
   int coluna;
   int natureza;
@@ -35,3 +35,4 @@ typedef struct TabelaSimbolos{
 } TabelaSimbolos;
 
 void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int valor_lexico);
+TabelaSimbolos* cria_tabela_vazia();

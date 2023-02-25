@@ -69,4 +69,5 @@ void print_nodo(ast *arvore);
 void libera(void *arvore);
 void exporta(ast *arvore);
 void destroiVL(valor_lexico *valor);
+void destroiNodo(ast *arvore);
 valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal);

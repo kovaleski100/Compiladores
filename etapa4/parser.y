@@ -11,15 +11,14 @@
 %{
 
 #include <stdio.h>
-#include "ast.h"
 #include "stack.h"
-#include "symbolTable.h"
 extern int current_line_number;
 extern void *arvore;
-Pilha* escopo_global = NULL;
+PILHA* pilha = NULL;
 int yylex(void);
 void yyerror (char const *s);
 int yydebug=1;
+
 %}
 
 %union{
@@ -72,10 +71,11 @@ int yydebug=1;
 %type<no> ID
 %type<no> litInt
 
-%token TK_PR_INT
-%token TK_PR_FLOAT
-%token TK_PR_BOOL
-%token TK_PR_CHAR
+
+%token <tipo>  TK_PR_INT
+%token <tipo>  TK_PR_FLOAT
+%token <tipo>  TK_PR_BOOL
+%token <tipo>  TK_PR_CHAR
 %token <valor_lexico> TK_PR_IF
 %token TK_PR_THEN
 %token TK_PR_ELSE
@@ -147,6 +147,17 @@ funcao: cabecalho corpo {$$ = add_child($1, $2);};
 corpo: bloco_de_comandos {$$ = $1;};
 
 cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($4);destroiNodo($1);}|
+                                        //    TabelaSimbolos* tabela_simbolos = devolve_primeira_tabela(escopo_global);
+                                        //    CONTEUDO*  conteudo =  procura_simbolo(escopo_global, $1);
+                                        //    if(conteudo == NULL){
+                                        //        CONTEUDO* novo_escopo;
+                                        //        adiciona_simbolo(&tabela_simbolos, novo_escopo, $1);
+                                        //    }
+                                        //    else{
+                                        //        printf("ERR_DECLARED na linha %d \n", current_line_number);
+                                        //        exit(ERR_DECLARED);                                           
+                                        //    }
+
             tipo TK_IDENTIFICADOR '(' lista_funcao ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($5);destroiNodo($4);};
 
 lista_funcao:   parametro_funcao ',' lista_funcao {destroiVL($2); $$ = add_child($1, $3);}| // REVISAR CORRIGIR MEMORIA ETAPA 3
@@ -247,10 +258,10 @@ fator:  arranjo_multi {$$ = $1;} |
 
         
 
-tipo: TK_PR_FLOAT {$$ = NULL;} | //{$$ = create_node_from_token(TIPO_FLOAT, $1);};|
-      TK_PR_INT  {$$ = NULL;}  |
-      TK_PR_CHAR {$$ = NULL;} |
-      TK_PR_BOOL {$$ = NULL;};
+tipo: TK_PR_FLOAT {$$ = TK_PR_FLOAT;} | //{$$ = create_node_from_token(TIPO_FLOAT, $1);};|
+      TK_PR_INT  {$$ = TK_PR_INT;}  |
+      TK_PR_CHAR {$$ = TK_PR_CHAR;} |
+      TK_PR_BOOL {$$ = TK_PR_BOOL;};
 
 literais:   TK_LIT_FLOAT  {$$ = create_node(literal_float, $1);}| // {$$ = create_leaf(LIT_FLOAT, $1);}; |
             TK_LIT_INT    {$$ = create_node(literal_inteiro, $1);}| //{$$ = create_leaf(LIT_INT, $1);};|

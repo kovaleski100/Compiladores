@@ -13,7 +13,7 @@ void push(PILHA *pilha, TabelaSimbolos *tabela)
         aux->proxima_tabela = NULL;
     }
 
-    return aux;
+    //return aux;
 
 }
 void pop(PILHA *pilha)
@@ -28,7 +28,7 @@ void pop(PILHA *pilha)
         aux = pilha->proxima_tabela;
         pilha->proxima_tabela = NULL;
         free(pilha);
-        return aux;
+        //return aux;
     }
 } // Devolve a pilha retirada
 
@@ -53,11 +53,15 @@ CONTEUDO* procura_simbolo(PILHA *pilha, int chave, bool escopolocal)
     }
     if(escopolocal == false)
     {
-        return procura_simbolo(pilha->proxima_tabela, chave);
+        return procura_simbolo(pilha->proxima_tabela, chave, escopolocal);
     }
 }
 
-int declaracao_var(PILHA *escopo, CONTEUDO * conteudo,int chave)
+TabelaSimbolos* devolve_primeira_tabela(PILHA *pilha){
+    return pilha->proxima_tabela;
+}
+
+void declaracao_var(PILHA *escopo, CONTEUDO * conteudo,int chave)
 {
     if(!procura_simbolo(escopo, chave, true))
     {
@@ -70,7 +74,7 @@ int declaracao_var(PILHA *escopo, CONTEUDO * conteudo,int chave)
     }
 }
 
-int atribuiVariavel(PILHA *escopo, CONTEUDO * conteudo,int chave, CONTEUDO *valorAtribuido)
+void atribuiVariavel(PILHA *escopo, CONTEUDO * conteudo,int chave, CONTEUDO *valorAtribuido)
 {
     if(!procura_simbolo(escopo, chave, false))
     {

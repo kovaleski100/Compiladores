@@ -8,3 +8,13 @@ void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, i
     tabela_de_simbolos[tam]->conteudo = conteudo;
     tabela_de_simbolos[tam]->chave = valor_lexico;
 }
+
+TabelaSimbolos* cria_tabela_vazia(){
+    TabelaSimbolos * tabela = (TabelaSimbolos *)malloc(sizeof(TabelaSimbolos));
+    if(tabela == NULL){
+      return NULL;
+    }
+    else{
+      return tabela;
+    }
+}
