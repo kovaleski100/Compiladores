@@ -14,7 +14,7 @@
 #include "stack.h"
 extern int current_line_number;
 extern void *arvore;
-PILHA **pilha = NULL;
+PILHA *pilha = NULL;
 int yylex(void);
 void yyerror (char const *s);
 int yydebug=1;
@@ -118,7 +118,7 @@ int yydebug=1;
 %start inicio
 %%
 
-inicio: programa {arvore = $1;push(pilha, cria_tabela_vazia()); print_pilha(*pilha);};
+inicio: programa {arvore = $1;push(&pilha, cria_tabela_vazia()); print_pilha(&pilha);};
 
 programa: lista_de_elementos programa {$$ = $1; $$ = add_child($$, $2);} | {$$ = NULL;}; //REVISAR
 
@@ -148,19 +148,19 @@ corpo: bloco_de_comandos {$$ = $1;};
 cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($4);
                                             // Verifica se função já existe no escopo_global
                                             printf("Inicio TK_IDENTIFICADOR\n");
-                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(*pilha, $2, false);
+                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);
                                             printf("Conteudo um\n");                                           
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2);
                                                 printf("Conteudo Criado\n");
                                                 //Adiciona o nome da função na pilha global
-                                                adiciona_simbolo(pilha, novo_conteudo, $2);
+                                                adiciona_simbolo(&pilha, novo_conteudo, $2);
                                                 printf("Nome da funcao adicionado na pilha global\n");
                                                 //Adiciona novo escopo
                                                 TabelaSimbolos* novo_escopo = cria_tabela_vazia();
                                                 printf("Criou novo escopo\n");
-                                                push(pilha, novo_escopo);
+                                                push(&pilha, novo_escopo);
                                                 printf("Adicionou novo escopo na pilha\n");
                                                 pop(&pilha);
                                                 print_pilha(&pilha);
@@ -181,7 +181,7 @@ cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); 
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2);
                                                 printf("Conteudo Criado\n");
                                                 //Adiciona o nome da função na pilha global
-                                                adiciona_simbolo(pilha, novo_conteudo, $2);
+                                                adiciona_simbolo(&pilha, novo_conteudo, $2);
                                                 printf("Nome da funcao adicionado na pilha global\n");
                                                 //Adiciona novo escopo
                                                 TabelaSimbolos* novo_escopo = cria_tabela_vazia();
