@@ -64,6 +64,32 @@ CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopolocal)
             return tabela[i].conteudo;
         }
     }
+
+
+    // Percorre a pilha até chegar à última tabela
+    PILHA* ultima_tabela = pilha;
+    while (ultima_tabela->proxima_tabela != NULL) {
+    ultima_tabela = ultima_tabela->proxima_tabela;
+    }
+
+    // Acessa a última tabela
+    TabelaSimbolos* tabela_global = ultima_tabela->tabela_de_simbolos;
+    for(int i = 0; i<100; i++)
+    {
+        printf("Compare valor I: %d tem_simbolo: %d\n", i, tabela_global[i].tem_simbolo);
+        if(tabela_global[i].tem_simbolo == 0){
+            printf("É NULL \n");
+            return NULL;
+        }
+        printf("Não é null \n");
+        // printf("Conteudo->nome %s \n", (*tabela)[i].conteudo->nome);
+        printf("Conteudo->nome %s \n", nome_var);
+        if(strcmp(tabela_global[i].conteudo->nome, nome_var) == 0)
+        {
+            printf("Encontrou simbolo \n");
+            return tabela_global[i].conteudo;
+        }
+    }
     //printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", (*tabela)[tam].conteudo->nome);
     printf("Proxima tabela procura_simbolo \n");
     return NULL;
