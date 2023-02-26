@@ -231,7 +231,25 @@ comandos_simples:   declaracao_variavel_local {$$ = $1;}|
 declaracao_variavel_local: tipo lista_variaveis {$$ = $2;}
 
 lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);destroiVL($2);}|
-                 TK_IDENTIFICADOR ',' lista_variaveis {$$ = $3;}|
+                 TK_IDENTIFICADOR ',' lista_variaveis {$$ = $3;
+                                                    // Verifica se função já existe no escopo_global
+                                                    printf("Inicio TK_IDENTIFICADOR\n");
+                                                    // print_pilha(&pilha);  
+                                                    CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);
+                                                    printf("Conteudo um\n");                                         
+                                                    if(conteudo_na_pilha == NULL){
+                                                        //Criar_conteudo
+                                                        CONTEUDO* novo_conteudo = cria_conteudo($1);
+                                                        printf("Conteudo Criado\n");
+                                                        //Adiciona o nome da variavel na pilha
+                                                        adiciona_simbolo(novo_conteudo, $1, pilha);
+                                                        printf("Nome da variavel adicionado na pilha local\n");
+                                                    }
+                                                    else{
+                                                        printf("ERR_DECLARED na linha %d \n", current_line_number);
+                                                        exit(ERR_DECLARED);
+                                                    }  
+                                                    }|
                  variavel {$$ = $1;}|
                  TK_IDENTIFICADOR {$$ = NULL;
                                     // Verifica se função já existe no escopo_global
