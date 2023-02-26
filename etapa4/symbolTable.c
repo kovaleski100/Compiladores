@@ -1,17 +1,17 @@
 #include "symbolTable.h"
 #define TAMANHO_DA_TABELA 500
 
-int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
-{
-  int tam = 0;
-  if (*tabela_de_simbolos != NULL)
-  {
-      tam = sizeof(tabela_de_simbolos) / sizeof(tabela_de_simbolos[0]);
-  }
-   printf("Tamanho tabela original %d \n", tam);
-  return tam;
+// int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
+// {
+//   int tam = 0;
+//   if (*tabela_de_simbolos != NULL)
+//   {
+//       tam = sizeof(tabela_de_simbolos) / sizeof(tabela_de_simbolos[0]);
+//   }
+//    //printf("Tamanho tabela original %d \n", tam);
+//   return tam;
     
-}
+// }
 
 // int getTabelaSimbolosSize(TabelaSimbolos** tabela_de_simbolos) {
 //     int tamanho = 0;
@@ -22,22 +22,6 @@ int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
 //     }
 //     return tamanho;
 // }
-
-// int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
-// {
-//     int tam = 0;
-//     if (*tabela_de_simbolos != NULL)
-//     {
-         
-//         while ((*tabela_de_simbolos)[tam].chave != NULL)
-//         {
-//             printf("Tamanho no while %d \n", (*tabela_de_simbolos)[tam].chave);
-//             tam++;
-//         }
-//     }
-//     return tam;
-// }
-
 
 
 // void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int chave) {
@@ -66,7 +50,7 @@ CONTEUDO *cria_conteudo(valor_lexico* vl){
   conteudo->linha = vl->numero_linha;
   conteudo->tipo = vl->tipo_token;
   conteudo->nome = vl->valorToken;
-  printf("Conteudo nome %s \n", conteudo->nome);
+  //printf("Conteudo nome %s \n", conteudo->nome);
   return conteudo;
 }
 
@@ -92,7 +76,7 @@ TabelaSimbolos* cria_tabela_vazia(){
           tabela[i].tem_simbolo = 0;
           // printf("Taela tem simbolo i: %d tem_simbolo: %d\n", i, tabela[i].tem_simbolo);
       }
-      printf("Tabela vazia criada \n");
+      //printf("Tabela vazia criada \n");
       return tabela;
     }
 }

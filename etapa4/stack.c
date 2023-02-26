@@ -31,17 +31,14 @@ void pop(PILHA **pilha)
 }
 
 
-CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopolocal)
+CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopo_local)
 {
     if(pilha == NULL)
     {
-        printf("Não encontrou simbolo \n");
         return NULL;
     }
     TabelaSimbolos *tabela = busca_escopo_local(pilha);
-    printf("Procura_simbolo\n");
     char* nome_var = vl->valorToken;
-    printf("Tabela procura_simbolo\n");
     if(pilha->tabela_de_simbolos == NULL){
         return NULL;
     }
@@ -50,16 +47,14 @@ CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopolocal)
     // printf("Tamanho Tabela procura_simbolo %d\n", tam);
     for(int i = 0; i<100; i++)
     {
-        printf("Compare valor I: %d tem_simbolo: %d\n", i, tabela[i].tem_simbolo);
         if(tabela[i].tem_simbolo == 0){
             break;
         }
-        printf("Não é null \n");
         // printf("Conteudo->nome %s \n", (*tabela)[i].conteudo->nome);
-        printf("Conteudo->nome %s \n", nome_var);
+        //printf("Conteudo->nome %s \n", nome_var);
         if(strcmp(tabela[i].conteudo->nome, nome_var) == 0)
         {
-            printf("Encontrou simbolo \n");
+            //printf("Encontrou simbolo \n");
             return tabela[i].conteudo;
         }
     }
@@ -72,24 +67,24 @@ CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopolocal)
     }
 
     // Acessa a última tabela
-    TabelaSimbolos* tabela_global = ultima_tabela->tabela_de_simbolos;
-    for(int i = 0; i<100; i++)
-    {
-        printf("Compare valor I: %d tem_simbolo: %d\n", i, tabela_global[i].tem_simbolo);
-        if(tabela_global[i].tem_simbolo == 0){
-            break;
-        }
-        printf("Não é null \n");
-        // printf("Conteudo->nome %s \n", (*tabela)[i].conteudo->nome);
-        printf("Conteudo->nome %s \n", nome_var);
-        if(strcmp(tabela_global[i].conteudo->nome, nome_var) == 0)
+    if(!escopo_local){
+        TabelaSimbolos* tabela_global = ultima_tabela->tabela_de_simbolos;
+        for(int i = 0; i<100; i++)
         {
-            printf("Encontrou simbolo \n");
-            return tabela_global[i].conteudo;
+            if(tabela_global[i].tem_simbolo == 0){
+                break;
+            }
+            // printf("Conteudo->nome %s \n", (*tabela)[i].conteudo->nome);
+            //printf("Conteudo->nome %s \n", nome_var);
+            if(strcmp(tabela_global[i].conteudo->nome, nome_var) == 0)
+            {
+                //printf("Encontrou simbolo \n");
+                return tabela_global[i].conteudo;
+            }
         }
     }
+    
     //printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", (*tabela)[tam].conteudo->nome);
-    printf("Proxima tabela procura_simbolo \n");
     return NULL;
     // if(escopolocal == false && pilha->proxima_tabela != NULL)
     // {
@@ -144,7 +139,7 @@ TabelaSimbolos* devolve_primeira_tabela(PILHA *pilha){
         return pilha->tabela_de_simbolos;
 }
 
-void adiciona_simbolo(CONTEUDO *conteudo, int chave, PILHA *pilha)
+void adiciona_simbolo(CONTEUDO *conteudo, PILHA *pilha)
 {
     // int tam = getTabelaSimbolosSize(tabela_de_simbolos);
     // printf("Tamanho da tabela na adiciona_simbolo %d \n", tam);
@@ -154,9 +149,8 @@ void adiciona_simbolo(CONTEUDO *conteudo, int chave, PILHA *pilha)
     int tam = 0;
     for(int i = 0; i<100; i++)
     {
-        printf("Compare valor adiciona_Simbolo I: %d\n", i);
         if(tabela[i].tem_simbolo == 0){
-            printf("É NULL \n");
+            //printf("É NULL \n");
             break;
         }
         tam++;
@@ -171,13 +165,13 @@ void adiciona_simbolo(CONTEUDO *conteudo, int chave, PILHA *pilha)
     // if (*tabela_de_simbolos == NULL) {
     //     return;
     // }
-    printf("Tamanho %d \n", tam);
+    //printf("Tamanho %d \n", tam);
     tabela[tam].conteudo = conteudo;
     tabela[tam].chave = tam;
     tabela[tam].tem_simbolo = 1;
-    printf("Conteudo adicionado na tabela\n");
-    printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", tabela[tam].conteudo->nome);
-    printf("Chave da tabela de simbolos na adiciona_simbolo %d\n", tabela[tam].chave);
+    // printf("Conteudo adicionado na tabela\n");
+    // printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", tabela[tam].conteudo->nome);
+    // printf("Chave da tabela de simbolos na adiciona_simbolo %d\n", tabela[tam].chave);
 }
 
 
