@@ -307,7 +307,17 @@ controle_de_fluxo: TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos {$$ =
 // Tem que criar escopo para os ifs
 
 
-chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(call,$1); $$ = add_child($$, $3); destroiVL($2); destroiVL($4);}|
+chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(call,$1); $$ = add_child($$, $3); destroiVL($2); destroiVL($4);
+                                                                // Verifica se função já existe no escopo_global
+                                                                printf("Inicio de uma chamada de funcao\n");
+                                                                // print_pilha(&pilha);  
+                                                                CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);
+                                                                printf("Conteudo um\n");                                         
+                                                                if(conteudo_na_pilha == NULL){
+                                                                    printf("ERR_UNDECLARED na linha %d \n", current_line_number);
+                                                                    exit(ERR_UNDECLARED);
+                                                                }
+                                                            }|
                 TK_IDENTIFICADOR '('  ')' {$$ = create_node(call,$1); destroiVL($2); destroiVL($3);
                                             // Verifica se função já existe no escopo_global
                                             printf("Inicio de uma chamada de funcao\n");
@@ -397,15 +407,7 @@ ID: TK_IDENTIFICADOR {$$ = create_node(identificador, $1);
                             printf("Conteudo Criado\n");
                             //Adiciona o nome da função na pilha global
                             adiciona_simbolo(novo_conteudo, $1, pilha);
-                            printf("Nome da funcao adicionado na pilha global\n");
-                            //Adiciona novo escopo
-                            //TabelaSimbolos* novo_escopo = cria_tabela_vazia();
-                            // printf("Criou novo escopo\n");
-                            push(&pilha, cria_tabela_vazia());
-                            // printf("Adicionou novo escopo na pilha\n");
-                            //pop(&pilha);
-                            //print_pilha(&pilha);
-                            printf("Pop Pilha\n");
+                            printf("Nome da funcao adicionado na pilha local\n");
                         }
                         else{
                             printf("ERR_DECLARED na linha %d \n", current_line_number);

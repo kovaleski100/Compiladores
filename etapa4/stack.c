@@ -52,8 +52,7 @@ CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopolocal)
     {
         printf("Compare valor I: %d tem_simbolo: %d\n", i, tabela[i].tem_simbolo);
         if(tabela[i].tem_simbolo == 0){
-            printf("É NULL \n");
-            return NULL;
+            break;
         }
         printf("Não é null \n");
         // printf("Conteudo->nome %s \n", (*tabela)[i].conteudo->nome);
@@ -78,8 +77,7 @@ CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopolocal)
     {
         printf("Compare valor I: %d tem_simbolo: %d\n", i, tabela_global[i].tem_simbolo);
         if(tabela_global[i].tem_simbolo == 0){
-            printf("É NULL \n");
-            return NULL;
+            break;
         }
         printf("Não é null \n");
         // printf("Conteudo->nome %s \n", (*tabela)[i].conteudo->nome);
