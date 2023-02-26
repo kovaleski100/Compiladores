@@ -67,12 +67,15 @@ int yydebug=1;
 %type<no> literais
 
 %type<no> ID
+%type<no> ID_FATOR_EXP
 %type<no> litInt
 
 %token <tipo>  TK_PR_INT
 %token <tipo>  TK_PR_FLOAT
 %token <tipo>  TK_PR_BOOL
 %token <tipo>  TK_PR_CHAR
+%type <no> escopo_controle_fluxo_if
+%type <no> escopo_controle_fluxo_while
 %token <valor_lexico> TK_PR_IF
 %token TK_PR_THEN
 %token TK_PR_ELSE
@@ -206,9 +209,6 @@ parametro_funcao: tipo ID {$$ = $2;}; // ADICIONA NA TABELA DE SIMBOLOS ATUAL
 
 
 
-
-
-
 bloco_de_comandos: '{' comandos '}'  { $$ = $2; destroiVL($1);destroiVL($3);}| 
                    '{' '}' {destroiVL($1);destroiVL($2); $$=NULL; pop(&pilha);}; // REVISAR PRINT
 
@@ -298,11 +298,29 @@ lista_de_expressoes: lista_de_expressoes '^' expressao   {$$ = create_node(carac
 retorno:  TK_PR_RETURN expressao {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $2);};
 
 
+escopo_controle_fluxo_if: TK_PR_IF {
+    // // Verifica se função já existe no escopo_global
+    // printf("Inicio TK_IDENTIFICADOR\n");
+    // printf("Conteudo um\n");                                         
+    // push(&pilha, cria_tabela_vazia());
+    // printf("Criou tabela do if");
+    $$ = $1;
+};
+escopo_controle_fluxo_while: TK_PR_WHILE {
+    // Verifica se função já existe no escopo_global
+    // printf("Inicio TK_IDENTIFICADOR\n");
+    // printf("Conteudo um\n");                                         
+    // push(&pilha, cria_tabela_vazia());
+    // printf("Criou tabela do while");
+    // $$ = $1;
+};  
 
 
-controle_de_fluxo: TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); destroiVL($2); destroiVL($4);}|
-                   TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos TK_PR_ELSE bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); $$ = add_child($$, $8);destroiVL($2); destroiVL($4);}|
-                   TK_PR_WHILE '(' expressao ')' bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $5); destroiVL($2); destroiVL($4);}
+controle_de_fluxo: escopo_controle_fluxo_if '(' expressao ')' TK_PR_THEN bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); destroiVL($2); destroiVL($4);
+                                                                            
+                                                                            }|
+                   escopo_controle_fluxo_if '(' expressao ')' TK_PR_THEN bloco_de_comandos TK_PR_ELSE bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); $$ = add_child($$, $8);destroiVL($2); destroiVL($4);}|
+                   escopo_controle_fluxo_while '(' expressao ')' bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $5); destroiVL($2); destroiVL($4);}
 
 // Tem que criar escopo para os ifs
 
@@ -376,7 +394,7 @@ primeira_precedencia:   '(' expressao ')' {$$ = $2; destroiVL($1); destroiVL($3)
 fator:  arranjo_multi {$$ = $1;} |
         literais {$$ = $1;} |
         chamada_funcao {$$ = $1;} |
-        ID {$$ = $1;};
+        ID_FATOR_EXP {$$ = $1;};
 
 
 
@@ -394,6 +412,19 @@ literais:   TK_LIT_FLOAT  {$$ = create_node(literal_float, $1);}| // {$$ = creat
             TK_LIT_FALSE  {$$ = create_node(literal_bool, $1);}; //{$$ = create_leaf(LIT_FALSE, $1);};;
 
 litInt:  TK_LIT_INT  {$$ = create_node(literal_inteiro, $1);}
+
+
+ID_FATOR_EXP: TK_IDENTIFICADOR {$$ = create_node(identificador, $1);
+                        // Verifica se função já existe no escopo_global
+                        printf("Inicio de uma chamada de funcao\n");
+                        // print_pilha(&pilha);  
+                        CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);
+                        printf("Conteudo um\n");                                         
+                        if(conteudo_na_pilha == NULL){
+                            printf("ERR_UNDECLARED na linha %d \n", current_line_number);
+                            exit(ERR_UNDECLARED);
+                        }
+                        };   
 
 ID: TK_IDENTIFICADOR {$$ = create_node(identificador, $1);
                         // Verifica se função já existe no escopo_global
