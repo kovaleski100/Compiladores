@@ -77,8 +77,8 @@ int tipoVar = 0;
 %token <tipo>  TK_PR_FLOAT
 %token <tipo>  TK_PR_BOOL
 %token <tipo>  TK_PR_CHAR
-%type <no> escopo_controle_fluxo_if
-%type <no> escopo_controle_fluxo_while
+// %type <no> escopo_controle_fluxo_if
+// %type <no> escopo_controle_fluxo_while
 %token <valor_lexico> TK_PR_IF
 %token TK_PR_THEN
 %token TK_PR_ELSE
@@ -302,29 +302,29 @@ lista_de_expressoes: lista_de_expressoes '^' expressao   {$$ = create_node(carac
 retorno:  TK_PR_RETURN expressao {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $2);};
 
 
-escopo_controle_fluxo_if: TK_PR_IF {
-    // // Verifica se função já existe no escopo_global
-    // printf("Inicio TK_IDENTIFICADOR\n");
-    // printf("Conteudo um\n");                                         
-    // push(&pilha, cria_tabela_vazia());
-    // printf("Criou tabela do if");
-    $$ = $1;
-};
-escopo_controle_fluxo_while: TK_PR_WHILE {
-    // Verifica se função já existe no escopo_global
-    // printf("Inicio TK_IDENTIFICADOR\n");
-    // printf("Conteudo um\n");                                         
-    // push(&pilha, cria_tabela_vazia());
-    // printf("Criou tabela do while");
-    // $$ = $1;
-};  
+// escopo_controle_fluxo_if: TK_PR_IF {
+//     // // Verifica se função já existe no escopo_global
+//     // printf("Inicio TK_IDENTIFICADOR\n");
+//     // printf("Conteudo um\n");                                         
+//     // push(&pilha, cria_tabela_vazia());
+//     // printf("Criou tabela do if");
+//     $$ = $1;
+// };
+// escopo_controle_fluxo_while: TK_PR_WHILE {
+//     // Verifica se função já existe no escopo_global
+//     // printf("Inicio TK_IDENTIFICADOR\n");
+//     // printf("Conteudo um\n");                                         
+//     // push(&pilha, cria_tabela_vazia());
+//     // printf("Criou tabela do while");
+//     // $$ = $1;
+// };  
 
 
-controle_de_fluxo: escopo_controle_fluxo_if '(' expressao ')' TK_PR_THEN bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); destroiVL($2); destroiVL($4);
+controle_de_fluxo: TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); destroiVL($2); destroiVL($4);
                                                                             
                                                                             }|
-                   escopo_controle_fluxo_if '(' expressao ')' TK_PR_THEN bloco_de_comandos TK_PR_ELSE bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); $$ = add_child($$, $8);destroiVL($2); destroiVL($4);}|
-                   escopo_controle_fluxo_while '(' expressao ')' bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $5); destroiVL($2); destroiVL($4);}
+                   TK_PR_IF '(' expressao ')' TK_PR_THEN bloco_de_comandos TK_PR_ELSE bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $6); $$ = add_child($$, $8);destroiVL($2); destroiVL($4);}|
+                   TK_PR_WHILE '(' expressao ')' bloco_de_comandos {$$ = create_node(palavra_reservada, $1); $$ = add_child($$, $3); $$ = add_child($$, $5); destroiVL($2); destroiVL($4);}
 
 // Tem que criar escopo para os ifs
 
