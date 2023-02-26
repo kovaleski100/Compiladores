@@ -14,6 +14,7 @@
 #define ERR_CHAR_VECTOR 34 //2.4
 #define ERR_X_TO_CHAR 35 //2.4
 
-void print_undeclared(valor_lexico *erro, int line);
-void print_declared(valor_lexico *vl, int line);
-void check_atribuicao(valor_lexico *v1, valor_lexico *v2, int line);
+void print_undeclared(valor_lexico *erro);
+void print_declared(CONTEUDO *conteudo, valor_lexico *vl);
+// void print_identificar_erro(CONTEUDO *original, valor_lexico *erro, int natureza);
+//void check_atribuicao(valor_lexico *v1, valor_lexico *v2, int line);

@@ -141,12 +141,13 @@ lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$=NULL;
                         CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);                                    
                         if(conteudo_na_pilha == NULL){
                             //Criar_conteudo
-                            CONTEUDO* novo_conteudo = cria_conteudo($1);
+                            CONTEUDO* novo_conteudo = cria_conteudo($1, 1);
                             //Adiciona o nome da função na pilha global
                             adiciona_simbolo(novo_conteudo, pilha);
                         }
                         else{
-                            printf("ERR_DECLARED na linha %d \n", current_line_number);
+                            print_declared(conteudo_na_pilha, $1);
+                            //printf("ERR_DECLARED na linha %d \n", current_line_number);
                             exit(ERR_DECLARED);
                         } 
 
@@ -157,12 +158,13 @@ lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$=NULL;
                         CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);                                    
                         if(conteudo_na_pilha == NULL){
                             //Criar_conteudo
-                            CONTEUDO* novo_conteudo = cria_conteudo($1);
+                            CONTEUDO* novo_conteudo = cria_conteudo($1, 1);
                             //Adiciona o nome da função na pilha global
                             adiciona_simbolo(novo_conteudo, pilha);
                         }
                         else{
-                            printf("ERR_DECLARED na linha %d \n", current_line_number);
+                            print_declared(conteudo_na_pilha, $1);
+                            //printf("ERR_DECLARED na linha %d \n", current_line_number);
                             exit(ERR_DECLARED);
                         } 
                         };
@@ -182,12 +184,13 @@ cabecalho:  tipo  TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2);
                                             CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);                                    
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
-                                                CONTEUDO* novo_conteudo = cria_conteudo($2);
+                                                CONTEUDO* novo_conteudo = cria_conteudo($2, 1);
                                                 //Adiciona o nome da função na pilha global
                                                 adiciona_simbolo(novo_conteudo, pilha);
                                             }
                                             else{
-                                                printf("ERR_DECLARED na linha %d \n", current_line_number);
+                                                print_declared(conteudo_na_pilha, $2);
+                                                //printf("ERR_DECLARED na linha %d \n", current_line_number);
                                                 exit(ERR_DECLARED);
                                             }                                           
                                             }|
@@ -196,12 +199,13 @@ cabecalho:  tipo  TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2);
                                             CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);                                  
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
-                                                CONTEUDO* novo_conteudo = cria_conteudo($2);
+                                                CONTEUDO* novo_conteudo = cria_conteudo($2, 1);
                                                 //Adiciona o nome da função na pilha global
                                                 adiciona_simbolo(novo_conteudo, pilha);
                                             }
                                             else{
-                                                printf("ERR_DECLARED na linha %d \n", current_line_number);
+                                                print_declared(conteudo_na_pilha, $2);
+                                                //printf("ERR_DECLARED na linha %d \n", current_line_number);
                                                 exit(ERR_DECLARED);
                                             }                                               
                                             };
@@ -244,12 +248,13 @@ lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);
                                                     CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, true);                                  
                                                     if(conteudo_na_pilha == NULL){
                                                         //Criar_conteudo
-                                                        CONTEUDO* novo_conteudo = cria_conteudo($1);
+                                                        CONTEUDO* novo_conteudo = cria_conteudo($1, 1);
                                                         //Adiciona o nome da variavel na pilha local(mais do topo)
                                                         adiciona_simbolo(novo_conteudo, pilha);
                                                     }
                                                     else{
-                                                        printf("ERR_DECLARED na linha %d \n", current_line_number);
+                                                        print_declared(conteudo_na_pilha, $1);
+                                                        //printf("ERR_DECLARED na linha %d \n", current_line_number);
                                                         exit(ERR_DECLARED);
                                                     }  
                                                     }|
@@ -259,12 +264,13 @@ lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);
                                     CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, true);                                  
                                     if(conteudo_na_pilha == NULL){
                                         //Criar_conteudo
-                                        CONTEUDO* novo_conteudo = cria_conteudo($1);
+                                        CONTEUDO* novo_conteudo = cria_conteudo($1, 1);
                                         //Adiciona o nome da variavel na pilha local(mais no topo)
                                         adiciona_simbolo(novo_conteudo, pilha);
                                     }
                                     else{
-                                        printf("ERR_DECLARED na linha %d \n", current_line_number);
+                                        print_declared(conteudo_na_pilha, $1);
+                                        //printf("ERR_DECLARED na linha %d \n", current_line_number);
                                         exit(ERR_DECLARED);
                                     }  
                  
@@ -327,7 +333,8 @@ chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(c
                                                                 // Verifica se função já existe no escopo_global
                                                                 CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);                                     
                                                                 if(conteudo_na_pilha == NULL){
-                                                                    printf("ERR_UNDECLARED na linha %d \n", current_line_number);
+                                                                    print_undeclared($1);
+                                                                    //printf("ERR_UNDECLARED na linha %d \n", current_line_number);
                                                                     exit(ERR_UNDECLARED);
                                                                 }
                                                             }|
@@ -335,7 +342,8 @@ chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(c
                                             // Verifica se função já existe no escopo_global
                                             CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);                                       
                                             if(conteudo_na_pilha == NULL){
-                                                printf("ERR_UNDECLARED na linha %d \n", current_line_number);
+                                                print_undeclared($1);
+                                                //printf("ERR_UNDECLARED na linha %d \n", current_line_number);
                                                 exit(ERR_UNDECLARED);
                                             }
                                          };
@@ -410,7 +418,8 @@ ID_FATOR_EXP: TK_IDENTIFICADOR {$$ = create_node(identificador, $1);
                         // Verifica se função já existe no escopo_global/local
                         CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);                                       
                         if(conteudo_na_pilha == NULL){
-                            printf("ERR_UNDECLARED na linha %d \n", current_line_number);
+                            print_undeclared($1);
+                            //printf("ERR_UNDECLARED na linha %d \n", current_line_number);
                             exit(ERR_UNDECLARED);
                         }
                         };   
@@ -420,12 +429,13 @@ ID: TK_IDENTIFICADOR {$$ = create_node(identificador, $1);
                         CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, true);                                        
                         if(conteudo_na_pilha == NULL){
                             //Criar_conteudo
-                            CONTEUDO* novo_conteudo = cria_conteudo($1);
+                            CONTEUDO* novo_conteudo = cria_conteudo($1, 1);
                             //Adiciona o nome da função na pilha global
                             adiciona_simbolo(novo_conteudo, pilha);
                         }
                         else{
-                            printf("ERR_DECLARED na linha %d \n", current_line_number);
+                            print_declared(conteudo_na_pilha, $1);
+                            //printf("ERR_DECLARED na linha %d \n", current_line_number);
                             exit(ERR_DECLARED);
                         }  
                         };                          

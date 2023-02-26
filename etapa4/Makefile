@@ -8,7 +8,7 @@
 main: main.c
 			bison -d parser.y
 			flex scanner.l
-			gcc -Wall -Wextra ast.c symbolTable.c stack.c parser.tab.c lex.yy.c main.c -o etapa3
+			gcc -Wall -Wextra ast.c symbolTable.c stack.c erro.c  parser.tab.c lex.yy.c main.c -o etapa4
 
 debug: 
 		bison -d parser.y
@@ -23,17 +23,17 @@ bison: parser.y
 			bison -d -v parser.y
 
 zip:
-	tar cvzf etapa3.tgz Makefile main.c parser.y scanner.l ast.h ast.c stack.c stack.h symbolTable.c symbolTable.h
+	tar cvzf etapa4.tgz Makefile main.c parser.y scanner.l erro.c erro.h ast.h ast.c stack.c stack.h symbolTable.c symbolTable.h
 
 val:
-	valgrind --leak-check=full --show-leak-kinds=all -s ./etapa3 < teste > saida
+	valgrind --leak-check=full --show-leak-kinds=all -s ./etapa4 < teste > saida
 
 test:
-	./etapa3 < teste
+	./etapa4 < teste
 
 clean:
 	rm -f a.out
-	rm -f etapa3
+	rm -f etapa4
 	rm -f parser.tab.c
 	rm -f parser.tab.o
 	rm -f parser.tab.h
@@ -42,3 +42,6 @@ clean:
 	rm -f lex.yy.o
 	rm -f main.o
 	rm -f ast.o
+	rm -f erro.o
+	rm -f stack.o
+	rm -f symbolTable.o

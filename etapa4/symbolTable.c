@@ -51,7 +51,7 @@ CONTEUDO *cria_conteudo(valor_lexico* vl, int natureza){
   conteudo->linha = vl->numero_linha;
   conteudo->tipo = vl->tipo_token;
   conteudo->nome = vl->valorToken;
-  printf("Conteudo nome %s \n", conteudo->nome);
+  // printf("Conteudo nome %s \n", conteudo->nome);
   if(natureza == arranjoN)
   {
 
