@@ -18,7 +18,15 @@ enum tipos_tokens
     call,
     arranjo
 };
- 
+
+enum natureza
+{
+    litetal,
+    funcao,
+    arranjoN,
+    variavel
+};
+
 enum literais
 {
     falso,

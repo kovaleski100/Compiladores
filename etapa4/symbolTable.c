@@ -1,17 +1,17 @@
 #include "symbolTable.h"
 #define TAMANHO_DA_TABELA 500
 
-int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
-{
-  int tam = 0;
-  if (*tabela_de_simbolos != NULL)
-  {
-      tam = sizeof(tabela_de_simbolos) / sizeof(tabela_de_simbolos[0]);
-  }
-   printf("Tamanho tabela original %d \n", tam);
-  return tam;
+// int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
+// {
+//   int tam = 0;
+//   if (*tabela_de_simbolos != NULL)
+//   {
+//       tam = sizeof(tabela_de_simbolos) / sizeof(tabela_de_simbolos[0]);
+//   }
+//    printf("Tamanho tabela original %d \n", tam);
+//   return tam;
     
-}
+// }
 
 // int getTabelaSimbolosSize(TabelaSimbolos** tabela_de_simbolos) {
 //     int tamanho = 0;
@@ -60,13 +60,22 @@ int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
 // }
 
 
-CONTEUDO *cria_conteudo(valor_lexico* vl){
+CONTEUDO *cria_conteudo(valor_lexico* vl, int natureza){
 
   CONTEUDO * conteudo = (CONTEUDO *)malloc(sizeof(CONTEUDO));
+  conteudo->natureza = natureza;
   conteudo->linha = vl->numero_linha;
   conteudo->tipo = vl->tipo_token;
   conteudo->nome = vl->valorToken;
   printf("Conteudo nome %s \n", conteudo->nome);
+  if(natureza == arranjoN)
+  {
+
+  }
+  else if(natureza == funcao)
+  {
+    
+  }
   return conteudo;
 }
 

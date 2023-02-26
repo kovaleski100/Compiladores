@@ -31,7 +31,7 @@ void pop(PILHA **pilha)
 }
 
 
-CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopolocal)
+CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl)
 {
     if(pilha == NULL)
     {
@@ -144,7 +144,7 @@ TabelaSimbolos* devolve_primeira_tabela(PILHA *pilha){
         return pilha->tabela_de_simbolos;
 }
 
-void adiciona_simbolo(CONTEUDO *conteudo, int chave, PILHA *pilha)
+void adiciona_simbolo(CONTEUDO *conteudo, PILHA *pilha)
 {
     // int tam = getTabelaSimbolosSize(tabela_de_simbolos);
     // printf("Tamanho da tabela na adiciona_simbolo %d \n", tam);

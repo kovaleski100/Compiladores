@@ -11,13 +11,14 @@
 %{
 
 #include <stdio.h>
-#include "stack.h"
+#include "erro.h"
 extern int current_line_number;
 extern void *arvore;
 PILHA *pilha = NULL;
 int yylex(void);
 void yyerror (char const *s);
 int yydebug=1;
+int tipoVar = 0;
 %}
 
 %union{
@@ -147,14 +148,14 @@ cabecalho:  tipo  TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2);
                                             // Verifica se função já existe no escopo_global
                                             printf("Inicio TK_IDENTIFICADOR\n");
                                             // print_pilha(&pilha);  
-                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);
+                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2);
                                             printf("Conteudo um\n");                                         
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2);
                                                 printf("Conteudo Criado\n");
                                                 //Adiciona o nome da função na pilha global
-                                                adiciona_simbolo(novo_conteudo, $2, pilha);
+                                                adiciona_simbolo(novo_conteudo, pilha);
                                                 printf("Nome da funcao adicionado na pilha global\n");
                                                 //Adiciona novo escopo
                                                 //TabelaSimbolos* novo_escopo = cria_tabela_vazia();
@@ -174,14 +175,14 @@ cabecalho:  tipo  TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2);
                                             // Verifica se função já existe no escopo_global
                                             printf("Inicio TK_IDENTIFICADOR\n");
                                             // print_pilha(&pilha);  
-                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);
+                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2);
                                             printf("Conteudo um\n");                                         
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2);
                                                 printf("Conteudo Criado\n");
                                                 //Adiciona o nome da função na pilha global
-                                                adiciona_simbolo(novo_conteudo, $2, pilha);
+                                                adiciona_simbolo(novo_conteudo, pilha);
                                                 printf("Nome da funcao adicionado na pilha global\n");
                                                 //Adiciona novo escopo
                                                 //TabelaSimbolos* novo_escopo = cria_tabela_vazia();
@@ -235,14 +236,14 @@ lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);
                                                     // Verifica se função já existe no escopo_global
                                                     printf("Inicio TK_IDENTIFICADOR\n");
                                                     // print_pilha(&pilha);  
-                                                    CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);
+                                                    CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1);
                                                     printf("Conteudo um\n");                                         
                                                     if(conteudo_na_pilha == NULL){
                                                         //Criar_conteudo
                                                         CONTEUDO* novo_conteudo = cria_conteudo($1);
                                                         printf("Conteudo Criado\n");
                                                         //Adiciona o nome da variavel na pilha
-                                                        adiciona_simbolo(novo_conteudo, $1, pilha);
+                                                        adiciona_simbolo(novo_conteudo, pilha);
                                                         printf("Nome da variavel adicionado na pilha local\n");
                                                     }
                                                     else{
@@ -255,14 +256,14 @@ lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);
                                     // Verifica se função já existe no escopo_global
                                     printf("Inicio TK_IDENTIFICADOR\n");
                                     // print_pilha(&pilha);  
-                                    CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);
+                                    CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1);
                                     printf("Conteudo um\n");                                         
                                     if(conteudo_na_pilha == NULL){
                                         //Criar_conteudo
                                         CONTEUDO* novo_conteudo = cria_conteudo($1);
                                         printf("Conteudo Criado\n");
                                         //Adiciona o nome da variavel na pilha
-                                        adiciona_simbolo(novo_conteudo, $1, pilha);
+                                        adiciona_simbolo(novo_conteudo, pilha);
                                         printf("Nome da variavel adicionado na pilha local\n");
                                     }
                                     else{
@@ -311,7 +312,7 @@ chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(c
                                                                 // Verifica se função já existe no escopo_global
                                                                 printf("Inicio de uma chamada de funcao\n");
                                                                 // print_pilha(&pilha);  
-                                                                CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);
+                                                                CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1);
                                                                 printf("Conteudo um\n");                                         
                                                                 if(conteudo_na_pilha == NULL){
                                                                     printf("ERR_UNDECLARED na linha %d \n", current_line_number);
@@ -322,7 +323,7 @@ chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(c
                                             // Verifica se função já existe no escopo_global
                                             printf("Inicio de uma chamada de funcao\n");
                                             // print_pilha(&pilha);  
-                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);
+                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1);
                                             printf("Conteudo um\n");                                         
                                             if(conteudo_na_pilha == NULL){
                                                 printf("ERR_UNDECLARED na linha %d \n", current_line_number);
@@ -382,10 +383,10 @@ fator:  arranjo_multi {$$ = $1;} |
 
 
 
-tipo: TK_PR_FLOAT {$$ = TK_PR_FLOAT;} | //{$$ = create_node_from_token(TIPO_FLOAT, $1);};|
-      TK_PR_INT  {$$ = TK_PR_INT;}  |
-      TK_PR_CHAR {$$ = TK_PR_CHAR;} |
-      TK_PR_BOOL {$$ = TK_PR_BOOL;};
+tipo: TK_PR_FLOAT {$$ = NULL; tipoVar = $1;} | //{$$ = create_node_from_token(TIPO_FLOAT, $1);};|
+      TK_PR_INT  {$$ = NULL; tipoVar = $1;}  |
+      TK_PR_CHAR {$$ = NULL; tipoVar = $1;} |
+      TK_PR_BOOL {$$ = NULL; tipoVar = $1;};
 
 literais:   TK_LIT_FLOAT  {$$ = create_node(literal_float, $1);}| // {$$ = create_leaf(LIT_FLOAT, $1);}; |
             TK_LIT_INT    {$$ = create_node(literal_inteiro, $1);}| //{$$ = create_leaf(LIT_INT, $1);};|
@@ -399,14 +400,14 @@ ID: TK_IDENTIFICADOR {$$ = create_node(identificador, $1);
                         // Verifica se função já existe no escopo_global
                         printf("Inicio TK_IDENTIFICADOR\n");
                         // print_pilha(&pilha);  
-                        CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);
+                        CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1);
                         printf("Conteudo um\n");                                         
                         if(conteudo_na_pilha == NULL){
                             //Criar_conteudo
                             CONTEUDO* novo_conteudo = cria_conteudo($1);
                             printf("Conteudo Criado\n");
                             //Adiciona o nome da função na pilha global
-                            adiciona_simbolo(novo_conteudo, $1, pilha);
+                            adiciona_simbolo(novo_conteudo, pilha);
                             printf("Nome da funcao adicionado na pilha local\n");
                         }
                         else{

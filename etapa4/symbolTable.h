@@ -1,7 +1,6 @@
 #include "ast.h"
-#include "erro.h"
 
-typedef struct arranjo{
+typedef struct arranjodim{
   int *dim;
 }ARR;
 
@@ -37,5 +36,5 @@ typedef struct TabelaSimbolos{
 } TabelaSimbolos;
 
 TabelaSimbolos* cria_tabela_vazia();
-CONTEUDO *cria_conteudo(valor_lexico* vl);
+CONTEUDO *cria_conteudo(valor_lexico* vl, int natureza);
 int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos);
