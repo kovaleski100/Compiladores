@@ -125,7 +125,7 @@ int tipoVar = 0;
 %%
 
 inicio_de_tudo: {push(&pilha, cria_tabela_vazia());};
-inicio: inicio_de_tudo programa {arvore = $1;};
+inicio: inicio_de_tudo programa {arvore = $2;};
 
 programa: lista_de_elementos programa {$$ = $1; $$ = add_child($$, $2);} | {$$ = NULL;}; //REVISAR
 
