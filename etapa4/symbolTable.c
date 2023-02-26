@@ -8,7 +8,7 @@
 //   {
 //       tam = sizeof(tabela_de_simbolos) / sizeof(tabela_de_simbolos[0]);
 //   }
-//    printf("Tamanho tabela original %d \n", tam);
+//    //printf("Tamanho tabela original %d \n", tam);
 //   return tam;
     
 // }
@@ -22,22 +22,6 @@
 //     }
 //     return tamanho;
 // }
-
-// int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
-// {
-//     int tam = 0;
-//     if (*tabela_de_simbolos != NULL)
-//     {
-         
-//         while ((*tabela_de_simbolos)[tam].chave != NULL)
-//         {
-//             printf("Tamanho no while %d \n", (*tabela_de_simbolos)[tam].chave);
-//             tam++;
-//         }
-//     }
-//     return tam;
-// }
-
 
 
 // void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int chave) {
@@ -101,7 +85,7 @@ TabelaSimbolos* cria_tabela_vazia(){
           tabela[i].tem_simbolo = 0;
           // printf("Taela tem simbolo i: %d tem_simbolo: %d\n", i, tabela[i].tem_simbolo);
       }
-      printf("Tabela vazia criada \n");
+      //printf("Tabela vazia criada \n");
       return tabela;
     }
 }
