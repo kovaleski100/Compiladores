@@ -1,16 +1,27 @@
 #include "symbolTable.h"
+#define TAMANHO_DA_TABELA 500
 
 int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
 {
   int tam = 0;
   if (*tabela_de_simbolos != NULL)
   {
-      tam = sizeof(**tabela_de_simbolos) / sizeof(TabelaSimbolos);
+      tam = sizeof(tabela_de_simbolos) / sizeof(tabela_de_simbolos[0]);
   }
    printf("Tamanho tabela original %d \n", tam);
   return tam;
     
 }
+
+// int getTabelaSimbolosSize(TabelaSimbolos** tabela_de_simbolos) {
+//     int tamanho = 0;
+//     for (int i = 0; i < TAMANHO_DA_TABELA; i++) {
+//         if (tabela_de_simbolos[i] != NULL) {
+//             tamanho++;
+//         }
+//     }
+//     return tamanho;
+// }
 
 // int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
 // {
@@ -27,20 +38,26 @@ int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
 //     return tam;
 // }
 
-void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int chave)
-{
-    int tam = getTabelaSimbolosSize(tabela_de_simbolos);
-    printf("Tamanho da tabela na adiciona_simbolo %d \n", tam);
-    *tabela_de_simbolos = realloc(*tabela_de_simbolos, (tam + 1) * sizeof(TabelaSimbolos));
-    if (*tabela_de_simbolos == NULL) {
-        return;
-    }
-    (*tabela_de_simbolos)[tam].conteudo = conteudo;
-    (*tabela_de_simbolos)[tam].chave = tam;
-    printf("Conteudo adicionado na tabela\n");
-    printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", (*tabela_de_simbolos)[tam].conteudo->nome);
-    printf("Chave da tabela de simbolos na adiciona_simbolo %d\n", (*tabela_de_simbolos)[tam].chave);
-}
+
+
+// void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int chave) {
+//     int tam = getTabelaSimbolosSize(tabela_de_simbolos);
+//     printf("Tamanho da tabela na adiciona_simbolo %d \n", tam);
+//     *tabela_de_simbolos = realloc(*tabela_de_simbolos, (tam + 1) * sizeof(TabelaSimbolos *));
+//     if (*tabela_de_simbolos == NULL) {
+//         return;
+//     }
+//     TabelaSimbolos *nova_entrada = malloc(sizeof(TabelaSimbolos));
+//     if (nova_entrada == NULL) {
+//         return;
+//     }
+//     nova_entrada->chave = chave;
+//     nova_entrada->conteudo = conteudo;
+//     (*tabela_de_simbolos)[tam] = *nova_entrada;
+//     printf("Conteudo adicionado na tabela\n");
+//     printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", (*tabela_de_simbolos)[tam].conteudo->nome);
+//     printf("Chave da tabela de simbolos na adiciona_simbolo %d\n", (*tabela_de_simbolos)[tam].chave);
+// }
 
 
 CONTEUDO *cria_conteudo(valor_lexico* vl){

@@ -16,3 +16,4 @@ void destroi_pilha(PILHA pilha);
 int check_declaracao(PILHA* escopo, int chave, bool escopolocal);
 void print_pilha(PILHA* pilha);
 TabelaSimbolos* devolve_primeira_tabela(PILHA *pilha);
+void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int valor_lexico, PILHA *pilha);

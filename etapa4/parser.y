@@ -26,7 +26,7 @@ int yydebug=1;
  int tipo;
 }
 
-
+%type<no> inicio_de_tudo
 %type<no> lista_variaveis
 %type<no> variavel
 %type<no> inicio
@@ -118,7 +118,8 @@ int yydebug=1;
 %start inicio
 %%
 
-inicio: programa {arvore = $1;push(&pilha, cria_tabela_vazia()); print_pilha(&pilha);};
+inicio_de_tudo: {push(&pilha, cria_tabela_vazia());printf("Hello");};
+inicio: inicio_de_tudo programa {arvore = $1;};
 
 programa: lista_de_elementos programa {$$ = $1; $$ = add_child($$, $2);} | {$$ = NULL;}; //REVISAR
 
@@ -148,7 +149,7 @@ corpo: bloco_de_comandos {$$ = $1;};
 cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($4);
                                             // Verifica se função já existe no escopo_global
                                             printf("Inicio TK_IDENTIFICADOR\n");
-                                            print_pilha(&pilha);  
+                                            // print_pilha(&pilha);  
                                             CONTEUDO* conteudo_na_pilha = procura_simbolo(&pilha, $2, false);
                                             printf("Conteudo um\n");                                         
                                             if(conteudo_na_pilha == NULL){
@@ -156,15 +157,15 @@ cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); 
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2);
                                                 printf("Conteudo Criado\n");
                                                 //Adiciona o nome da função na pilha global
-                                                adiciona_simbolo(&pilha, novo_conteudo, $2);
+                                                adiciona_simbolo(&pilha, novo_conteudo, $2, &pilha);
                                                 printf("Nome da funcao adicionado na pilha global\n");
                                                 //Adiciona novo escopo
                                                 TabelaSimbolos* novo_escopo = cria_tabela_vazia();
-                                                printf("Criou novo escopo\n");
+                                                // printf("Criou novo escopo\n");
                                                 push(&pilha, novo_escopo);
-                                                printf("Adicionou novo escopo na pilha\n");
+                                                // printf("Adicionou novo escopo na pilha\n");
                                                 pop(&pilha);
-                                                print_pilha(&pilha);
+                                                //print_pilha(&pilha);
                                                 printf("Pop Pilha\n");
                                             }
                                             else{
@@ -174,23 +175,24 @@ cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); 
                                             }|
             tipo TK_IDENTIFICADOR '(' lista_funcao ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($5);
                                             // Verifica se função já existe no escopo_global
-                                            printf("Inicio TK_IDENTIFICADOR com lista_funcao\n");
-                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);
-                                            printf("Conteudo um\n");                                           
+                                            printf("Inicio TK_IDENTIFICADOR\n");
+                                            // print_pilha(&pilha);  
+                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(&pilha, $2, false);
+                                            printf("Conteudo um\n");                                         
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2);
                                                 printf("Conteudo Criado\n");
                                                 //Adiciona o nome da função na pilha global
-                                                adiciona_simbolo(&pilha, novo_conteudo, $2);
+                                                adiciona_simbolo(&pilha, novo_conteudo, $2, &pilha);
                                                 printf("Nome da funcao adicionado na pilha global\n");
                                                 //Adiciona novo escopo
                                                 TabelaSimbolos* novo_escopo = cria_tabela_vazia();
-                                                printf("Criou novo escopo\n");
+                                                // printf("Criou novo escopo\n");
                                                 push(&pilha, novo_escopo);
-                                                printf("Adicionou novo escopo na pilha\n");
-                                                print_pilha(&pilha);
+                                                // printf("Adicionou novo escopo na pilha\n");
                                                 pop(&pilha);
+                                                //print_pilha(&pilha);
                                                 printf("Pop Pilha\n");
                                             }
                                             else{
@@ -203,31 +205,7 @@ cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); 
 lista_funcao:   parametro_funcao ',' lista_funcao {destroiVL($2);}| // REVISAR CORRIGIR MEMORIA ETAPA 3
                 parametro_funcao {$$ = $1;};
 
-parametro_funcao: tipo ID {$$ = $2;         
-                                            // Verifica se função já existe no escopo_global
-                                            printf("Inicio TK_IDENTIFICADOR com lista_funcao\n");
-                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);
-                                            printf("Conteudo um\n");                                           
-                                            if(conteudo_na_pilha == NULL){
-                                                //Criar_conteudo
-                                                CONTEUDO* novo_conteudo = cria_conteudo($2);
-                                                printf("Conteudo Criado\n");
-                                                //Adiciona o nome da função na pilha global
-                                                adiciona_simbolo(&pilha, novo_conteudo, $2);
-                                                printf("Nome da funcao adicionado na pilha global\n");
-                                                //Adiciona novo escopo
-                                                TabelaSimbolos* novo_escopo = cria_tabela_vazia();
-                                                printf("Criou novo escopo\n");
-                                                push(&pilha, novo_escopo);
-                                                printf("Adicionou novo escopo na pilha\n");
-                                                print_pilha(&pilha);
-                                                pop(&pilha);
-                                                printf("Pop Pilha\n");
-                                            }
-                                            else{
-                                                printf("ERR_DECLARED na linha %d \n", current_line_number);
-                                                exit(ERR_DECLARED);
-                                            } }; // ADICIONA NA TABELA DE SIMBOLOS ATUAL
+parametro_funcao: tipo ID {$$ = $2;}; // ADICIONA NA TABELA DE SIMBOLOS ATUAL
 
 
 
@@ -239,7 +217,8 @@ bloco_de_comandos: '{' comandos '}'  { $$ = $2; destroiVL($1);destroiVL($3);}|
 
 
 comandos:   comandos_simples ';' comandos {$$ = ($1) == NULL ? ($3) : add_child($1, $3);destroiVL($2);}|  // REVISAR
-            comandos_simples ';' {$$ = $1; destroiVL($2);};
+            comandos_simples ';' {$$ = $1; destroiVL($2); printf("Isso é um comando simples");};
+
 
 
 comandos_simples:   declaracao_variavel_local {$$ = $1;}| 
@@ -362,7 +341,33 @@ literais:   TK_LIT_FLOAT  {$$ = create_node(literal_float, $1);}| // {$$ = creat
 
 litInt:  TK_LIT_INT  {$$ = create_node(literal_inteiro, $1);}
 
-ID: TK_IDENTIFICADOR {$$ = create_node(identificador, $1);};                          
+ID: TK_IDENTIFICADOR {$$ = create_node(identificador, $1);
+                        // Verifica se função já existe no escopo_global
+                        printf("Inicio TK_IDENTIFICADOR\n");
+                        // print_pilha(&pilha);  
+                        CONTEUDO* conteudo_na_pilha = procura_simbolo(&pilha, $1, false);
+                        printf("Conteudo um\n");                                         
+                        if(conteudo_na_pilha == NULL){
+                            //Criar_conteudo
+                            CONTEUDO* novo_conteudo = cria_conteudo($1);
+                            printf("Conteudo Criado\n");
+                            //Adiciona o nome da função na pilha global
+                            adiciona_simbolo(&pilha, novo_conteudo, $1, &pilha);
+                            printf("Nome da funcao adicionado na pilha global\n");
+                            //Adiciona novo escopo
+                            TabelaSimbolos* novo_escopo = cria_tabela_vazia();
+                            // printf("Criou novo escopo\n");
+                            push(&pilha, novo_escopo);
+                            // printf("Adicionou novo escopo na pilha\n");
+                            pop(&pilha);
+                            //print_pilha(&pilha);
+                            printf("Pop Pilha\n");
+                        }
+                        else{
+                            printf("ERR_DECLARED na linha %d \n", current_line_number);
+                            exit(ERR_DECLARED);
+                                            }   
+                        };                          
 %%
 
 
