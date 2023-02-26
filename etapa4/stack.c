@@ -38,30 +38,30 @@ CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopolocal)
         printf("Não encontrou simbolo \n");
         return NULL;
     }
-    TabelaSimbolos **tabela = NULL;
+    TabelaSimbolos *tabela = busca_escopo_local(pilha);
     printf("Procura_simbolo\n");
     char* nome_var = vl->valorToken;
     printf("Tabela procura_simbolo\n");
     if(pilha->tabela_de_simbolos == NULL){
         return NULL;
     }
-    tabela = &pilha->tabela_de_simbolos;
+    //tabela = &pilha->tabela_de_simbolos;
     // int tam = getTabelaSimbolosSize(tabela);
     // printf("Tamanho Tabela procura_simbolo %d\n", tam);
     for(int i = 0; i<100; i++)
     {
-        printf("Compare valor I: %d\n", i);
-        if((*tabela)[i].conteudo == NULL){
+        printf("Compare valor I: %d tem_simbolo: %d\n", i, tabela[i].tem_simbolo);
+        if(tabela[i].tem_simbolo == 0){
             printf("É NULL \n");
             return NULL;
         }
         printf("Não é null \n");
-        printf("Conteudo->nome %s \n", (*tabela)[i].conteudo->nome);
+        // printf("Conteudo->nome %s \n", (*tabela)[i].conteudo->nome);
         printf("Conteudo->nome %s \n", nome_var);
-        if(strcmp((*tabela)[i].conteudo->nome, nome_var) == 0)
+        if(strcmp(tabela[i].conteudo->nome, nome_var) == 0)
         {
             printf("Encontrou simbolo \n");
-            return (*tabela)[i].conteudo;
+            return tabela[i].conteudo;
         }
     }
     //printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", (*tabela)[tam].conteudo->nome);
@@ -120,36 +120,44 @@ TabelaSimbolos* devolve_primeira_tabela(PILHA *pilha){
         return pilha->tabela_de_simbolos;
 }
 
-void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int chave, PILHA *pilha)
+void adiciona_simbolo(CONTEUDO *conteudo, int chave, PILHA *pilha)
 {
     // int tam = getTabelaSimbolosSize(tabela_de_simbolos);
     // printf("Tamanho da tabela na adiciona_simbolo %d \n", tam);
-    TabelaSimbolos **tabela = NULL;
-    tabela = &pilha->tabela_de_simbolos;
+
+    TabelaSimbolos *tabela = pilha->tabela_de_simbolos;
+    //TabelaSimbolos **tabela = NULL;
     int tam = 0;
     for(int i = 0; i<100; i++)
     {
-        printf("Compare valor I: %d\n", i);
-        if((*tabela)[i].conteudo == NULL){
+        printf("Compare valor adiciona_Simbolo I: %d\n", i);
+        if(tabela[i].tem_simbolo == 0){
             printf("É NULL \n");
             break;
         }
         tam++;
     }
     //*tabela_de_simbolos = realloc(*tabela_de_simbolos, (tam + 1) * sizeof(TabelaSimbolos));
-    TabelaSimbolos* nova_tabela = realloc(*tabela_de_simbolos, (100) * sizeof(TabelaSimbolos));
-    if (nova_tabela == NULL) {
-        printf("Erro ao realocar memória na função adiciona_simbolo\n");
-        return;
-    }
-    *tabela_de_simbolos = nova_tabela;
+    // TabelaSimbolos* nova_tabela = realloc(*tabela_de_simbolos, (100) * sizeof(TabelaSimbolos));
+    // if (nova_tabela == NULL) {
+    //     printf("Erro ao realocar memória na função adiciona_simbolo\n");
+    //     return;
+    // }
+    // *tabela_de_simbolos = nova_tabela;
     // if (*tabela_de_simbolos == NULL) {
     //     return;
     // }
     printf("Tamanho %d \n", tam);
-    (*tabela_de_simbolos)[tam].conteudo = conteudo;
-    (*tabela_de_simbolos)[tam].chave = tam;
+    tabela[tam].conteudo = conteudo;
+    tabela[tam].chave = tam;
+    tabela[tam].tem_simbolo = 1;
     printf("Conteudo adicionado na tabela\n");
-    printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", (*tabela_de_simbolos)[tam].conteudo->nome);
-    printf("Chave da tabela de simbolos na adiciona_simbolo %d\n", (*tabela_de_simbolos)[tam].chave);
+    printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", tabela[tam].conteudo->nome);
+    printf("Chave da tabela de simbolos na adiciona_simbolo %d\n", tabela[tam].chave);
+}
+
+
+TabelaSimbolos *busca_escopo_local(PILHA *root)
+{
+    return root->tabela_de_simbolos;
 }

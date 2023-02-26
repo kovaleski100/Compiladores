@@ -128,9 +128,6 @@ lista_de_elementos:     declaracao {$$ = $1;}|
                         funcao {$$ = $1;}; // Destroi ultima tabela da pilha que não o escopo global
 
 
-
-
-
 declaracao: tipo lista_identificador {$$ = $2;};
 
 lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$=NULL; destroiVL($3);}|
@@ -146,25 +143,25 @@ funcao: cabecalho corpo {$$ = add_child($1, $2);};
 
 corpo: bloco_de_comandos {$$ = $1;};
 
-cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($4);
+cabecalho:  tipo  TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($4);
                                             // Verifica se função já existe no escopo_global
                                             printf("Inicio TK_IDENTIFICADOR\n");
                                             // print_pilha(&pilha);  
-                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(&pilha, $2, false);
+                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);
                                             printf("Conteudo um\n");                                         
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2);
                                                 printf("Conteudo Criado\n");
                                                 //Adiciona o nome da função na pilha global
-                                                adiciona_simbolo(&pilha, novo_conteudo, $2, &pilha);
+                                                adiciona_simbolo(novo_conteudo, $2, pilha);
                                                 printf("Nome da funcao adicionado na pilha global\n");
                                                 //Adiciona novo escopo
-                                                TabelaSimbolos* novo_escopo = cria_tabela_vazia();
+                                                //TabelaSimbolos* novo_escopo = cria_tabela_vazia();
                                                 // printf("Criou novo escopo\n");
-                                                push(&pilha, novo_escopo);
+                                                push(&pilha, cria_tabela_vazia());
                                                 // printf("Adicionou novo escopo na pilha\n");
-                                                pop(&pilha);
+                                                //pop(&pilha);
                                                 //print_pilha(&pilha);
                                                 printf("Pop Pilha\n");
                                             }
@@ -177,28 +174,28 @@ cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); 
                                             // Verifica se função já existe no escopo_global
                                             printf("Inicio TK_IDENTIFICADOR\n");
                                             // print_pilha(&pilha);  
-                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(&pilha, $2, false);
+                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);
                                             printf("Conteudo um\n");                                         
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2);
                                                 printf("Conteudo Criado\n");
                                                 //Adiciona o nome da função na pilha global
-                                                adiciona_simbolo(&pilha, novo_conteudo, $2, &pilha);
+                                                adiciona_simbolo(novo_conteudo, $2, pilha);
                                                 printf("Nome da funcao adicionado na pilha global\n");
                                                 //Adiciona novo escopo
-                                                TabelaSimbolos* novo_escopo = cria_tabela_vazia();
+                                                //TabelaSimbolos* novo_escopo = cria_tabela_vazia();
                                                 // printf("Criou novo escopo\n");
-                                                push(&pilha, novo_escopo);
+                                                push(&pilha, cria_tabela_vazia());
                                                 // printf("Adicionou novo escopo na pilha\n");
-                                                pop(&pilha);
+                                                //pop(&pilha);
                                                 //print_pilha(&pilha);
                                                 printf("Pop Pilha\n");
                                             }
                                             else{
                                                 printf("ERR_DECLARED na linha %d \n", current_line_number);
                                                 exit(ERR_DECLARED);
-                                            }                                              
+                                            }                                               
                                             };
 
 
@@ -213,11 +210,11 @@ parametro_funcao: tipo ID {$$ = $2;}; // ADICIONA NA TABELA DE SIMBOLOS ATUAL
 
 
 bloco_de_comandos: '{' comandos '}'  { $$ = $2; destroiVL($1);destroiVL($3);}| 
-                   '{' '}' {destroiVL($1);destroiVL($2); $$=NULL;}; // REVISAR PRINT
+                   '{' '}' {destroiVL($1);destroiVL($2); $$=NULL; pop(&pilha);}; // REVISAR PRINT
 
 
 comandos:   comandos_simples ';' comandos {$$ = ($1) == NULL ? ($3) : add_child($1, $3);destroiVL($2);}|  // REVISAR
-            comandos_simples ';' {$$ = $1; destroiVL($2); printf("Isso é um comando simples");};
+            comandos_simples ';' {$$ = $1; destroiVL($2); printf("Isso é um comando simples"); pop(&pilha);};
 
 
 
@@ -236,7 +233,26 @@ declaracao_variavel_local: tipo lista_variaveis {$$ = $2;}
 lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);destroiVL($2);}|
                  TK_IDENTIFICADOR ',' lista_variaveis {$$ = $3;}|
                  variavel {$$ = $1;}|
-                 TK_IDENTIFICADOR {$$ = NULL;}; 
+                 TK_IDENTIFICADOR {$$ = NULL;
+                                    // Verifica se função já existe no escopo_global
+                                    printf("Inicio TK_IDENTIFICADOR\n");
+                                    // print_pilha(&pilha);  
+                                    CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);
+                                    printf("Conteudo um\n");                                         
+                                    if(conteudo_na_pilha == NULL){
+                                        //Criar_conteudo
+                                        CONTEUDO* novo_conteudo = cria_conteudo($1);
+                                        printf("Conteudo Criado\n");
+                                        //Adiciona o nome da variavel na pilha
+                                        adiciona_simbolo(novo_conteudo, $1, pilha);
+                                        printf("Nome da variavel adicionado na pilha local\n");
+                                    }
+                                    else{
+                                        printf("ERR_DECLARED na linha %d \n", current_line_number);
+                                        exit(ERR_DECLARED);
+                                    }  
+                 
+                                }; 
 
 variavel: ID TK_OC_LE literais {$$ = create_node(caracter_especial, $2); $$ = add_child($$,$1); $$ = add_child($$,$3);};
 
@@ -345,28 +361,28 @@ ID: TK_IDENTIFICADOR {$$ = create_node(identificador, $1);
                         // Verifica se função já existe no escopo_global
                         printf("Inicio TK_IDENTIFICADOR\n");
                         // print_pilha(&pilha);  
-                        CONTEUDO* conteudo_na_pilha = procura_simbolo(&pilha, $1, false);
+                        CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);
                         printf("Conteudo um\n");                                         
                         if(conteudo_na_pilha == NULL){
                             //Criar_conteudo
                             CONTEUDO* novo_conteudo = cria_conteudo($1);
                             printf("Conteudo Criado\n");
                             //Adiciona o nome da função na pilha global
-                            adiciona_simbolo(&pilha, novo_conteudo, $1, &pilha);
+                            adiciona_simbolo(novo_conteudo, $1, pilha);
                             printf("Nome da funcao adicionado na pilha global\n");
                             //Adiciona novo escopo
-                            TabelaSimbolos* novo_escopo = cria_tabela_vazia();
+                            //TabelaSimbolos* novo_escopo = cria_tabela_vazia();
                             // printf("Criou novo escopo\n");
-                            push(&pilha, novo_escopo);
+                            push(&pilha, cria_tabela_vazia());
                             // printf("Adicionou novo escopo na pilha\n");
-                            pop(&pilha);
+                            //pop(&pilha);
                             //print_pilha(&pilha);
                             printf("Pop Pilha\n");
                         }
                         else{
                             printf("ERR_DECLARED na linha %d \n", current_line_number);
                             exit(ERR_DECLARED);
-                                            }   
+                        }  
                         };                          
 %%
 

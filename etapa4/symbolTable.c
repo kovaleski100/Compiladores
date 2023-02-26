@@ -70,12 +70,29 @@ CONTEUDO *cria_conteudo(valor_lexico* vl){
   return conteudo;
 }
 
+// TabelaSimbolos* cria_tabela_vazia(){
+//     TabelaSimbolos * tabela = (TabelaSimbolos *)calloc(100, sizeof(TabelaSimbolos));
+//     if(tabela == NULL){
+//       return NULL;
+//     }
+//     else{
+//       return tabela;
+//     }
+// }
+
 TabelaSimbolos* cria_tabela_vazia(){
-    TabelaSimbolos * tabela = (TabelaSimbolos *)malloc(sizeof(TabelaSimbolos));
+    TabelaSimbolos * tabela = (TabelaSimbolos *)calloc(100, sizeof(TabelaSimbolos));
     if(tabela == NULL){
       return NULL;
     }
     else{
+      
+       for(int i = 0; i<100; i++)
+      {
+          tabela[i].tem_simbolo = 0;
+          // printf("Taela tem simbolo i: %d tem_simbolo: %d\n", i, tabela[i].tem_simbolo);
+      }
+      printf("Tabela vazia criada \n");
       return tabela;
     }
 }

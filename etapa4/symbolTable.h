@@ -32,6 +32,7 @@ typedef struct CONTEUDO{
 
 typedef struct TabelaSimbolos{
   int chave;
+  int tem_simbolo;
   CONTEUDO  *conteudo;
 } TabelaSimbolos;
 
