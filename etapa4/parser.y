@@ -148,8 +148,9 @@ corpo: bloco_de_comandos {$$ = $1;};
 cabecalho:  tipo TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($4);
                                             // Verifica se função já existe no escopo_global
                                             printf("Inicio TK_IDENTIFICADOR\n");
-                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);
-                                            printf("Conteudo um\n");                                           
+                                            print_pilha(&pilha);  
+                                            CONTEUDO* conteudo_na_pilha = procura_simbolo(&pilha, $2, false);
+                                            printf("Conteudo um\n");                                         
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2);

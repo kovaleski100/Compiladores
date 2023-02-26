@@ -9,7 +9,23 @@ int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
   }
    printf("Tamanho tabela original %d \n", tam);
   return tam;
+    
 }
+
+// int getTabelaSimbolosSize(TabelaSimbolos **tabela_de_simbolos)
+// {
+//     int tam = 0;
+//     if (*tabela_de_simbolos != NULL)
+//     {
+         
+//         while ((*tabela_de_simbolos)[tam].chave != NULL)
+//         {
+//             printf("Tamanho no while %d \n", (*tabela_de_simbolos)[tam].chave);
+//             tam++;
+//         }
+//     }
+//     return tam;
+// }
 
 void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int chave)
 {
@@ -21,7 +37,9 @@ void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, i
     }
     (*tabela_de_simbolos)[tam].conteudo = conteudo;
     (*tabela_de_simbolos)[tam].chave = tam;
-    printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", tabela_de_simbolos[0]->conteudo->nome);
+    printf("Conteudo adicionado na tabela\n");
+    printf("Conteudo da tabela de simbolos na adiciona_simbolo %s\n", (*tabela_de_simbolos)[tam].conteudo->nome);
+    printf("Chave da tabela de simbolos na adiciona_simbolo %d\n", (*tabela_de_simbolos)[tam].chave);
 }
 
 
