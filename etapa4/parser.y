@@ -12,6 +12,9 @@
 
 #include <stdio.h>
 #include "erro.h"
+#define VAR 0
+#define ARRAY 1
+#define FUNCTION 2
 extern int current_line_number;
 extern void *arvore;
 PILHA *pilha = NULL;
@@ -72,6 +75,8 @@ int tipoVar = 0;
 %type<no> ID
 %type<no> ID_FATOR_EXP
 %type<no> litInt
+%type<no> ID_ATR
+%type<no> ID_ATR_ARRAY
 
 %token <tipo>  TK_PR_INT
 %token <tipo>  TK_PR_FLOAT
@@ -141,7 +146,7 @@ lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$=NULL;
                         CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);                                    
                         if(conteudo_na_pilha == NULL){
                             //Criar_conteudo
-                            CONTEUDO* novo_conteudo = cria_conteudo($1, 1);
+                            CONTEUDO* novo_conteudo = cria_conteudo($1, ARRAY);
                             //Adiciona o nome da função na pilha global
                             adiciona_simbolo(novo_conteudo, pilha);
                         }
@@ -158,7 +163,22 @@ lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$=NULL;
                         CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);                                    
                         if(conteudo_na_pilha == NULL){
                             //Criar_conteudo
-                            CONTEUDO* novo_conteudo = cria_conteudo($1, 1);
+                            CONTEUDO* novo_conteudo = cria_conteudo($1, ARRAY);
+                            //Adiciona o nome da função na pilha global
+                            adiciona_simbolo(novo_conteudo, pilha);
+                        }
+                        else{
+                            print_declared(conteudo_na_pilha, $1);
+                            //printf("ERR_DECLARED na linha %d \n", current_line_number);
+                            exit(ERR_DECLARED);
+                        } 
+                        }|
+                        TK_IDENTIFICADOR ';' {$$ = NULL; destroiVL($2);
+                        // Verifica se função já existe no escopo_global
+                        CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);                                    
+                        if(conteudo_na_pilha == NULL){
+                            //Criar_conteudo
+                            CONTEUDO* novo_conteudo = cria_conteudo($1, VAR);
                             //Adiciona o nome da função na pilha global
                             adiciona_simbolo(novo_conteudo, pilha);
                         }
@@ -170,7 +190,7 @@ lista_identificador:    TK_IDENTIFICADOR array ',' lista_identificador {$$=NULL;
                         };
 
 array:      '[' litInt ']' {$$ = NULL;destroiVL($1);destroiVL($3);}|
-            '[' litInt '^' lista_de_literais_inteiros ']'  {$$ = NULL;destroiVL($1);destroiVL($3);destroiVL($5);}| {$$ = NULL;};
+            '[' litInt '^' lista_de_literais_inteiros ']'  {$$ = NULL;destroiVL($1);destroiVL($3);destroiVL($5);};
 
 lista_de_literais_inteiros :    litInt '^' lista_de_literais_inteiros {$$=NULL;destroiVL($2);}|
                                 TK_LIT_INT {$$ = NULL;};
@@ -184,7 +204,7 @@ cabecalho:  tipo  TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2);
                                             CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);                                    
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
-                                                CONTEUDO* novo_conteudo = cria_conteudo($2, 1);
+                                                CONTEUDO* novo_conteudo = cria_conteudo($2, FUNCTION);
                                                 //Adiciona o nome da função na pilha global
                                                 adiciona_simbolo(novo_conteudo, pilha);
                                             }
@@ -196,10 +216,11 @@ cabecalho:  tipo  TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2);
                                             }|
             tipo TK_IDENTIFICADOR '(' lista_funcao ')' {$$ = create_node(identificador, $2); destroiVL($3);destroiVL($5);
                                             // Verifica se função já existe no escopo_global
+                                            printf("Na lista\n");
                                             CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $2, false);                                  
                                             if(conteudo_na_pilha == NULL){
                                                 //Criar_conteudo
-                                                CONTEUDO* novo_conteudo = cria_conteudo($2, 1);
+                                                CONTEUDO* novo_conteudo = cria_conteudo($2, FUNCTION);
                                                 //Adiciona o nome da função na pilha global
                                                 adiciona_simbolo(novo_conteudo, pilha);
                                             }
@@ -214,7 +235,7 @@ cabecalho:  tipo  TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2);
 lista_funcao:   parametro_funcao ',' lista_funcao {destroiVL($2);}| // REVISAR CORRIGIR MEMORIA ETAPA 3
                 parametro_funcao {$$ = $1;};
 
-parametro_funcao: tipo ID {$$ = $2;}; // ADICIONA NA TABELA DE SIMBOLOS ATUAL
+parametro_funcao: tipo ID {$$ = $2; printf("parametros\n");}; // ADICIONA NA TABELA DE SIMBOLOS ATUAL
 
 
 inicia_escopo: '{' {push(&pilha, cria_tabela_vazia());destroiVL($1);};
@@ -248,7 +269,8 @@ lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);
                                                     CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, true);                                  
                                                     if(conteudo_na_pilha == NULL){
                                                         //Criar_conteudo
-                                                        CONTEUDO* novo_conteudo = cria_conteudo($1, 1);
+                                                        CONTEUDO* novo_conteudo = cria_conteudo($1, VAR);
+                                                        novo_conteudo->natureza = VAR;
                                                         //Adiciona o nome da variavel na pilha local(mais do topo)
                                                         adiciona_simbolo(novo_conteudo, pilha);
                                                     }
@@ -264,7 +286,8 @@ lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);
                                     CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, true);                                  
                                     if(conteudo_na_pilha == NULL){
                                         //Criar_conteudo
-                                        CONTEUDO* novo_conteudo = cria_conteudo($1, 1);
+                                        CONTEUDO* novo_conteudo = cria_conteudo($1, VAR);
+                                        novo_conteudo->natureza = VAR;
                                         //Adiciona o nome da variavel na pilha local(mais no topo)
                                         adiciona_simbolo(novo_conteudo, pilha);
                                     }
@@ -282,14 +305,52 @@ variavel: ID TK_OC_LE literais {$$ = create_node(caracter_especial, $2); $$ = ad
 
 
 
-atribuicao: ID '=' expressao {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}|  // TESTAR
+atribuicao: ID_ATR '=' expressao {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}|  // TESTAR
             arranjo_multi '=' expressao  {$$ = create_node(caracter_especial, $2); $$ = add_child($$, $1); $$ = add_child($$, $3);}
 
-arranjo_multi:  ID '[' lista_de_expressoes ']' {$$ = create_node(arranjo, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);}
+arranjo_multi:  ID_ATR_ARRAY '[' lista_de_expressoes ']' {$$ = create_node(arranjo, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);}
                 // ID '[' expressao_aux ']' {$$ = create_node(arranjo, $2); $$ = add_child($$, $1); $$ = add_child($$, $3); destroiVL($4);};
 
 
+ID_ATR: TK_IDENTIFICADOR {
+                        $$ = create_node(identificador, $1);
+                        // Verifica se função já existe no escopo_global/local
+                        CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);                                       
+                        if(conteudo_na_pilha == NULL){
+                            print_undeclared($1);
+                            //printf("ERR_UNDECLARED na linha %d \n", current_line_number);
+                            exit(ERR_UNDECLARED);
+                        } else {
+                            if(conteudo_na_pilha->natureza == ARRAY) {
+                               print_array(conteudo_na_pilha, $1);
+                               exit(ERR_ARRAY);
+                            }
+                            else if(conteudo_na_pilha->natureza == FUNCTION){
+                                print_function(conteudo_na_pilha, $1);
+                                exit(ERR_FUNCTION);
+                            }
+                        }
+};
 
+ID_ATR_ARRAY: TK_IDENTIFICADOR {
+                        $$ = create_node(identificador, $1);
+                        // Verifica se função já existe no escopo_global/local
+                        CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, false);                                       
+                        if(conteudo_na_pilha == NULL){
+                            print_undeclared($1);
+                            //printf("ERR_UNDECLARED na linha %d \n", current_line_number);
+                            exit(ERR_UNDECLARED);
+                        } else {
+                            if(conteudo_na_pilha->natureza == VAR) {
+                               print_variable(conteudo_na_pilha, $1);
+                               exit(ERR_ARRAY);
+                            }
+                            else if(conteudo_na_pilha->natureza == FUNCTION){
+                                print_function(conteudo_na_pilha, $1);
+                                exit(ERR_FUNCTION);
+                            }
+                        }
+};
 
 
 lista_de_expressoes: lista_de_expressoes '^' expressao   {$$ = create_node(caracter_especial, $2); add_child($$,$1); add_child($$, $3);}|
@@ -337,6 +398,16 @@ chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(c
                                                                     //printf("ERR_UNDECLARED na linha %d \n", current_line_number);
                                                                     exit(ERR_UNDECLARED);
                                                                 }
+                                                                else {
+                                                                    if(conteudo_na_pilha->natureza == VAR) {
+                                                                        print_variable(conteudo_na_pilha, $1);
+                                                                        exit(ERR_VARIABLE);
+                                                                    }
+                                                                    else if (conteudo_na_pilha->natureza == ARRAY){
+                                                                        print_array(conteudo_na_pilha, $1);
+                                                                        exit(ERR_ARRAY);
+                                                                    }
+                                                                }
                                                             }|
                 TK_IDENTIFICADOR '('  ')' {$$ = create_node(call,$1); destroiVL($2); destroiVL($3);
                                             // Verifica se função já existe no escopo_global
@@ -345,6 +416,16 @@ chamada_funcao: TK_IDENTIFICADOR '(' lista_de_argumentos ')' {$$ = create_node(c
                                                 print_undeclared($1);
                                                 //printf("ERR_UNDECLARED na linha %d \n", current_line_number);
                                                 exit(ERR_UNDECLARED);
+                                            }
+                                            else {
+                                                if(conteudo_na_pilha->natureza == VAR) {
+                                                    print_variable(conteudo_na_pilha, $1);
+                                                    exit(ERR_VARIABLE);
+                                                }
+                                                else if (conteudo_na_pilha->natureza == ARRAY){
+                                                    print_array(conteudo_na_pilha, $1);
+                                                    exit(ERR_ARRAY);
+                                                }
                                             }
                                          };
 
@@ -429,7 +510,7 @@ ID: TK_IDENTIFICADOR {$$ = create_node(identificador, $1);
                         CONTEUDO* conteudo_na_pilha = procura_simbolo(pilha, $1, true);                                        
                         if(conteudo_na_pilha == NULL){
                             //Criar_conteudo
-                            CONTEUDO* novo_conteudo = cria_conteudo($1, 1);
+                            CONTEUDO* novo_conteudo = cria_conteudo($1, VAR);
                             //Adiciona o nome da função na pilha global
                             adiciona_simbolo(novo_conteudo, pilha);
                         }

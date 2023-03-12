@@ -11,6 +11,25 @@ void print_declared(CONTEUDO *conteudo, valor_lexico *vl)
     //printf("identificador %s já declarado na linha %d", vl->valorToken, vl->numero_linha);
 }
 
+void print_variable(CONTEUDO *conteudo, valor_lexico *vl)
+{
+    printf("ERR_VARIABLE na linha %d, variavel \'%s\' declarada na linha %d como variável \n", vl->numero_linha, conteudo->nome, conteudo->linha);
+    //printf("identificador %s já declarado na linha %d", vl->valorToken, vl->numero_linha);
+}
+
+void print_array(CONTEUDO *conteudo, valor_lexico *vl)
+{
+    printf("ERR_ARRAY na linha %d, variavel \'%s\' declarada na linha %d como array \n", vl->numero_linha, conteudo->nome, conteudo->linha);
+    //printf("identificador %s já declarado na linha %d", vl->valorToken, vl->numero_linha);
+}
+
+
+void print_function(CONTEUDO *conteudo, valor_lexico *vl)
+{
+    printf("ERR_FUNCTION na linha %d, variavel \'%s\' declarada na linha %d como funcao \n", vl->numero_linha, conteudo->nome, conteudo->linha);
+    //printf("identificador %s já declarado na linha %d", vl->valorToken, vl->numero_linha);
+}
+
 // void print_identificar_erro(CONTEUDO *original, valor_lexico *erro, int natureza)
 // {
 //     char tipo[10];
