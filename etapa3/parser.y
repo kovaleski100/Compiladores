@@ -153,7 +153,7 @@ bloco_de_comandos: '{' comandos '}'  { $$ = $2; destroiVL($1);destroiVL($3);}|
                    '{' '}' {destroiVL($1);destroiVL($2); $$=NULL;}; // REVISAR PRINT
 
 
-comandos:   comandos_simples ';' comandos {$$ = ($1) == NULL ? ($3) : add_child($1, $3);destroiVL($2);}|  // REVISAR
+comandos:   comandos_simples ';' comandos {$$ = ($1) == NULL ? ($3) : ver_comando($1, $3);destroiVL($2);}|  // REVISAR
             comandos_simples ';' {$$ = $1; destroiVL($2);};
 
 

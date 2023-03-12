@@ -1,5 +1,6 @@
 #include "ast.h"
 
+
 ast* create_node(int tipo, valor_lexico *valor)
 {
     //printf("Entrou create node \n");
@@ -17,37 +18,6 @@ ast* create_node(int tipo, valor_lexico *valor)
     return node;
 
 }
-
-bool procura_simbo(ast **arvore, ast *nodo)
-{
-    if(arvore == NULL || *arvore == NULL)
-    {
-        return true;
-    }
-    bool flag = true;
-    for(int i = 0; i< (*arvore)->num_filhos; i++)
-    {
-        if((*arvore)->valor_lexico->tipo_token == caracter_especial && strlen((*arvore)->valor_lexico->valorToken) == 2 && (*arvore)->num_filhos<3)
-        {
-            (*arvore) = add_child(*arvore, nodo);
-            flag = false;
-        }
-        flag = flag && procura_simbo(&(*arvore)->filho[i], nodo);
-    }
-    return flag;
-}
-
-ast* ver_comando(ast *arvore, ast *nodo)
-{
-    bool flag = procura_simbo(&arvore, nodo);
-
-    if(flag)
-    {
-        return add_child(arvore, nodo);
-    }
-    return arvore;
-}
-
 
 // ast* create_leaf(int tipo, valor_lexico valor); precisa?
 ast* add_child(ast *arvore, ast *nodo)
