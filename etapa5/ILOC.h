@@ -3,6 +3,21 @@
 enum iloctype
 {
     ADD,
+    SUB,
+    DIV,
+    MULT,
+    AND,
+    OR,
+    MENORIGUAL,
+    MAIORIGUAL,
+    MENORQUE,
+    MAIORQUE,
+    IGUAL,
+    ATRUBUICAO,
+    IF,
+    IFELSE,
+    WHILE,
+    FUNCAO
 };
 
 typedef struct ILOC
@@ -20,8 +35,9 @@ typedef struct ILOCLIST
 {
     ILOCSTRUCT *instrucao;
     struct ILOCLIST *next;
-    
     /* data */
 }ILOCLISTSTRUCT;
 
-char* criar_rotulo();
+char* cria_label();
+char* cria_registrador();
+void gera_codigo_expr(ILOCLISTSTRUCT ** iloclist, int exprType);
