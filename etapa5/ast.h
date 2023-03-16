@@ -16,7 +16,9 @@ enum tipos_tokens
     operador_unario,
     operador_simples,
     call,
-    arranjo
+    arranjo,
+    ADDITION,
+    SUBTRACTION,
 };
 
 enum natureza
@@ -63,12 +65,27 @@ typedef struct valor_lexico
     /* data */
 } valor_lexico;
 
+typedef enum {
+    TEMPORARY,
+    CONSTANT,
+    LABEL
+} ArgType;
+
+typedef struct  ILOCArg {
+    ArgType type;
+    union {
+        int value;
+        char* name;
+    } data;
+} ILOCArg;
+
 typedef struct ast
 {
     valor_lexico *valor_lexico;
     struct ast **filho;
     int num_filhos;
     int tipo_nodo;
+    ILOCArg* result;
     /* data */
 } ast;
 
@@ -82,3 +99,47 @@ void exporta(ast *arvore);
 void destroiVL(valor_lexico *valor);
 void destroiNodo(ast *arvore);
 valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal);
+
+
+
+#include <stdlib.h>
+#include <string.h>
+
+typedef enum {
+    // Adicione aqui os tipos de operações ILOC que você precisa, por exemplo:
+    ADD,
+    SUB,
+    MULT,
+    LOAD,
+    STORE,
+    // ...
+} ILOCOpType;
+
+typedef struct ILOCOperation {
+    ILOCOpType opType;
+    ILOCArg* input1;
+    ILOCArg* input2;
+    ILOCArg* output;
+} ILOCOperation;
+
+typedef struct  ILOCOperationList{
+    ILOCOperation* instrucao;
+    struct ILOCOperationList* next;
+} ILOCOperationList;
+
+
+// typedef struct ILOCLIST
+// {
+//     ILOCSTRUCT *instrucao;
+//     struct ILOCLIST *next;
+    
+//     /* data */
+// }ILOCLISTSTRUCT;
+
+
+void add_operation(ILOCOperationList* list, ILOCOpType opType, ILOCArg* input1, ILOCArg* input2, ILOCArg* output);
+ILOCArg* create_arg(ArgType type, int value, char* name);
+void free_arg(ILOCArg* arg);
+void free_operation_list(ILOCOperationList* list);
+void generate_iloc_code_for_binary_op(char op, ast *left, ast *right, ILOCOperationList *iloc_list);
+void generate_iloc_code(ast* node, ILOCOperationList** iloc_list);

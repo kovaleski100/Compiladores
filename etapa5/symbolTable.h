@@ -23,6 +23,7 @@ typedef struct CONTEUDO{
   int natureza;
   int tipo;
   int tamanho;
+  int offset;
   union tipo_literal valor_literal;
   union ArranjoOuVetor arrOuVet;
   // faltou o outros definido na 2.1

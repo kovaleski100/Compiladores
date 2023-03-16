@@ -62,12 +62,14 @@ CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopo_local)
 
     // Percorre a pilha até chegar à última tabela
     PILHA* ultima_tabela = pilha;
-    while (ultima_tabela->proxima_tabela != NULL) {
-    ultima_tabela = ultima_tabela->proxima_tabela;
-    }
+    // while (ultima_tabela->proxima_tabela != NULL) {
+    // ultima_tabela = ultima_tabela->proxima_tabela;
+    // }
 
-    // Acessa a última tabela
+    // Acessa a proxima tabela
     if(!escopo_local){
+        while (ultima_tabela->proxima_tabela != NULL) {
+        ultima_tabela = ultima_tabela->proxima_tabela;
         TabelaSimbolos* tabela_global = ultima_tabela->tabela_de_simbolos;
         for(int i = 0; i<100; i++)
         {
@@ -81,6 +83,7 @@ CONTEUDO* procura_simbolo(PILHA *pilha, valor_lexico *vl, bool escopo_local)
                 //printf("Encontrou simbolo \n");
                 return tabela_global[i].conteudo;
             }
+        }
         }
     }
     
