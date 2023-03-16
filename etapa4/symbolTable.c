@@ -44,28 +44,28 @@
 // }
 
 
-CONTEUDO *cria_conteudo(valor_lexico* vl, int tipo, int natureza, ARRANJOOUVETOR arrVec){
+CONTEUDO *cria_conteudo(valor_lexico* vl, int natureza){
 
   CONTEUDO * conteudo = (CONTEUDO *)malloc(sizeof(CONTEUDO));
   conteudo->natureza = natureza;
   conteudo->linha = vl->numero_linha;
   conteudo->tipo = vl->tipo_token;
   conteudo->nome = vl->valorToken;
-  switch (tipo)
-  {
-  case inteiro:
-    conteudo->tamanho = sizeof(int);
-    break;
-  case caracter:
-    conteudo->tamanho = sizeof(char);
-    break;
-  case flutuante:
-    conteudo->tamanho = 8;
-    break;
-  case booleano:
-    conteudo->tamanho = 1;
-    break;
-  }
+  // switch (tipo)
+  // {
+  // case inteiro:
+  //   conteudo->tamanho = sizeof(int);
+  //   break;
+  // case caracter:
+  //   conteudo->tamanho = sizeof(char);
+  //   break;
+  // case flutuante:
+  //   conteudo->tamanho = 8;
+  //   break;
+  // case booleano:
+  //   conteudo->tamanho = 1;
+  //   break;
+  // }
 
   // printf("Conteudo nome %s \n", conteudo->nome);
   // if(natureza == arranjoN)
@@ -92,7 +92,7 @@ CONTEUDO *cria_conteudo(valor_lexico* vl, int tipo, int natureza, ARRANJOOUVETOR
     break;
   }
 
-  return conteudo
+  return conteudo;
 }
 
 // TabelaSimbolos* cria_tabela_vazia(){

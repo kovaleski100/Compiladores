@@ -49,20 +49,12 @@ ESPECIAL [,;:()\{\}\[\]+/%^<>=!*-]
 
   /* (5) -> Literais */
 
-<<<<<<< HEAD
-\s*[-+]?[0-9]+\s*				{yylval.valor_lexico = cria_valor(literal_inteiro, current_line_number, yytext, inteiro); printf("%s\n", yytext);return TK_LIT_INT;}
-=======
 [-+]?[0-9]+\s*				{yylval.valor_lexico = cria_valor(literal_inteiro, current_line_number, yytext, inteiro);return TK_LIT_INT;}
->>>>>>> 8b13f6c6fe1e8339d8103c4bff54df7a44125803
 \s*[-+]?[0-9]+\.[0-9]+([Ee][-+]?[0-9]+)?\s* 	{yylval.valor_lexico = cria_valor(literal_float, current_line_number, yytext, flutuante); return TK_LIT_FLOAT;}
 \'.\'					{yylval.valor_lexico = cria_valor(literal_char, current_line_number, yytext, caracter); return TK_LIT_CHAR;}
 
   /* (2) -> Caracteres especiais */
-<<<<<<< HEAD
-\s*?({ESPECIAL}\s*?)?              {yylval.valor_lexico = cria_valor(caracter_especial, current_line_number, yytext, nulo); printf("%s\n", yytext) ;return yytext[0];};
-=======
 \s*({ESPECIAL}\s*)?              {yylval.valor_lexico = cria_valor(caracter_especial, current_line_number, yytext, nulo) ;return yytext[0];};
->>>>>>> 8b13f6c6fe1e8339d8103c4bff54df7a44125803
 
   /* (6) -> Outros */
 

@@ -1,4 +1,5 @@
-int k(int x, int y, int z){}
 int f(){
-        k(10+10, +10);
+  int a, b, c <= 3, d, e <= 4;
+  a = 3;
+  return 10;
 }
