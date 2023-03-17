@@ -1,7 +1,7 @@
 #include "ast.h"
 #include "ILOC.h"
 
-const char* get_op_name(ILOCOpType op) {
+const char* get_op_name(int op) {
     switch (op) {
         case ADD:
             return "add";
@@ -38,7 +38,6 @@ void print_arg(ILOCArg* arg) {
 }
 
 void print_operation_list(ILOCOperationList* list) {
-    printf("PRINTAAAAA");
     ILOCOperationList* current = list;
     while (current != NULL) {
         ILOCOperation* op = current->instrucao;
@@ -239,8 +238,8 @@ valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, i
 
 ////////////////////// ILOOOOOC //////////////////
 
-void add_operation(ILOCOperationList* list, ILOCOpType opType, ILOCArg* input1, ILOCArg* input2, ILOCArg* output) {
-    printf("ADD operation");
+void add_operation(ILOCOperationList* list, int opType, ILOCArg* input1, ILOCArg* input2, ILOCArg* output) {
+    //printf("ADD operation");
     ILOCOperation* new_operation = malloc(sizeof(ILOCOperation));
     new_operation->opType = opType;
     new_operation->input1 = input1;
@@ -320,7 +319,7 @@ void generate_iloc_code(ast* node, ILOCOperationList** iloc_list) {
     if (!node) {
         return;
     }
-    printf("tipo nodo: %d\n\n\n" , node->tipo_nodo);
+    //printf("tipo nodo: %d\n\n\n" , node->tipo_nodo);
     switch (node->tipo_nodo) {
         case 0: {
             generate_iloc_code(node->filho[0], iloc_list);
@@ -330,7 +329,7 @@ void generate_iloc_code(ast* node, ILOCOperationList** iloc_list) {
             ILOCArg* temp1 = create_arg(TEMPORARY, 0, "temp1");
             ILOCArg* temp2 = create_arg(TEMPORARY, 0, "temp2");
             ILOCArg* result = create_arg(TEMPORARY, 0, "result");
-            add_operation(iloc_list, ADD, temp1, temp2, result);
+            add_operation(*iloc_list, ADD, temp1, temp2, result);
             break;
         }
         case SUBTRACTION: {
@@ -341,7 +340,7 @@ void generate_iloc_code(ast* node, ILOCOperationList** iloc_list) {
             ILOCArg* temp1 = create_arg(TEMPORARY, 0, "temp1");
             ILOCArg* temp2 = create_arg(TEMPORARY, 0, "temp2");
             ILOCArg* result = create_arg(TEMPORARY, 0, "result");
-            add_operation(iloc_list, SUB, temp1, temp2, result);
+            add_operation(*iloc_list, SUB, temp1, temp2, result);
             break;
         }
         // // Adicione casos para outros tipos de nós aqui
@@ -353,10 +352,10 @@ void generate_iloc_code(ast* node, ILOCOperationList** iloc_list) {
 
 
 void generate_iloc_code_for_binary_op(char op, ast *left, ast *right, ILOCOperationList *iloc_list) {
-    printf("Generate");
+    //printf("Generate");
     // Gere código ILOC para a subárvore à esquerda e à direita
-    generate_iloc_code(left, iloc_list);
-    generate_iloc_code(right, iloc_list);
+    generate_iloc_code(left, &iloc_list);
+    generate_iloc_code(right, &iloc_list);
 
     // Crie argumentos temporários
     ILOCArg *temp1 = create_arg(TEMPORARY, -1, generate_temp());
@@ -368,7 +367,7 @@ void generate_iloc_code_for_binary_op(char op, ast *left, ast *right, ILOCOperat
     add_operation(iloc_list, LOAD, right->result, NULL, temp2);
 
     // Selecione o tipo de operação ILOC com base no operador
-    ILOCOpType op_type;
+    int op_type;
     switch (op) {
         case '+':
             op_type = ADD;
@@ -387,4 +386,6 @@ void generate_iloc_code_for_binary_op(char op, ast *left, ast *right, ILOCOperat
 
     // Armazene o resultado da operação no nó da AST
     left->result = temp3;
+
+    print_operation_list(iloc_list);
 }

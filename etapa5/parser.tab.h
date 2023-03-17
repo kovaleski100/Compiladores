@@ -88,7 +88,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 24 "parser.y"
+#line 30 "parser.y"
 
  struct ast *no;
  struct valor_lexico *valor_lexico; // etapa3 - 2.1 

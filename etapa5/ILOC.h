@@ -1,25 +1,5 @@
 #include <string.h>
 
-enum iloctype
-{
-    ADD,
-    SUB,
-    DIV,
-    MULT,
-    AND,
-    OR,
-    MENORIGUAL,
-    MAIORIGUAL,
-    MENORQUE,
-    MAIORQUE,
-    IGUAL,
-    ATRUBUICAO,
-    IF,
-    IFELSE,
-    WHILE,
-    FUNCAO
-};
-
 typedef struct ILOC
 {
     char* instrucao;

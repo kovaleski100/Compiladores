@@ -21,6 +21,28 @@ enum tipos_tokens
     SUBTRACTION,
 };
 
+enum iloctype
+{
+    ADD,
+    SUB,
+    DIV,
+    MULT,
+    AND,
+    OR,
+    MENORIGUAL,
+    MAIORIGUAL,
+    MENORQUE,
+    MAIORQUE,
+    IGUAL,
+    ATRUBUICAO,
+    IF,
+    IFELSE,
+    WHILE,
+    FUNCAO,
+    LOAD,
+    STORE
+};
+
 enum natureza
 {
     litetal,
@@ -89,34 +111,8 @@ typedef struct ast
     /* data */
 } ast;
 
-ast* create_node(int tipo, valor_lexico *valor);
-ast* create_leaf(int tipo, valor_lexico *valor);
-ast* add_child(ast *arvore, ast *nodo);
-void print_dados(ast *arvore);
-void print_nodo(ast *arvore);
-void libera(void *arvore);
-void exporta(ast *arvore);
-void destroiVL(valor_lexico *valor);
-void destroiNodo(ast *arvore);
-valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal);
-
-
-
-#include <stdlib.h>
-#include <string.h>
-
-typedef enum {
-    // Adicione aqui os tipos de operações ILOC que você precisa, por exemplo:
-    ADD,
-    SUB,
-    MULT,
-    LOAD,
-    STORE,
-    // ...
-} ILOCOpType;
-
 typedef struct ILOCOperation {
-    ILOCOpType opType;
+    int opType;
     ILOCArg* input1;
     ILOCArg* input2;
     ILOCArg* output;
@@ -136,8 +132,17 @@ typedef struct  ILOCOperationList{
 //     /* data */
 // }ILOCLISTSTRUCT;
 
-
-void add_operation(ILOCOperationList* list, ILOCOpType opType, ILOCArg* input1, ILOCArg* input2, ILOCArg* output);
+ast* create_node(int tipo, valor_lexico *valor);
+ast* create_leaf(int tipo, valor_lexico *valor);
+ast* add_child(ast *arvore, ast *nodo);
+void print_dados(ast *arvore);
+void print_nodo(ast *arvore);
+void libera(void *arvore);
+void exporta(ast *arvore);
+void destroiVL(valor_lexico *valor);
+void destroiNodo(ast *arvore);
+valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal);
+void add_operation(ILOCOperationList* list, int opType, ILOCArg* input1, ILOCArg* input2, ILOCArg* output);
 ILOCArg* create_arg(ArgType type, int value, char* name);
 void free_arg(ILOCArg* arg);
 void free_operation_list(ILOCOperationList* list);
