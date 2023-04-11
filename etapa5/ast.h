@@ -40,7 +40,10 @@ enum iloctype
     WHILE,
     FUNCAO,
     LOAD,
-    STORE
+    LOADAI,
+    STORE,
+    STOREAI,
+    VARIABLE
 };
 
 enum natureza
@@ -68,9 +71,7 @@ typedef union tipo_literal
     char *s;
     float f;
     bool b;
-}tipo_literal;
-
-
+} tipo_literal;
 
 // typedef struct valor_token
 // {
@@ -87,17 +88,20 @@ typedef struct valor_lexico
     /* data */
 } valor_lexico;
 
-typedef enum {
+typedef enum
+{
     TEMPORARY,
     CONSTANT,
     LABEL
 } ArgType;
 
-typedef struct  ILOCArg {
+typedef struct ILOCArg
+{
     ArgType type;
-    union {
+    union
+    {
         int value;
-        char* name;
+        char *name;
     } data;
 } ILOCArg;
 
@@ -107,44 +111,46 @@ typedef struct ast
     struct ast **filho;
     int num_filhos;
     int tipo_nodo;
-    ILOCArg* result;
+    ILOCArg *result;
     /* data */
 } ast;
 
-typedef struct ILOCOperation {
+typedef struct ILOCOperation
+{
     int opType;
-    ILOCArg* input1;
-    ILOCArg* input2;
-    ILOCArg* output;
+    ILOCArg *input1;
+    ILOCArg *input2;
+    ILOCArg *output;
 } ILOCOperation;
 
-typedef struct  ILOCOperationList{
-    ILOCOperation* instrucao;
-    struct ILOCOperationList* next;
+typedef struct ILOCOperationList
+{
+    ILOCOperation *instrucao;
+    struct ILOCOperationList *next;
 } ILOCOperationList;
-
 
 // typedef struct ILOCLIST
 // {
 //     ILOCSTRUCT *instrucao;
 //     struct ILOCLIST *next;
-    
+
 //     /* data */
 // }ILOCLISTSTRUCT;
 
-ast* create_node(int tipo, valor_lexico *valor);
-ast* create_leaf(int tipo, valor_lexico *valor);
-ast* add_child(ast *arvore, ast *nodo);
+ast *create_node(int tipo, valor_lexico *valor);
+ast *create_leaf(int tipo, valor_lexico *valor);
+ast *add_child(ast *arvore, ast *nodo);
 void print_dados(ast *arvore);
 void print_nodo(ast *arvore);
 void libera(void *arvore);
 void exporta(ast *arvore);
 void destroiVL(valor_lexico *valor);
 void destroiNodo(ast *arvore);
-valor_lexico* cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal);
-void add_operation(ILOCOperationList* list, int opType, ILOCArg* input1, ILOCArg* input2, ILOCArg* output);
-ILOCArg* create_arg(ArgType type, int value, char* name);
-void free_arg(ILOCArg* arg);
-void free_operation_list(ILOCOperationList* list);
-void generate_iloc_code_for_binary_op(char op, ast *left, ast *right, ILOCOperationList *iloc_list);
-void generate_iloc_code(ast* node, ILOCOperationList** iloc_list);
+valor_lexico *cria_valor(int tipo_token, int current_line_number, char *texto, int tipo_literal);
+void adiciona_operacao(ILOCOperationList **list, int opType, ILOCArg *input1, ILOCArg *input2, ILOCArg *output);
+ILOCArg *create_arg(ArgType type, int value, char *name);
+//ILOCArg *create_arg(int type, int offset, char *name);
+void free_arg(ILOCArg *arg);
+void gera_codigo_iloc_op_binario(char op, ast *left, ast *right, ILOCOperationList **iloc_list);
+void print_operation_list(ILOCOperationList *list);
+void gera_codigo_iloc_decl_var(ast *var_ast, ILOCOperationList **iloc_list, int frame_pointer_offset);

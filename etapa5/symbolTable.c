@@ -10,7 +10,7 @@
 //   }
 //    //printf("Tamanho tabela original %d \n", tam);
 //   return tam;
-    
+
 // }
 
 // int getTabelaSimbolosSize(TabelaSimbolos** tabela_de_simbolos) {
@@ -22,7 +22,6 @@
 //     }
 //     return tamanho;
 // }
-
 
 // void adiciona_simbolo(TabelaSimbolos **tabela_de_simbolos, CONTEUDO *conteudo, int chave) {
 //     int tam = getTabelaSimbolosSize(tabela_de_simbolos);
@@ -43,14 +42,15 @@
 //     printf("Chave da tabela de simbolos na adiciona_simbolo %d\n", (*tabela_de_simbolos)[tam].chave);
 // }
 
+CONTEUDO *cria_conteudo(valor_lexico *vl, int natureza)
+{
 
-CONTEUDO *cria_conteudo(valor_lexico* vl, int natureza){
-
-  CONTEUDO * conteudo = (CONTEUDO *)malloc(sizeof(CONTEUDO));
+  CONTEUDO *conteudo = (CONTEUDO *)malloc(sizeof(CONTEUDO));
   conteudo->natureza = natureza;
   conteudo->linha = vl->numero_linha;
   conteudo->tipo = vl->tipo_token;
   conteudo->nome = vl->valorToken;
+  conteudo->offset = 4;
   // switch (tipo)
   // {
   // case inteiro:
@@ -74,7 +74,7 @@ CONTEUDO *cria_conteudo(valor_lexico* vl, int natureza){
   // }
   // else if(natureza == funcao)
   // {
-    
+
   // }
   switch (vl->tipo_token)
   {
@@ -105,19 +105,22 @@ CONTEUDO *cria_conteudo(valor_lexico* vl, int natureza){
 //     }
 // }
 
-TabelaSimbolos* cria_tabela_vazia(){
-    TabelaSimbolos * tabela = (TabelaSimbolos *)calloc(100, sizeof(TabelaSimbolos));
-    if(tabela == NULL){
-      return NULL;
+TabelaSimbolos *cria_tabela_vazia()
+{
+  TabelaSimbolos *tabela = (TabelaSimbolos *)calloc(100, sizeof(TabelaSimbolos));
+  if (tabela == NULL)
+  {
+    return NULL;
+  }
+  else
+  {
+
+    for (int i = 0; i < 100; i++)
+    {
+      tabela[i].tem_simbolo = 0;
+      // printf("Taela tem simbolo i: %d tem_simbolo: %d\n", i, tabela[i].tem_simbolo);
     }
-    else{
-      
-       for(int i = 0; i<100; i++)
-      {
-          tabela[i].tem_simbolo = 0;
-          // printf("Taela tem simbolo i: %d tem_simbolo: %d\n", i, tabela[i].tem_simbolo);
-      }
-      //printf("Tabela vazia criada \n");
-      return tabela;
-    }
+    //printf("Tabela vazia criada \n");
+    return tabela;
+  }
 }
