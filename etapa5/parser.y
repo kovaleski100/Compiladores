@@ -17,14 +17,17 @@
 #define FUNCTION 2
 extern int current_line_number;
 extern void *arvore;
+extern void *iloc_list;
 PILHA *pilha = NULL;
 int yylex(void);
 void yyerror (char const *s);
 int yydebug=1;
 int tipoVar = 0;
 int tipoExpressao = 0;
-
-ILOCOperationList *iloc_list;
+int rfp = 0;
+int rfp_global = 0;
+int rbss = 0;
+int tam_int = 4;
 %}
 
 %union{
@@ -225,6 +228,7 @@ cabecalho:  tipo  TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2);
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2, FUNCTION);
                                                 //Adiciona o nome da função na pilha global
                                                 adiciona_simbolo(novo_conteudo, pilha);
+                                                rfp = rfp_global;
                                             }
                                             else{
                                                 print_declared(conteudo_na_pilha, $2);
@@ -240,6 +244,7 @@ cabecalho:  tipo  TK_IDENTIFICADOR '(' ')' {$$ = create_node(identificador, $2);
                                                 CONTEUDO* novo_conteudo = cria_conteudo($2, FUNCTION);
                                                 //Adiciona o nome da função na pilha global
                                                 adiciona_simbolo(novo_conteudo, pilha);
+                                                rfp = rfp_global;
                                             }
                                             else{
                                                 print_declared(conteudo_na_pilha, $2);
@@ -291,6 +296,8 @@ lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);
                                                         novo_conteudo->tipo = tipoVar;
                                                         //Adiciona o nome da variavel na pilha local(mais do topo)
                                                         adiciona_simbolo(novo_conteudo, pilha);
+                                                        rfp = rfp + 4;
+                                                        gera_codigo_iloc_decl_var($1, &iloc_list, rfp);
                                                     }
                                                     else{
                                                         print_declared(conteudo_na_pilha, $1);
@@ -309,6 +316,8 @@ lista_variaveis: variavel ',' lista_variaveis  {$$ = $1; $$ = add_child($$, $3);
                                         novo_conteudo->tipo = tipoVar;
                                         //Adiciona o nome da variavel na pilha local(mais no topo)
                                         adiciona_simbolo(novo_conteudo, pilha);
+                                        rfp = rfp + 4;
+                                        gera_codigo_iloc_decl_var($1, &iloc_list, rfp);
                                     }
                                     else{
                                         print_declared(conteudo_na_pilha, $1);
@@ -483,7 +492,7 @@ terceira_precedencia:   terceira_precedencia '-' segunda_precedencia {$$ = creat
                                 $$ = create_node(caracter_especial, $2); 
                                 $$ = add_child($$, $1);
                                 $$ = add_child($$, $3);
-                                generate_iloc_code_for_binary_op('+', $1, $3, iloc_list);
+                                gera_codigo_iloc_op_binario('+', $1, $3, &iloc_list);
                                 } |
                         segunda_precedencia {$$ = $1;};
 
